@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan Tahunan - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1F4E79; --accent:#D4AF37; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1F4E79,#15375a);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#0f2643,#0a1a2e);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:'Segoe UI',sans-serif; transition:background .25s, color .25s; }
+
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px;
+             background:var(--sidebar-bg); color:#fff; padding:20px 0;
+             overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px;
+                    border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px;
+                   padding:10px 14px; color:#cfd9e6; text-decoration:none;
+                   border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.08); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#15375a; font-weight:600; }
+  .sidebar nav a i { width:18px; text-align:center; }
+
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text);
+            border-radius:12px; padding:14px 20px; margin-bottom:20px;
+            display:flex; align-items:center; justify-content:space-between;
+            box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text);
+                      border:1px solid var(--border); border-radius:8px;
+                      padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+
+  .card-kpi { border:1px solid var(--border); border-radius:12px;
+              box-shadow:0 2px 8px rgba(0,0,0,.06);
+              background:var(--card-bg); color:var(--text); transition:.15s; }
+  .card-kpi:hover { transform:translateY(-2px); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+
+  .section-title { color:var(--primary); border-left:5px solid var(--primary);
+                   padding-left:10px; margin:25px 0 15px; font-weight:600; }
+  body.dark-mode .section-title { color:var(--accent); border-left-color:var(--accent); }
+
+  .table { color:var(--text); background:var(--card-bg); }
+  .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; }
+  .table-wrap { max-height:480px; overflow:auto; border-radius:8px;
+                border:1px solid var(--border); }
+  body.dark-mode .table { --bs-table-bg:transparent;
+                          --bs-table-color:var(--text);
+                          --bs-table-hover-bg:rgba(255,255,255,.05);
+                          --bs-table-hover-color:#fff;
+                          --bs-table-striped-bg:rgba(255,255,255,.03);
+                          --bs-table-border-color:var(--border); }
+
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text);
+                                border:1px solid var(--input-border); }
+  .form-control:focus, .form-select:focus { background:var(--input-bg);
+                                            color:var(--input-text);
+                                            border-color:var(--primary);
+                                            box-shadow:0 0 0 .2rem rgba(31,78,121,.15); }
+
+  .progress { background:var(--border); }
+  .footer { text-align:center; padding:20px; color:var(--muted);
+            font-size:.85rem; margin-top:30px; }
+
+  .badge-baik { background:#28a745; }
+  .badge-ringan { background:#ffc107; color:#000; }
+  .badge-berat { background:#dc3545; }
+  .badge-kritis { background:#dc3545; }
+  .badge-tinggi { background:#fd7e14; }
+  .badge-sedang { background:#ffc107; color:#000; }
+  .badge-rendah { background:#28a745; }
+  .badge-baru { background:#0d6efd; }
+  .badge-diproses { background:#17a2b8; }
+  .badge-selesai { background:#28a745; }
+  .badge-ditunda { background:#6c757d; }
+  .badge-tertunda { background:#6c757d; }
+  .badge-terjadwal { background:#0d6efd; }
+  .badge-berjalan { background:#17a2b8; }
+
+  /* Org chart styles */
+  .org-node { background:var(--card-bg); border:2px solid var(--primary);
+              border-radius:10px; padding:10px 14px; text-align:center;
+              box-shadow:0 2px 6px rgba(0,0,0,.06); }
+  .org-node .jbt { color:var(--primary); font-weight:700; font-size:.9rem; }
+  body.dark-mode .org-node { border-color:var(--accent); }
+  body.dark-mode .org-node .jbt { color:var(--accent); }
+  .org-node .nm { color:var(--text); font-size:.95rem; }
+  .org-line { height:30px; width:2px; background:var(--primary); margin:0 auto; }
+  body.dark-mode .org-line { background:var(--accent); }
+
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+  
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo">
+    <h6 class="mt-2">GKPI JK Depok</h6>
+    <small>Dashboard Sarpras</small>
+  </div>
+  <nav>
+    <a class="" href="../dashboard.html"><i class="bi bi-house-door"></i> Beranda</a>
+<a class="" href="../pages/data_aset.html"><i class="bi bi-box-seam"></i> Data Aset</a>
+<a class="" href="../pages/jadwal_pemeliharaan.html"><i class="bi bi-calendar-check"></i> Jadwal Pemeliharaan</a>
+<a class="" href="../pages/lapor_sarpras.html"><i class="bi bi-megaphone"></i> Lapor Sarpras</a>
+<a class="" href="../pages/anggaran.html"><i class="bi bi-cash-coin"></i> Anggaran</a>
+<a class="" href="../pages/keanggotaan.html"><i class="bi bi-people-fill"></i> Keanggotaan</a>
+<a class="active" href="../pages/laporan_tahunan.html"><i class="bi bi-file-earmark-pdf"></i> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="topbar" id="topbar">
+    <div>
+      <h4>Laporan Tahunan</h4>
+      <small>Dashboard Sarana &amp; Prasarana</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnPdf" title="Export halaman ini ke PDF">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+      </button>
+      <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
+        <i class="bi bi-moon-stars" id="iconDark"></i>
+      </button>
+      <small class="text-muted ms-2" id="tsArea">Update: 27 May 2026 12:10</small>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Laporan</div><div class="num" style="color:#1F4E79;">3</div></div><i class="bi bi-file-earmark-pdf" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #10b981;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Tahun Terbaru</div><div class="num" style="color:#10b981;">2027</div></div><i class="bi bi-calendar-check" style="font-size:1.8rem;color:#10b981;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #f59e0b;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Size</div><div class="num" style="color:#f59e0b;">7.4 MB</div></div><i class="bi bi-hdd" style="font-size:1.8rem;color:#f59e0b;opacity:.5;"></i></div></div></div></div><div class="card shadow-sm mb-4">
+  <div class="card-header bg-white">
+    <h5 class="mb-0"><i class="bi bi-collection"></i> Daftar Laporan Tersedia</h5>
+  </div>
+  <div class="card-body">
+    <div class="row"><div class="col-md-4 col-sm-6 mb-3">
+  <div class="card h-100 shadow-sm border-0">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-file-earmark-pdf-fill" style="font-size:2em; color:#dc3545;"></i>
+        <div class="ms-3">
+          <h5 class="mb-0">Tahun 2027</h5>
+          <small class="text-muted">0.1 MB</small>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-sm btn-primary flex-fill" onclick="loadPdfByPath('../Laporan_Tahunan/Laporan_2027.pdf','2027','0.1 MB')">
+          <i class="bi bi-eye"></i> Lihat
+        </button>
+        <a href="../Laporan_Tahunan/Laporan_2027.pdf" download class="btn btn-sm btn-success flex-fill">
+          <i class="bi bi-download"></i> Download
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-4 col-sm-6 mb-3">
+  <div class="card h-100 shadow-sm border-0">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-file-earmark-pdf-fill" style="font-size:2em; color:#dc3545;"></i>
+        <div class="ms-3">
+          <h5 class="mb-0">Tahun 2026</h5>
+          <small class="text-muted">0.1 MB</small>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-sm btn-primary flex-fill" onclick="loadPdfByPath('../Laporan_Tahunan/Laporan_2026.pdf','2026','0.1 MB')">
+          <i class="bi bi-eye"></i> Lihat
+        </button>
+        <a href="../Laporan_Tahunan/Laporan_2026.pdf" download class="btn btn-sm btn-success flex-fill">
+          <i class="bi bi-download"></i> Download
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-4 col-sm-6 mb-3">
+  <div class="card h-100 shadow-sm border-0">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-file-earmark-pdf-fill" style="font-size:2em; color:#dc3545;"></i>
+        <div class="ms-3">
+          <h5 class="mb-0">Tahun 2025</h5>
+          <small class="text-muted">7.2 MB</small>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-sm btn-primary flex-fill" onclick="loadPdfByPath('../Laporan_Tahunan/Laporan_2025.pdf','2025','7.2 MB')">
+          <i class="bi bi-eye"></i> Lihat
+        </button>
+        <a href="../Laporan_Tahunan/Laporan_2025.pdf" download class="btn btn-sm btn-success flex-fill">
+          <i class="bi bi-download"></i> Download
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+
+<div class="card shadow-sm" id="viewerCard">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h5 class="mb-0"><i class="bi bi-file-earmark-pdf"></i> PDF Viewer</h5>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <select id="pdfSelect" class="form-select form-select-sm" style="min-width:240px;" onchange="loadPdf(this.value)">
+        <option value="../Laporan_Tahunan/Laporan_2027.pdf">Laporan Tahun 2027 (0.1 MB)</option>
+<option value="../Laporan_Tahunan/Laporan_2026.pdf">Laporan Tahun 2026 (0.1 MB)</option>
+<option value="../Laporan_Tahunan/Laporan_2025.pdf">Laporan Tahun 2025 (7.2 MB)</option>
+
+      </select>
+      <a id="btnDownload" href="../Laporan_Tahunan/Laporan_2027.pdf" download class="btn btn-sm btn-success">
+        <i class="bi bi-download"></i> Download
+      </a>
+      <a id="btnOpen" href="../Laporan_Tahunan/Laporan_2027.pdf" target="_blank" class="btn btn-sm btn-primary">
+        <i class="bi bi-box-arrow-up-right"></i> Tab Baru
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="alert alert-info py-2 mb-3">
+      <i class="bi bi-info-circle"></i> Sedang menampilkan:
+      <strong id="currentInfo">Laporan Tahun 2027 &bull; 0.1 MB</strong>
+    </div>
+    <iframe id="pdfFrame" src="../Laporan_Tahunan/Laporan_2027.pdf" style="width:100%; height:800px; border:1px solid #e5e7eb; border-radius:8px; background:#f9fafb;"></iframe>
+    <p class="text-muted small mt-2 mb-0">
+      <i class="bi bi-phone"></i> Di mobile, gunakan tombol <strong>Download</strong> atau <strong>Tab Baru</strong> bila viewer terbatas.
+    </p>
+  </div>
+</div>
+
+
+  <div class="footer">
+    &copy; 2026 GKPI Jemaat Khusus Depok &middot; Dashboard otomatis
+  </div>
+</main>
+
+<script>
+  // ===== Dark mode =====
+  (function() {
+    var saved = localStorage.getItem('gkpi-theme');
+    if (saved === 'dark') document.body.classList.add('dark-mode');
+    updateDarkIcon();
+  })();
+  function updateDarkIcon() {
+    var ic = document.getElementById('iconDark');
+    if (!ic) return;
+    if (document.body.classList.contains('dark-mode')) {
+      ic.className = 'bi bi-sun-fill';
+    } else {
+      ic.className = 'bi bi-moon-stars';
+    }
+  }
+  document.getElementById('btnDark').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('gkpi-theme',
+      document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    updateDarkIcon();
+  });
+
+  // ===== Export PDF =====
+  document.getElementById('btnPdf').addEventListener('click', function() {
+    var el = document.getElementById('mainContent');
+    var btnPdf = document.getElementById('btnPdf');
+    var btnDark = document.getElementById('btnDark');
+    var tsArea  = document.getElementById('tsArea');
+    var wasDark = document.body.classList.contains('dark-mode');
+
+    // Switch to light mode temporarily for cleaner PDF
+    if (wasDark) document.body.classList.remove('dark-mode');
+    btnPdf.style.visibility  = 'hidden';
+    btnDark.style.visibility = 'hidden';
+
+    var title = document.querySelector('.topbar h4').innerText || 'Dashboard';
+    var fname = 'GKPI_' + title.replace(/[^a-z0-9]+/gi,'_') + '.pdf';
+
+    var opt = {
+      margin:       [8, 8, 8, 8],
+      filename:     fname,
+      image:        { type: 'jpeg', quality: 0.95 },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf().set(opt).from(el).save().then(function() {
+      btnPdf.style.visibility  = 'visible';
+      btnDark.style.visibility = 'visible';
+      if (wasDark) document.body.classList.add('dark-mode');
+    });
+  });
+
+  // ===== Filter helpers =====
+  function attachSearch(inputId, tableId) {
+    var el = document.getElementById(inputId);
+    if (!el) return;
+    el.addEventListener('keyup', function() {
+      var q = this.value.toLowerCase();
+      document.querySelectorAll('#' + tableId + ' tbody tr').forEach(function(tr){
+        tr.style.display = tr.innerText.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+  }
+  function attachSelectFilter(selectId, tableId, colIndex) {
+    var el = document.getElementById(selectId);
+    if (!el) return;
+    el.addEventListener('change', function() {
+      var q = this.value.toLowerCase();
+      document.querySelectorAll('#' + tableId + ' tbody tr').forEach(function(tr){
+        if (!q) { tr.style.display=''; return; }
+        var cell = tr.children[colIndex];
+        if (!cell) return;
+        tr.style.display = cell.innerText.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+  }
+</script>
+
+<script>
+function loadPdf(path) {
+  if (!path) return;
+  console.log("loadPdf:", path);
+  var sel = document.getElementById('pdfSelect');
+  var opt = sel.options[sel.selectedIndex];
+  var iframe = document.getElementById('pdfFrame');
+  iframe.src = "about:blank";
+  setTimeout(function(){ iframe.src = path; }, 50);
+  document.getElementById('btnDownload').href = path;
+  document.getElementById('btnOpen').href = path;
+  document.getElementById('currentInfo').textContent = opt.text.replace(' (', ' \u2022 ').replace(')', '');
+  document.getElementById('viewerCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function loadPdfByPath(path, tahun, size) {
+  if (!path) return;
+  console.log("loadPdfByPath:", path, tahun, size);
+  var sel = document.getElementById('pdfSelect');
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === path) { sel.selectedIndex = i; break; }
+  }
+  var iframe = document.getElementById('pdfFrame');
+  iframe.src = "about:blank";
+  setTimeout(function(){ iframe.src = path; }, 50);
+  document.getElementById('btnDownload').href = path;
+  document.getElementById('btnOpen').href = path;
+  document.getElementById('currentInfo').textContent = 'Laporan Tahun ' + tahun + ' \u2022 ' + size;
+  document.getElementById('viewerCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+</script>
+
+
+</body>
+</html>
