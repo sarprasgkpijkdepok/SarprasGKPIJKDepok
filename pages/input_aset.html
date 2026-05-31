@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Input Aset Baru - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1F4E79; --accent:#D4AF37; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1F4E79,#15375a);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#0f2643,#0a1a2e);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:'Segoe UI',sans-serif; transition:background .25s, color .25s; }
+
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px;
+             background:var(--sidebar-bg); color:#fff; padding:20px 0;
+             overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px;
+                    border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px;
+                   padding:10px 14px; color:#cfd9e6; text-decoration:none;
+                   border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.08); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#15375a; font-weight:600; }
+  .sidebar nav a i { width:18px; text-align:center; }
+
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text);
+            border-radius:12px; padding:14px 20px; margin-bottom:20px;
+            display:flex; align-items:center; justify-content:space-between;
+            box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text);
+                      border:1px solid var(--border); border-radius:8px;
+                      padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+
+  .card-kpi { border:1px solid var(--border); border-radius:12px;
+              box-shadow:0 2px 8px rgba(0,0,0,.06);
+              background:var(--card-bg); color:var(--text); transition:.15s; }
+  .card-kpi:hover { transform:translateY(-2px); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+
+  .section-title { color:var(--primary); border-left:5px solid var(--primary);
+                   padding-left:10px; margin:25px 0 15px; font-weight:600; }
+  body.dark-mode .section-title { color:var(--accent); border-left-color:var(--accent); }
+
+  .table { color:var(--text); background:var(--card-bg); }
+  .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; }
+  .table-wrap { max-height:480px; overflow:auto; border-radius:8px;
+                border:1px solid var(--border); }
+  body.dark-mode .table { --bs-table-bg:transparent;
+                          --bs-table-color:var(--text);
+                          --bs-table-hover-bg:rgba(255,255,255,.05);
+                          --bs-table-hover-color:#fff;
+                          --bs-table-striped-bg:rgba(255,255,255,.03);
+                          --bs-table-border-color:var(--border); }
+
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text);
+                                border:1px solid var(--input-border); }
+  .form-control:focus, .form-select:focus { background:var(--input-bg);
+                                            color:var(--input-text);
+                                            border-color:var(--primary);
+                                            box-shadow:0 0 0 .2rem rgba(31,78,121,.15); }
+
+  .progress { background:var(--border); }
+  .footer { text-align:center; padding:20px; color:var(--muted);
+            font-size:.85rem; margin-top:30px; }
+
+  .badge-baik { background:#28a745; }
+  .badge-ringan { background:#ffc107; color:#000; }
+  .badge-berat { background:#dc3545; }
+  .badge-kritis { background:#dc3545; }
+  .badge-tinggi { background:#fd7e14; }
+  .badge-sedang { background:#ffc107; color:#000; }
+  .badge-rendah { background:#28a745; }
+  .badge-baru { background:#0d6efd; }
+  .badge-diproses { background:#17a2b8; }
+  .badge-selesai { background:#28a745; }
+  .badge-ditunda { background:#6c757d; }
+  .badge-tertunda { background:#6c757d; }
+  .badge-terjadwal { background:#0d6efd; }
+  .badge-berjalan { background:#17a2b8; }
+
+  /* Org chart styles */
+  .org-node { background:var(--card-bg); border:2px solid var(--primary);
+              border-radius:10px; padding:10px 14px; text-align:center;
+              box-shadow:0 2px 6px rgba(0,0,0,.06); }
+  .org-node .jbt { color:var(--primary); font-weight:700; font-size:.9rem; }
+  body.dark-mode .org-node { border-color:var(--accent); }
+  body.dark-mode .org-node .jbt { color:var(--accent); }
+  .org-node .nm { color:var(--text); font-size:.95rem; }
+  .org-line { height:30px; width:2px; background:var(--primary); margin:0 auto; }
+  body.dark-mode .org-line { background:var(--accent); }
+
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+  
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo">
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a class="" href="../dashboard.html"><i class="bi bi-house-door"></i> Beranda</a>
+<a class="" href="../pages/data_aset.html"><i class="bi bi-box-seam"></i> Data Aset</a>
+<a class="active" href="../pages/input_aset.html"><i class="bi bi-plus-circle"></i> Input Aset</a>
+<a class="" href="../pages/jadwal_pemeliharaan.html"><i class="bi bi-calendar-check"></i> Jadwal Pemeliharaan</a>
+<a class="" href="../pages/lapor_sarpras.html"><i class="bi bi-megaphone"></i> Lapor Sarpras</a>
+<a class="" href="../pages/anggaran.html"><i class="bi bi-cash-coin"></i> Anggaran</a>
+<a class="" href="../pages/keanggotaan.html"><i class="bi bi-people-fill"></i> Keanggotaan</a>
+<a class="" href="../pages/laporan_tahunan.html"><i class="bi bi-file-earmark-pdf"></i> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="topbar" id="topbar">
+    <div>
+      <h4>Input Aset Baru</h4>
+      <small>Dashboard Sarana &amp; Prasarana</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnPdf" title="Export halaman ini ke PDF">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+      </button>
+      <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
+        <i class="bi bi-moon-stars" id="iconDark"></i>
+      </button>
+      <small class="text-muted ms-2" id="tsArea">Update: 01 June 2026 02:48</small>
+    </div>
+  </div>
+
+  
+<style>
+.table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+.scroll-box,.dataTables_scrollBody {
+  max-height: none !important; height: auto !important;
+  overflow: visible !important; overflow-y: visible !important;
+  overflow-x: auto !important;
+}
+.table-wrap > table,.table-responsive > table { width: 100% !important; }
+
+@media print {
+  .table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+  .scroll-box,.card,.card-body,.card-kpi,.content,.main-content,.page-content,
+  .dataTables_scrollBody,div[style*="overflow"],div[style*="max-height"] {
+    max-height: none !important; height: auto !important;
+    overflow: visible !important; overflow-y: visible !important;
+    overflow-x: visible !important; box-shadow: none !important;
+  }
+  table { width:100% !important; table-layout:auto !important;
+    page-break-inside:auto !important; border-collapse:collapse !important;
+    font-size:9pt !important; }
+  tr, td, th { page-break-inside: avoid !important; break-inside: avoid !important; }
+  thead { display: table-header-group !important; }
+  tfoot { display: table-footer-group !important; }
+  thead th { background:#1F4E79 !important; color:#fff !important; border:1px solid #000 !important; }
+  td { border:1px solid #999 !important; color:#000 !important; }
+  .sidebar,.navbar,.topbar,.nav-side,.search-box,.filter-box,.btn-print,
+  .btn-export,.dark-mode-toggle,.alert,input[type="search"],input.form-control,
+  select.form-control,select,button,.no-print { display:none !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body, html,.card,.card-body,.card-kpi,.table-container,.main-content,
+  .content,.page-content { background:#fff !important; color:#000 !important; }
+  .badge { color:#fff !important; padding:2px 6px !important; border-radius:4px !important; }
+  .badge-baik{background:#198754 !important;}
+  .badge-ringan{background:#ffc107 !important;color:#000 !important;}
+  .badge-berat{background:#dc3545 !important;}
+  @page { size: A4 landscape; margin: 0.8cm; }
+  .watermark { opacity: 0.06 !important; }
+  body { font-size:9pt !important; }
+}
+</style>
+<div id="lockScreen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1F4E79;display:flex;align-items:center;justify-content:center;z-index:9999;color:#fff;">
+  <div style="background:#fff;color:#000;padding:30px 40px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);text-align:center;max-width:400px;">
+    <i class="bi bi-shield-lock-fill" style="font-size:48px;color:#1F4E79;"></i>
+    <h3 style="margin:15px 0;color:#1F4E79;">Akses Terbatas</h3>
+    <p style="color:#666;font-size:14px;">Masukkan password untuk input aset baru.</p>
+    <input id="pwInput" type="password" class="form-control" placeholder="Password" style="margin:15px 0;text-align:center;font-size:16px;" autofocus>
+    <button id="pwBtn" class="btn btn-primary w-100" style="background:#1F4E79;border:none;">
+      <i class="bi bi-unlock-fill"></i> Buka Form Input
+    </button>
+    <p id="pwErr" style="color:#dc3545;font-size:12px;margin-top:10px;display:none;">
+      <i class="bi bi-exclamation-triangle"></i> Password salah. Coba lagi.
+    </p>
+    <a href="../dashboard.html" style="display:block;margin-top:15px;font-size:12px;color:#1F4E79;">
+      <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+    </a>
+  </div>
+</div>
+
+<div id="formContainer" style="display:none;">
+  <div class="card card-kpi p-4 mt-3" style="max-width:900px;margin:0 auto;">
+    <h4 style="color:#1F4E79;margin-bottom:5px;"><i class="bi bi-plus-circle-fill"></i> Tambah Aset Baru</h4>
+    <p style="color:#666;font-size:13px;margin-bottom:20px;">
+      Data tersimpan ke Google Sheet. Sync ke Excel untuk update dashboard publik.
+      <span id="userBadge" style="background:#e3f2fd;padding:3px 10px;border-radius:12px;font-weight:600;color:#1F4E79;"></span>
+    </p>
+    <form id="formInputAset" autocomplete="off">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">No Aset <span style="color:#dc3545;">*</span></label>
+          <input type="text" id="fNoAset" class="form-control" placeholder="Contoh: GKPI-001" required>
+          <small class="text-muted">Kode unik aset</small>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Nama Aset <span style="color:#dc3545;">*</span></label>
+          <input type="text" id="fNama" class="form-control" placeholder="Contoh: Sound System Yamaha" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Kategori <span style="color:#dc3545;">*</span></label>
+          <select id="fKategori" class="form-select" required><option value="">-- Pilih Kategori --</option><option value="Bangunan">Bangunan</option><option value="Elektronik">Elektronik</option><option value="Furniture">Furniture</option><option value="Kendaraan">Kendaraan</option><option value="Musik">Musik</option><option value="__custom__">+ Kategori Baru...</option></select>
+          <input type="text" id="fKategoriCustom" class="form-control mt-2" placeholder="Ketik kategori baru..." style="display:none;">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Lokasi <span style="color:#dc3545;">*</span></label>
+          <select id="fLokasi" class="form-select" required><option value="">-- Pilih Lokasi --</option><option value="Ruang Konsistori">Ruang Konsistori</option><option value="__custom__">+ Lokasi Baru...</option></select>
+          <input type="text" id="fLokasiCustom" class="form-control mt-2" placeholder="Ketik lokasi baru..." style="display:none;">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Kondisi <span style="color:#dc3545;">*</span></label>
+          <select id="fKondisi" class="form-select" required>
+            <option value="">-- Pilih Kondisi --</option>
+            <option value="Baik">Baik</option>
+            <option value="Rusak Ringan">Rusak Ringan</option>
+            <option value="Rusak Berat">Rusak Berat</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Tahun Perolehan <span style="color:#dc3545;">*</span></label>
+          <input type="number" id="fTahun" class="form-control" min="1990" max="2099" placeholder="2024" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Jumlah Unit <span style="color:#dc3545;">*</span></label>
+          <input type="number" id="fJumlahUnit" class="form-control" min="1" value="1" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Nilai Perolehan (Rp) <span style="color:#dc3545;">*</span></label>
+          <input type="number" id="fNilaiBeli" class="form-control" min="0" placeholder="Contoh: 5000000" required>
+          <small id="fNilaiBeliPreview" style="color:#1F4E79;font-weight:600;"></small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Nilai Saat Ini (Rp) <span style="color:#dc3545;">*</span></label>
+          <input type="number" id="fNilaiNow" class="form-control" min="0" placeholder="Estimasi nilai sekarang" required>
+          <small id="fNilaiNowPreview" style="color:#1F4E79;font-weight:600;"></small>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Spesifikasi Teknis / Keterangan</label>
+          <textarea id="fSpesifikasi" class="form-control" rows="3" placeholder="Contoh: Merk Yamaha MGP12X, daya 200W, mixer 12 channel, kondisi second"></textarea>
+          <small class="text-muted">Spesifikasi detail aset (merk, tipe, kapasitas, dll)</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Nama Pengurus (Pelapor) <span style="color:#dc3545;">*</span></label>
+          <input type="text" id="fPelapor" class="form-control" placeholder="Nama Anda" required>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <button type="submit" id="btnSubmit" class="btn btn-primary w-100" style="background:#1F4E79;border:none;height:38px;">
+            <i class="bi bi-cloud-upload-fill"></i> Simpan ke Google Sheet
+          </button>
+        </div>
+      </div>
+    </form>
+    <div id="toastBox" style="position:fixed;top:20px;right:20px;z-index:10000;"></div>
+  </div>
+
+  <div class="card card-kpi p-3 mt-3" style="max-width:900px;margin:0 auto;">
+    <h5 style="color:#1F4E79;">
+      <i class="bi bi-clock-history"></i> Aset Terinput Sesi Ini
+      <span id="sessionCount" style="background:#1F4E79;color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">0</span>
+    </h5>
+    <div class="table-wrap">
+      <table class="table table-sm table-bordered align-middle" id="tblSession">
+        <thead style="background:#1F4E79;color:#fff;">
+          <tr>
+            <th>Waktu</th><th>No Aset</th><th>Nama Aset</th><th>Kategori</th>
+            <th>Lokasi</th><th>Kondisi</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tblSessionBody">
+          <tr><td colspan="7" class="text-center text-muted">Belum ada aset terinput sesi ini.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <small class="text-muted">
+      <i class="bi bi-info-circle"></i>
+      Data tersimpan di Google Sheet. Untuk update dashboard publik, download Excel terbaru lalu jalankan
+      <code>python generate_dashboard.py</code>.
+    </small>
+  </div>
+</div>
+
+
+  <div class="footer">
+    &copy; 2026 GKPI Jemaat Khusus Depok &middot; Dashboard otomatis
+  </div>
+</main>
+
+<script>
+  // ===== Dark mode =====
+  (function() {
+    var saved = localStorage.getItem('gkpi-theme');
+    if (saved === 'dark') document.body.classList.add('dark-mode');
+    updateDarkIcon();
+  })();
+  function updateDarkIcon() {
+    var ic = document.getElementById('iconDark');
+    if (!ic) return;
+    if (document.body.classList.contains('dark-mode')) {
+      ic.className = 'bi bi-sun-fill';
+    } else {
+      ic.className = 'bi bi-moon-stars';
+    }
+  }
+  document.getElementById('btnDark').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('gkpi-theme',
+      document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    updateDarkIcon();
+  });
+
+  // ===== Export PDF =====
+  document.getElementById('btnPdf').addEventListener('click', function() {
+    var el = document.getElementById('mainContent');
+    var btnPdf = document.getElementById('btnPdf');
+    var btnDark = document.getElementById('btnDark');
+    var tsArea  = document.getElementById('tsArea');
+    var wasDark = document.body.classList.contains('dark-mode');
+
+    // Switch to light mode temporarily for cleaner PDF
+    if (wasDark) document.body.classList.remove('dark-mode');
+    btnPdf.style.visibility  = 'hidden';
+    btnDark.style.visibility = 'hidden';
+
+    var title = document.querySelector('.topbar h4').innerText || 'Dashboard';
+    var fname = 'GKPI_' + title.replace(/[^a-z0-9]+/gi,'_') + '.pdf';
+
+    var opt = {
+      margin:       [8, 8, 8, 8],
+      filename:     fname,
+      image:        { type: 'jpeg', quality: 0.95 },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf().set(opt).from(el).save().then(function() {
+      btnPdf.style.visibility  = 'visible';
+      btnDark.style.visibility = 'visible';
+      if (wasDark) document.body.classList.add('dark-mode');
+    });
+  });
+
+  // ===== Filter helpers =====
+  function attachSearch(inputId, tableId) {
+    var el = document.getElementById(inputId);
+    if (!el) return;
+    el.addEventListener('keyup', function() {
+      var q = this.value.toLowerCase();
+      document.querySelectorAll('#' + tableId + ' tbody tr').forEach(function(tr){
+        tr.style.display = tr.innerText.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+  }
+  function attachSelectFilter(selectId, tableId, colIndex) {
+    var el = document.getElementById(selectId);
+    if (!el) return;
+    el.addEventListener('change', function() {
+      var q = this.value.toLowerCase();
+      document.querySelectorAll('#' + tableId + ' tbody tr').forEach(function(tr){
+        if (!q) { tr.style.display=''; return; }
+        var cell = tr.children[colIndex];
+        if (!cell) return;
+        tr.style.display = cell.innerText.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+  }
+</script>
+
+<script>
+const PASSWORD_HASH = "ee63d268b32395dab5377a1c201f81ae3467a6c5951e224bc73824d9d762d437";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_LDdFqJTtWslNeO2_s7SzXxI2RE2j5cpfJtwfRXL-XyaYao3DWEhAxqYWyswBgF8E/exec";
+const AUTO_LOGOUT_MS = 900000;
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function checkPassword() {
+  const pw = document.getElementById("pwInput").value;
+  const hash = await sha256(pw);
+  if (hash === PASSWORD_HASH) {
+    sessionStorage.setItem("inputAset_unlocked", "1");
+    sessionStorage.setItem("inputAset_unlockTime", Date.now().toString());
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("formContainer").style.display = "block";
+    const log = JSON.parse(localStorage.getItem("inputAset_log") || "[]");
+    log.push({ time: new Date().toISOString(), action: "unlock" });
+    localStorage.setItem("inputAset_log", JSON.stringify(log));
+    startIdleTimer();
+  } else {
+    document.getElementById("pwErr").style.display = "block";
+    document.getElementById("pwInput").value = "";
+    document.getElementById("pwInput").focus();
+  }
+}
+
+document.getElementById("pwBtn").addEventListener("click", checkPassword);
+document.getElementById("pwInput").addEventListener("keypress", e => {
+  if (e.key === "Enter") checkPassword();
+});
+
+if (sessionStorage.getItem("inputAset_unlocked") === "1") {
+  const t = parseInt(sessionStorage.getItem("inputAset_unlockTime") || "0");
+  if (Date.now() - t < AUTO_LOGOUT_MS) {
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("formContainer").style.display = "block";
+    startIdleTimer();
+  }
+}
+
+let idleTimer = null;
+function resetIdle() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    sessionStorage.removeItem("inputAset_unlocked");
+    alert("Sesi berakhir karena tidak aktif " + (AUTO_LOGOUT_MS/60000) + " menit.");
+    location.reload();
+  }, AUTO_LOGOUT_MS);
+}
+function startIdleTimer() {
+  ["click","keypress","mousemove","scroll"].forEach(ev => document.addEventListener(ev, resetIdle));
+  resetIdle();
+}
+
+document.getElementById("fKategori").addEventListener("change", function() {
+  document.getElementById("fKategoriCustom").style.display =
+    this.value === "__custom__" ? "block" : "none";
+  if (this.value === "__custom__") document.getElementById("fKategoriCustom").focus();
+});
+document.getElementById("fLokasi").addEventListener("change", function() {
+  document.getElementById("fLokasiCustom").style.display =
+    this.value === "__custom__" ? "block" : "none";
+  if (this.value === "__custom__") document.getElementById("fLokasiCustom").focus();
+});
+
+function formatRupiah(n) {
+  if (!n) return "";
+  return "Rp " + Number(n).toLocaleString("id-ID");
+}
+document.getElementById("fNilaiBeli").addEventListener("input", function() {
+  document.getElementById("fNilaiBeliPreview").textContent = formatRupiah(this.value);
+});
+document.getElementById("fNilaiNow").addEventListener("input", function() {
+  document.getElementById("fNilaiNowPreview").textContent = formatRupiah(this.value);
+});
+
+function toast(msg, type) {
+  const colors = {success: "#198754", error: "#dc3545", info: "#0d6efd"};
+  const icons = {success: "check-circle-fill", error: "x-circle-fill", info: "info-circle-fill"};
+  const div = document.createElement("div");
+  div.style.cssText = "background:" + (colors[type]||colors.info) +
+    ";color:#fff;padding:12px 20px;border-radius:8px;margin-bottom:10px;" +
+    "box-shadow:0 4px 12px rgba(0,0,0,0.3);min-width:280px;";
+  div.innerHTML = '<i class="bi bi-' + (icons[type]||icons.info) + '"></i> ' + msg;
+  document.getElementById("toastBox").appendChild(div);
+  setTimeout(() => div.remove(), 4500);
+}
+
+document.getElementById("formInputAset").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btnSubmit");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+
+  let kategori = document.getElementById("fKategori").value;
+  if (kategori === "__custom__") kategori = document.getElementById("fKategoriCustom").value.trim();
+  let lokasi = document.getElementById("fLokasi").value;
+  if (lokasi === "__custom__") lokasi = document.getElementById("fLokasiCustom").value.trim();
+
+  const data = {
+    "No Aset": document.getElementById("fNoAset").value.trim(),
+    "Nama Aset": document.getElementById("fNama").value.trim(),
+    "Kategori": kategori,
+    "Lokasi": lokasi,
+    "Kondisi": document.getElementById("fKondisi").value,
+    "Tahun Perolehan": document.getElementById("fTahun").value,
+    "Nilai Perolehan": document.getElementById("fNilaiBeli").value,
+    "Nilai Saat Ini": document.getElementById("fNilaiNow").value,
+    "Jumlah Unit": document.getElementById("fJumlahUnit").value,
+    "Spesifikasi Teknis/Keterangan": document.getElementById("fSpesifikasi").value.trim(),
+    "Pelapor": document.getElementById("fPelapor").value.trim(),
+    "Timestamp": new Date().toISOString()
+  };
+
+  if (APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzscYpRKvaQHnh3JzE4mBFaA_nlZNoTiNlkxoi9gb0VJnHqyqc9Q9fpTLOOgefzBllA/exec") {
+    toast("URL Google Apps Script belum diset di generate_dashboard.py!", "error");
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-cloud-upload-fill"></i> Simpan ke Google Sheet';
+    return;
+  }
+
+  try {
+    const fd = new FormData();
+    Object.keys(data).forEach(k => fd.append(k, data[k]));
+    const res = await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd });
+    const result = await res.json();
+    if (result.status === "ok") {
+      toast("Aset berhasil disimpan ke Google Sheet!", "success");
+      addToSession(data, "success");
+      document.getElementById("formInputAset").reset();
+      document.getElementById("fJumlahUnit").value = 1;
+      document.getElementById("fNilaiBeliPreview").textContent = "";
+      document.getElementById("fNilaiNowPreview").textContent = "";
+      document.getElementById("fPelapor").value = data.Pelapor;
+      document.getElementById("fNoAset").focus();
+    } else {
+      toast("Gagal: " + (result.message || "unknown error"), "error");
+      addToSession(data, "error");
+    }
+  } catch (err) {
+    toast("Error koneksi: " + err.message, "error");
+    addToSession(data, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-cloud-upload-fill"></i> Simpan ke Google Sheet';
+  }
+});
+
+function addToSession(data, status) {
+  const tb = document.getElementById("tblSessionBody");
+  if (tb.querySelector("td[colspan]")) tb.innerHTML = "";
+  const now = new Date().toLocaleTimeString("id-ID");
+  const sb = status === "success"
+    ? '<span style="background:#198754;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">OK</span>'
+    : '<span style="background:#dc3545;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">GAGAL</span>';
+  const tr = document.createElement("tr");
+  tr.innerHTML = "<td>" + now + "</td><td>" + data["No Aset"] + "</td><td>" + data["Nama Aset"] + "</td>" +
+    "<td>" + data.Kategori + "</td><td>" + data.Lokasi + "</td><td>" + data.Kondisi + "</td><td>" + sb + "</td>";
+  tb.insertBefore(tr, tb.firstChild);
+  const cnt = parseInt(document.getElementById("sessionCount").textContent) + 1;
+  document.getElementById("sessionCount").textContent = cnt;
+  const log = JSON.parse(localStorage.getItem("inputAset_log") || "[]");
+  log.push({ time: new Date().toISOString(), action: "submit", data: data, status: status });
+  localStorage.setItem("inputAset_log", JSON.stringify(log.slice(-100)));
+}
+
+const savedPelapor = sessionStorage.getItem("inputAset_pelapor");
+if (savedPelapor) {
+  document.getElementById("fPelapor").value = savedPelapor;
+  document.getElementById("userBadge").textContent = "User: " + savedPelapor;
+}
+document.getElementById("fPelapor").addEventListener("change", function() {
+  sessionStorage.setItem("inputAset_pelapor", this.value);
+  document.getElementById("userBadge").textContent = "User: " + this.value;
+});
+
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+  if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "u")) {
+    e.preventDefault();
+  }
+});
+</script>
+
+
+</body>
+</html>

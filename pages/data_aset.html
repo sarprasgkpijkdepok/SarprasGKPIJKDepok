@@ -128,12 +128,13 @@
 <aside class="sidebar">
   <div class="brand">
     <img src="../assets/logo_gkpi.png" alt="logo">
-    <h6 class="mt-2">GKPI JK Depok</h6>
-    <small>Dashboard Sarpras</small>
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
   </div>
   <nav>
     <a class="" href="../dashboard.html"><i class="bi bi-house-door"></i> Beranda</a>
 <a class="active" href="../pages/data_aset.html"><i class="bi bi-box-seam"></i> Data Aset</a>
+<a class="" href="../pages/input_aset.html"><i class="bi bi-plus-circle"></i> Input Aset</a>
 <a class="" href="../pages/jadwal_pemeliharaan.html"><i class="bi bi-calendar-check"></i> Jadwal Pemeliharaan</a>
 <a class="" href="../pages/lapor_sarpras.html"><i class="bi bi-megaphone"></i> Lapor Sarpras</a>
 <a class="" href="../pages/anggaran.html"><i class="bi bi-cash-coin"></i> Anggaran</a>
@@ -155,11 +156,52 @@
       <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
         <i class="bi bi-moon-stars" id="iconDark"></i>
       </button>
-      <small class="text-muted ms-2" id="tsArea">Update: 27 May 2026 12:29</small>
+      <small class="text-muted ms-2" id="tsArea">Update: 01 June 2026 02:48</small>
     </div>
   </div>
 
-  <div class="row g-3"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Aset</div><div class="num" style="color:#1F4E79;">12</div></div><i class="bi bi-box-seam" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Baik</div><div class="num" style="color:#28a745;">8</div></div><i class="bi bi-check-circle" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #ffc107;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Ringan</div><div class="num" style="color:#ffc107;">2</div></div><i class="bi bi-exclamation-triangle" style="font-size:1.8rem;color:#ffc107;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #dc3545;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Berat</div><div class="num" style="color:#dc3545;">2</div></div><i class="bi bi-x-circle" style="font-size:1.8rem;color:#dc3545;opacity:.5;"></i></div></div></div></div><div class="alert d-flex justify-content-between align-items-center flex-wrap gap-2" style="background:#e3f2fd;border:1px solid #1F4E79;color:#1F4E79;border-radius:10px;padding:15px;margin-top:15px;"><div><i class="bi bi-info-circle-fill"></i> <strong>Tampilan Publik</strong> &mdash; Data nilai aset disembunyikan untuk publik. Pengurus dapat melihat data lengkap di halaman terbatas.</div><a href="data_aset_full.html" class="btn btn-sm" style="background:#1F4E79;color:#fff;font-weight:600;border-radius:8px;padding:6px 14px;"><i class="bi bi-lock-fill"></i> Lihat Data Lengkap</a></div><div class="card card-kpi p-3 mt-3"><div class="row g-2 mb-3"><div class="col-md-6"><input id="searchAset" class="form-control" placeholder="Cari aset..."></div><div class="col-md-3"><select id="filterKategori" class="form-select"><option value="">Semua Kategori</option></select></div></div><div class="table-wrap"><table class="table table-hover table-bordered align-middle" id="tblAset"><thead><tr></tr></thead><tbody><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></tbody></table></div></div>
+  
+<style>
+.table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+.scroll-box,.dataTables_scrollBody {
+  max-height: none !important; height: auto !important;
+  overflow: visible !important; overflow-y: visible !important;
+  overflow-x: auto !important;
+}
+.table-wrap > table,.table-responsive > table { width: 100% !important; }
+
+@media print {
+  .table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+  .scroll-box,.card,.card-body,.card-kpi,.content,.main-content,.page-content,
+  .dataTables_scrollBody,div[style*="overflow"],div[style*="max-height"] {
+    max-height: none !important; height: auto !important;
+    overflow: visible !important; overflow-y: visible !important;
+    overflow-x: visible !important; box-shadow: none !important;
+  }
+  table { width:100% !important; table-layout:auto !important;
+    page-break-inside:auto !important; border-collapse:collapse !important;
+    font-size:9pt !important; }
+  tr, td, th { page-break-inside: avoid !important; break-inside: avoid !important; }
+  thead { display: table-header-group !important; }
+  tfoot { display: table-footer-group !important; }
+  thead th { background:#1F4E79 !important; color:#fff !important; border:1px solid #000 !important; }
+  td { border:1px solid #999 !important; color:#000 !important; }
+  .sidebar,.navbar,.topbar,.nav-side,.search-box,.filter-box,.btn-print,
+  .btn-export,.dark-mode-toggle,.alert,input[type="search"],input.form-control,
+  select.form-control,select,button,.no-print { display:none !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body, html,.card,.card-body,.card-kpi,.table-container,.main-content,
+  .content,.page-content { background:#fff !important; color:#000 !important; }
+  .badge { color:#fff !important; padding:2px 6px !important; border-radius:4px !important; }
+  .badge-baik{background:#198754 !important;}
+  .badge-ringan{background:#ffc107 !important;color:#000 !important;}
+  .badge-berat{background:#dc3545 !important;}
+  @page { size: A4 landscape; margin: 0.8cm; }
+  .watermark { opacity: 0.06 !important; }
+  body { font-size:9pt !important; }
+}
+</style>
+<div class="row g-3"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Aset</div><div class="num" style="color:#1F4E79;">30</div></div><i class="bi bi-box-seam" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Baik</div><div class="num" style="color:#28a745;">26</div></div><i class="bi bi-check-circle" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #ffc107;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Ringan</div><div class="num" style="color:#ffc107;">0</div></div><i class="bi bi-exclamation-triangle" style="font-size:1.8rem;color:#ffc107;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #dc3545;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Berat</div><div class="num" style="color:#dc3545;">0</div></div><i class="bi bi-x-circle" style="font-size:1.8rem;color:#dc3545;opacity:.5;"></i></div></div></div></div><div class="alert d-flex justify-content-between align-items-center flex-wrap gap-2" style="background:#e3f2fd;border:1px solid #1F4E79;color:#1F4E79;border-radius:10px;padding:15px;margin-top:15px;"><div><i class="bi bi-info-circle-fill"></i> <strong>Tampilan Publik</strong> &mdash; Data nilai aset disembunyikan untuk publik. Pengurus dapat melihat data lengkap di halaman terbatas.</div><a href="data_aset_full.html" class="btn btn-sm" style="background:#1F4E79;color:#fff;font-weight:600;border-radius:8px;padding:6px 14px;"><i class="bi bi-lock-fill"></i> Lihat Data Lengkap</a></div><div class="card card-kpi p-3 mt-3"><div class="row g-2 mb-3"><div class="col-md-6"><input id="searchAset" class="form-control" placeholder="Cari aset..."></div><div class="col-md-3"><select id="filterKategori" class="form-select"><option value="">Semua Kategori</option></select></div></div><div class="table-wrap"><table class="table table-hover table-bordered align-middle" id="tblAset"><thead><tr></tr></thead><tbody><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></tbody></table></div></div>
 
   <div class="footer">
     &copy; 2026 GKPI Jemaat Khusus Depok &middot; Dashboard otomatis

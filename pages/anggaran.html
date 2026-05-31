@@ -128,12 +128,13 @@
 <aside class="sidebar">
   <div class="brand">
     <img src="../assets/logo_gkpi.png" alt="logo">
-    <h6 class="mt-2">GKPI JK Depok</h6>
-    <small>Dashboard Sarpras</small>
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
   </div>
   <nav>
     <a class="" href="../dashboard.html"><i class="bi bi-house-door"></i> Beranda</a>
 <a class="" href="../pages/data_aset.html"><i class="bi bi-box-seam"></i> Data Aset</a>
+<a class="" href="../pages/input_aset.html"><i class="bi bi-plus-circle"></i> Input Aset</a>
 <a class="" href="../pages/jadwal_pemeliharaan.html"><i class="bi bi-calendar-check"></i> Jadwal Pemeliharaan</a>
 <a class="" href="../pages/lapor_sarpras.html"><i class="bi bi-megaphone"></i> Lapor Sarpras</a>
 <a class="active" href="../pages/anggaran.html"><i class="bi bi-cash-coin"></i> Anggaran</a>
@@ -155,11 +156,52 @@
       <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
         <i class="bi bi-moon-stars" id="iconDark"></i>
       </button>
-      <small class="text-muted ms-2" id="tsArea">Update: 27 May 2026 12:29</small>
+      <small class="text-muted ms-2" id="tsArea">Update: 01 June 2026 02:48</small>
     </div>
   </div>
 
-  <div class="row g-3"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Anggaran</div><div class="num" style="color:#1F4E79;">Rp 17.910.000</div></div><i class="bi bi-cash-stack" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #17a2b8;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Realisasi</div><div class="num" style="color:#17a2b8;">Rp 3.301.310</div></div><i class="bi bi-cash" style="font-size:1.8rem;color:#17a2b8;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Sisa</div><div class="num" style="color:#28a745;">Rp 14.608.690</div></div><i class="bi bi-piggy-bank" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #fd7e14;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">% Pemakaian</div><div class="num" style="color:#fd7e14;">18.43%</div></div><i class="bi bi-graph-up" style="font-size:1.8rem;color:#fd7e14;opacity:.5;"></i></div></div></div></div><h6 class="mt-3">Anggaran vs Realisasi</h6><div class="card card-kpi p-3"><canvas id="chartAng"></canvas></div><div class="card card-kpi p-3 mt-3"><h6>Progress per Pos Anggaran</h6><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Perawatan Sarana</strong><span>Rp 462.000 / Rp 4.200.000 (11.00%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:11.0000%;background:#28a745;">11.00%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Pengadaan Sarana</strong><span>Rp 650.000 / Rp 2.110.000 (30.81%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:30.8057%;background:#28a745;">30.81%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Perawatan Pra Sarana</strong><span>Rp 1.777.600 / Rp 3.600.000 (49.38%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:49.3778%;background:#28a745;">49.38%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Non rutin - Perbaikan Sarana</strong><span>Rp 144.210 / Rp 3.000.000 (4.81%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:4.8070%;background:#28a745;">4.81%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Non rutin - Pengadaan Sarana</strong><span>Rp 267.500 / Rp 5.000.000 (5.35%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:5.3500%;background:#28a745;">5.35%</div></div></div></div><h6 class="mt-3">Tabel Detail Anggaran</h6><div class="card card-kpi p-3"><div class="table-wrap"><table class="table table-hover table-bordered align-middle" id="tblAng"><thead><tr><th>No</th><th>Pos Anggaran</th><th>Anggaran (Rp)</th><th>Realisasi (Rp)</th><th>Sisa (Rp)</th><th>Persentase (%)</th><th>Keterangan</th></tr></thead><tbody><tr><td>1</td><td>Rutin - Perawatan Sarana</td><td>Rp 4.200.000</td><td>Rp 462.000</td><td>Rp 3.738.000</td><td>11</td><td>- Maintenance AC
+  
+<style>
+.table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+.scroll-box,.dataTables_scrollBody {
+  max-height: none !important; height: auto !important;
+  overflow: visible !important; overflow-y: visible !important;
+  overflow-x: auto !important;
+}
+.table-wrap > table,.table-responsive > table { width: 100% !important; }
+
+@media print {
+  .table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
+  .scroll-box,.card,.card-body,.card-kpi,.content,.main-content,.page-content,
+  .dataTables_scrollBody,div[style*="overflow"],div[style*="max-height"] {
+    max-height: none !important; height: auto !important;
+    overflow: visible !important; overflow-y: visible !important;
+    overflow-x: visible !important; box-shadow: none !important;
+  }
+  table { width:100% !important; table-layout:auto !important;
+    page-break-inside:auto !important; border-collapse:collapse !important;
+    font-size:9pt !important; }
+  tr, td, th { page-break-inside: avoid !important; break-inside: avoid !important; }
+  thead { display: table-header-group !important; }
+  tfoot { display: table-footer-group !important; }
+  thead th { background:#1F4E79 !important; color:#fff !important; border:1px solid #000 !important; }
+  td { border:1px solid #999 !important; color:#000 !important; }
+  .sidebar,.navbar,.topbar,.nav-side,.search-box,.filter-box,.btn-print,
+  .btn-export,.dark-mode-toggle,.alert,input[type="search"],input.form-control,
+  select.form-control,select,button,.no-print { display:none !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body, html,.card,.card-body,.card-kpi,.table-container,.main-content,
+  .content,.page-content { background:#fff !important; color:#000 !important; }
+  .badge { color:#fff !important; padding:2px 6px !important; border-radius:4px !important; }
+  .badge-baik{background:#198754 !important;}
+  .badge-ringan{background:#ffc107 !important;color:#000 !important;}
+  .badge-berat{background:#dc3545 !important;}
+  @page { size: A4 landscape; margin: 0.8cm; }
+  .watermark { opacity: 0.06 !important; }
+  body { font-size:9pt !important; }
+}
+</style>
+<div class="row g-3"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Anggaran</div><div class="num" style="color:#1F4E79;">Rp 17.910.000</div></div><i class="bi bi-cash-stack" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #17a2b8;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Realisasi</div><div class="num" style="color:#17a2b8;">Rp 3.301.310</div></div><i class="bi bi-cash" style="font-size:1.8rem;color:#17a2b8;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Sisa</div><div class="num" style="color:#28a745;">Rp 14.608.690</div></div><i class="bi bi-piggy-bank" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #fd7e14;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">% Pemakaian</div><div class="num" style="color:#fd7e14;">18.43%</div></div><i class="bi bi-graph-up" style="font-size:1.8rem;color:#fd7e14;opacity:.5;"></i></div></div></div></div><h6 class="mt-3">Anggaran vs Realisasi</h6><div class="card card-kpi p-3"><canvas id="chartAng"></canvas></div><div class="card card-kpi p-3 mt-3"><h6>Progress per Pos Anggaran</h6><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Perawatan Sarana</strong><span>Rp 462.000 / Rp 4.200.000 (11.00%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:11.0000%;background:#28a745;">11.00%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Pengadaan Sarana</strong><span>Rp 650.000 / Rp 2.110.000 (30.81%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:30.8057%;background:#28a745;">30.81%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Rutin - Perawatan Pra Sarana</strong><span>Rp 1.777.600 / Rp 3.600.000 (49.38%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:49.3778%;background:#28a745;">49.38%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Non rutin - Perbaikan Sarana</strong><span>Rp 144.210 / Rp 3.000.000 (4.81%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:4.8070%;background:#28a745;">4.81%</div></div></div><div class="mb-3"><div class="d-flex justify-content-between"><strong>Non rutin - Pengadaan Sarana</strong><span>Rp 267.500 / Rp 5.000.000 (5.35%)</span></div><div class="progress" style="height:18px;"><div class="progress-bar" role="progressbar" style="width:5.3500%;background:#28a745;">5.35%</div></div></div></div><h6 class="mt-3">Tabel Detail Anggaran</h6><div class="card card-kpi p-3"><div class="table-wrap"><table class="table table-hover table-bordered align-middle" id="tblAng"><thead><tr><th>No</th><th>Pos Anggaran</th><th>Anggaran (Rp)</th><th>Realisasi (Rp)</th><th>Sisa (Rp)</th><th>Persentase (%)</th><th>Keterangan</th></tr></thead><tbody><tr><td>1</td><td>Rutin - Perawatan Sarana</td><td>Rp 4.200.000</td><td>Rp 462.000</td><td>Rp 3.738.000</td><td>11</td><td>- Maintenance AC
 - Maintenance kendaraan Pastori
 - Pajak kendaraan Pastori
 - Stem Piano
