@@ -157,7 +157,7 @@
       <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
         <i class="bi bi-moon-stars" id="iconDark"></i>
       </button>
-      <small class="text-muted ms-2" id="tsArea">Update: 12 June 2026 03:07</small>
+      <small class="text-muted ms-2" id="tsArea">Update: 12 June 2026 03:48</small>
     </div>
   </div>
 
@@ -969,9 +969,10 @@
       document.getElementById("lmErrBuat").style.display = "block";
       return;
     }
-    const judul = document.getElementById("lmInpJudul").value.trim();
-    const isi = document.getElementById("lmInpIsi").value.trim();
-    const penulis = document.getElementById("lmInpPenulis").value.trim();
+    function cleanInp(s) { return String(s).replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " "); }
+    const judul = cleanInp(document.getElementById("lmInpJudul").value.trim());
+    const isi = cleanInp(document.getElementById("lmInpIsi").value.trim());
+    const penulis = cleanInp(document.getElementById("lmInpPenulis").value.trim());
     const tanggal = document.getElementById("lmInpTanggal").value;
     if (!judul || !isi || !penulis) {
       document.getElementById("lmErrBuatMsg").textContent = "Judul, penulis, dan isi wajib diisi.";
@@ -1069,9 +1070,10 @@
     }
     const id      = document.getElementById("lmEditId").value;
     const tanggal = document.getElementById("lmEditTanggal").value;
-    const judul   = document.getElementById("lmEditJudul").value.trim();
-    const penulis = document.getElementById("lmEditPenulis").value.trim();
-    const isi     = document.getElementById("lmEditIsi").value.trim();
+    function cleanInpEdit(s) { return String(s).replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " "); }
+    const judul   = cleanInpEdit(document.getElementById("lmEditJudul").value.trim());
+    const penulis = cleanInpEdit(document.getElementById("lmEditPenulis").value.trim());
+    const isi     = cleanInpEdit(document.getElementById("lmEditIsi").value.trim());
     if (!judul || !penulis || !isi) {
       document.getElementById("lmErrEditMsg").textContent = "Judul, penulis, dan isi wajib diisi.";
       document.getElementById("lmErrEdit").style.display = "block";
@@ -1265,17 +1267,20 @@
     let y = startY;
     doc.setFont("helvetica","bold"); doc.setFontSize(13);
     doc.setTextColor(31, 78, 121);
-    const judulLines = doc.splitTextToSize(String(l.judul || "").replace(/`/g, "'").replace(/[\u00A0]/g, " ").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, "-").replace(/[\u200B-\u200D\uFEFF]/g, ""), 180);
+    const cleanJudul = String(l.judul || "").replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " ").replace(/[`\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+    const judulLines = doc.splitTextToSize(cleanJudul, 180);
     doc.text(judulLines, 14, y); y += judulLines.length * 6 + 2;
 
     doc.setFont("helvetica","normal"); doc.setFontSize(9);
     doc.setTextColor(100,100,100);
-    doc.text("Tanggal: " + fmtTanggalID(l.tanggal) + "   |   Penulis: " + String(l.penulis||"").replace(/`/g,"'").replace(/[\u00A0]/g," ") + "   |   Dibuat: " + String(l.dibuat||"").replace(/`/g,"'"), 14, y);
+    const cleanPenulis = String(l.penulis || "").replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " ");
+    doc.text("Tanggal: " + fmtTanggalID(l.tanggal) + "   |   Penulis: " + cleanPenulis + "   |   Dibuat: " + String(l.dibuat||""), 14, y);
     y += 6;
     doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 5;
 
     doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(0,0,0);
-    const isiLines = doc.splitTextToSize(String(l.isi || "").replace(/`/g, "'").replace(/[\u00A0]/g, " ").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, "-").replace(/[\u200B-\u200D\uFEFF]/g, "").replace(/\t/g, "    "), 180);
+    const cleanIsi = String(l.isi || "").replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " ").replace(/[`\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, "-");
+    const isiLines = doc.splitTextToSize(cleanIsi, 180);
     isiLines.forEach(line => {
       if (y > 275) { doc.addPage(); y = 20; }
       doc.text(line, 14, y); y += 6;
