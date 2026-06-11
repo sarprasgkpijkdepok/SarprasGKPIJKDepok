@@ -157,7 +157,7 @@
       <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
         <i class="bi bi-moon-stars" id="iconDark"></i>
       </button>
-      <small class="text-muted ms-2" id="tsArea">Update: 11 June 2026 22:24</small>
+      <small class="text-muted ms-2" id="tsArea">Update: 11 June 2026 23:40</small>
     </div>
   </div>
 
@@ -270,7 +270,7 @@
 [data-bs-theme="dark"] .lm-modal-box { background:#1e2126; color:#e5e7eb; }
 
 @media print {
-  .lm-sidebar, #lmModalBuat, #lmModalHapus, .no-print { display:none !important; }
+  .lm-sidebar, #lmModalBuat, #lmModalEdit, #lmModalHapus, .no-print { display:none !important; }
   .col-md-9 { width:100% !important; max-width:100% !important; flex:0 0 100% !important; }
   .lm-card { page-break-inside:avoid; border:1px solid #999 !important; box-shadow:none !important; }
 }
@@ -349,6 +349,34 @@
       <button class="btn btn-secondary" onclick="lmTutupModalBuat()">Batal</button>
       <button class="btn btn-success" id="lmBtnSimpan" onclick="lmSimpanLaporan()">
         <i class="bi bi-cloud-arrow-up-fill"></i> Simpan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="lm-modal" id="lmModalEdit" onclick="lmTutupModalEdit(event)">
+  <div class="lm-modal-box" onclick="event.stopPropagation()">
+    <h5 class="mb-2 text-warning"><i class="bi bi-pencil-square"></i> Edit Laporan Mingguan</h5>
+    <hr class="my-2">
+    <input type="hidden" id="lmEditId">
+    <label class="form-label small">Tanggal Jumat <span class="text-danger">*</span></label>
+    <select id="lmEditTanggal" class="form-select mb-2"></select>
+    <label class="form-label small">Judul Laporan <span class="text-danger">*</span></label>
+    <input id="lmEditJudul" class="form-control mb-2">
+    <label class="form-label small">Penulis <span class="text-danger">*</span></label>
+    <input id="lmEditPenulis" class="form-control mb-2">
+    <label class="form-label small">Isi Laporan <span class="text-danger">*</span></label>
+    <textarea id="lmEditIsi" class="form-control mb-2" rows="6"></textarea>
+    <label class="form-label small">Sandi <span class="text-danger">*</span></label>
+    <input type="password" id="lmEditSandi" class="form-control mb-2" placeholder="Sandi pengurus">
+    <p id="lmErrEdit" class="text-danger small mb-0" style="display:none;">
+      <i class="bi bi-x-circle-fill"></i> <span id="lmErrEditMsg">Sandi salah, coba lagi.</span>
+    </p>
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-secondary" onclick="lmTutupModalEdit()">Batal</button>
+      <button class="btn btn-warning" id="lmBtnEditSimpan" onclick="lmSimpanEdit()">
+        <i class="bi bi-check-circle-fill"></i> Simpan Perubahan
       </button>
     </div>
   </div>
@@ -474,7 +502,6 @@
   let activeDate = null;
   let pendingDeleteId = null;
   let LAPORAN_DATA = [];
-  let useLocalOnly = false;
 
   async function sha256(str) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -490,7 +517,6 @@
     el.style.display = "block";
     if (type === "ok") setTimeout(() => { el.style.display = "none"; }, 3000);
   }
-  function hideStatus() { document.getElementById("lmStatus").style.display = "none"; }
 
   function loadLocalCache() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
@@ -509,7 +535,7 @@
 
   // ========== Fetch dari GAS ==========
   window.lmFetchData = async function() {
-    if (useLocalOnly || !GAS_URL || GAS_URL.indexOf("PASTE_") === 0) {
+    if (!GAS_URL || GAS_URL.indexOf("PASTE_") === 0) {
       LAPORAN_DATA = loadLocalCache();
       showStatus('<i class="bi bi-hdd"></i> Mode <strong>localStorage</strong> (URL Apps Script belum diset).', "warn");
       buildSidebar(); renderLaporan();
@@ -577,7 +603,6 @@
       if (ic) ic.className = "bi bi-chevron-up";
     }
 
-    // Restore active highlight
     if (activeDate) {
       document.querySelectorAll(".lm-tab-btn").forEach(b => {
         b.classList.toggle("active", b.dataset.date === activeDate);
@@ -642,6 +667,8 @@
         '</div>' +
         '<div class="lm-isi">' + escapeHtml(l.isi) + '</div>' +
         '<div class="mt-2 no-print d-flex gap-2 flex-wrap">' +
+          '<button class="btn btn-sm btn-outline-warning" onclick="lmBukaModalEdit(\'' + l.id + '\')">' +
+            '<i class="bi bi-pencil-square"></i> Edit</button>' +
           '<button class="btn btn-sm btn-outline-danger" onclick="lmBukaModalHapus(\'' + l.id + '\')">' +
             '<i class="bi bi-trash"></i> Hapus</button>' +
           '<button class="btn btn-sm btn-outline-primary" onclick="lmExportPDFOne(\'' + l.id + '\')">' +
@@ -710,7 +737,6 @@
     btn.disabled = true; btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
 
     if (!GAS_URL || GAS_URL.indexOf("PASTE_") === 0) {
-      // localStorage fallback
       LAPORAN_DATA.push(newItem);
       saveLocalCache(LAPORAN_DATA);
       finishSave(btn);
@@ -746,6 +772,100 @@
     btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill"></i> Simpan';
     buildSidebar(); renderLaporan();
     showStatus('<i class="bi bi-check-circle-fill"></i> Laporan berhasil disimpan.', "ok");
+  }
+
+  // ========== Modal Edit ==========
+  window.lmBukaModalEdit = function(id) {
+    const item = LAPORAN_DATA.find(l => l.id === id);
+    if (!item) return;
+    const sel = document.getElementById("lmEditTanggal");
+    sel.innerHTML = FRIDAYS.map(f =>
+      '<option value="' + f + '"' + (f===item.tanggal?' selected':'') + '>Jumat, ' + fmtTanggalID(f) + '</option>'
+    ).join("");
+    document.getElementById("lmEditId").value = item.id;
+    document.getElementById("lmEditJudul").value = item.judul;
+    document.getElementById("lmEditPenulis").value = item.penulis;
+    document.getElementById("lmEditIsi").value = item.isi;
+    document.getElementById("lmEditSandi").value = "";
+    document.getElementById("lmErrEdit").style.display = "none";
+    document.getElementById("lmModalEdit").classList.add("show");
+  };
+
+  window.lmTutupModalEdit = function(e) {
+    if (e && e.target && e.target.id !== "lmModalEdit") return;
+    document.getElementById("lmModalEdit").classList.remove("show");
+  };
+
+  window.lmSimpanEdit = async function() {
+    const sandi = document.getElementById("lmEditSandi").value;
+    const hash = await sha256(sandi);
+    if (hash !== SANDI_HASH) {
+      document.getElementById("lmErrEditMsg").textContent = "Sandi salah, coba lagi.";
+      document.getElementById("lmErrEdit").style.display = "block";
+      return;
+    }
+    const id      = document.getElementById("lmEditId").value;
+    const tanggal = document.getElementById("lmEditTanggal").value;
+    const judul   = document.getElementById("lmEditJudul").value.trim();
+    const penulis = document.getElementById("lmEditPenulis").value.trim();
+    const isi     = document.getElementById("lmEditIsi").value.trim();
+    if (!judul || !penulis || !isi) {
+      document.getElementById("lmErrEditMsg").textContent = "Judul, penulis, dan isi wajib diisi.";
+      document.getElementById("lmErrEdit").style.display = "block";
+      return;
+    }
+    const btn = document.getElementById("lmBtnEditSimpan");
+    btn.disabled = true; btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+
+    const updateLocal = () => {
+      const idx = LAPORAN_DATA.findIndex(l => l.id === id);
+      if (idx >= 0) {
+        LAPORAN_DATA[idx].tanggal = tanggal;
+        LAPORAN_DATA[idx].judul = judul;
+        LAPORAN_DATA[idx].penulis = penulis;
+        LAPORAN_DATA[idx].isi = isi;
+        LAPORAN_DATA[idx].dibuat = new Date().toLocaleString("id-ID") + " (edited)";
+      }
+      saveLocalCache(LAPORAN_DATA);
+    };
+
+    if (!GAS_URL || GAS_URL.indexOf("PASTE_") === 0) {
+      updateLocal();
+      finishEdit(btn);
+      return;
+    }
+
+    try {
+      const fd = new FormData();
+      fd.append("action", "update");
+      fd.append("sandi", sandi);
+      fd.append("id", id);
+      fd.append("tanggal", tanggal);
+      fd.append("judul", judul);
+      fd.append("penulis", penulis);
+      fd.append("isi", isi);
+      const res = await fetch(GAS_URL, { method: "POST", body: fd });
+      const result = await res.json();
+      if (result.status === "ok") {
+        updateLocal();
+        finishEdit(btn);
+      } else {
+        document.getElementById("lmErrEditMsg").textContent = result.message || "Gagal mengupdate.";
+        document.getElementById("lmErrEdit").style.display = "block";
+        btn.disabled = false; btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Simpan Perubahan';
+      }
+    } catch (err) {
+      document.getElementById("lmErrEditMsg").textContent = "Error koneksi: " + err.message;
+      document.getElementById("lmErrEdit").style.display = "block";
+      btn.disabled = false; btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Simpan Perubahan';
+    }
+  };
+
+  function finishEdit(btn) {
+    document.getElementById("lmModalEdit").classList.remove("show");
+    btn.disabled = false; btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Simpan Perubahan';
+    buildSidebar(); renderLaporan();
+    showStatus('<i class="bi bi-check-circle-fill"></i> Laporan berhasil diupdate.', "ok");
   }
 
   // ========== Modal Hapus ==========
@@ -830,7 +950,7 @@
   // ========== Export PDF (jsPDF) ==========
   function safeName(s) { return String(s||"").replace(/[^a-zA-Z0-9-_]+/g, "_").slice(0, 40); }
 
-  function pdfWriteHeader(doc, title) {
+  function pdfWriteHeader(doc) {
     doc.setFillColor(31, 78, 121);
     doc.rect(0, 0, 210, 25, "F");
     doc.setTextColor(255,255,255);
@@ -909,6 +1029,7 @@
     document.addEventListener("keydown", function(e) {
       if (e.key === "Escape") {
         document.getElementById("lmModalBuat").classList.remove("show");
+        document.getElementById("lmModalEdit").classList.remove("show");
         document.getElementById("lmModalHapus").classList.remove("show");
       }
     });
