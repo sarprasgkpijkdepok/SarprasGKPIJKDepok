@@ -157,7 +157,7 @@
       <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">
         <i class="bi bi-moon-stars" id="iconDark"></i>
       </button>
-      <small class="text-muted ms-2" id="tsArea">Update: 11 June 2026 23:40</small>
+      <small class="text-muted ms-2" id="tsArea">Update: 12 June 2026 01:02</small>
     </div>
   </div>
 
@@ -257,6 +257,46 @@
 .lm-isi { white-space:pre-wrap; line-height:1.5; color:#333; font-size:0.92rem; }
 [data-bs-theme="dark"] .lm-isi { color:#d1d5db; }
 
+/* Foto strip di card */
+.lm-foto-strip {
+  display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;
+  padding-top:10px; border-top:1px dashed #e5e7eb;
+}
+.lm-foto-thumb {
+  width:80px; height:60px; object-fit:cover; border-radius:6px;
+  cursor:pointer; border:2px solid #ddd; transition:transform 0.2s;
+}
+.lm-foto-thumb:hover { transform:scale(1.1); border-color:#1F4E79; }
+
+/* Preview foto saat input */
+.lm-foto-section {
+  border:1px dashed #cbd5e1; border-radius:8px; padding:10px;
+  margin-bottom:10px; background:#f8fafc;
+}
+[data-bs-theme="dark"] .lm-foto-section { background:#1a1d20; border-color:#374151; }
+.lm-foto-preview {
+  display:flex; flex-wrap:wrap; gap:6px; min-height:10px;
+}
+.lm-foto-preview-item {
+  position:relative; display:inline-block;
+}
+.lm-foto-preview-item img {
+  width:80px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #ddd;
+}
+.lm-foto-preview-item .remove-btn {
+  position:absolute; top:-6px; right:-6px;
+  background:#dc3545; color:#fff; border:none; border-radius:50%;
+  width:20px; height:20px; cursor:pointer; font-size:11px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.lm-foto-preview-item .remove-btn:hover { background:#b02a37; }
+.lm-foto-badge-type {
+  position:absolute; bottom:2px; left:2px;
+  background:rgba(0,0,0,0.65); color:#fff; font-size:9px;
+  padding:1px 5px; border-radius:3px; pointer-events:none;
+}
+
+/* Modal */
 .lm-modal {
   display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55);
   z-index:9000; justify-content:center; align-items:center; padding:20px;
@@ -264,13 +304,31 @@
 .lm-modal.show { display:flex; }
 .lm-modal-box {
   background:#fff; padding:22px; border-radius:12px;
-  width:560px; max-width:95%; max-height:90vh; overflow-y:auto;
+  width:620px; max-width:95%; max-height:92vh; overflow-y:auto;
   box-shadow:0 15px 50px rgba(0,0,0,0.3);
 }
 [data-bs-theme="dark"] .lm-modal-box { background:#1e2126; color:#e5e7eb; }
 
+/* Lightbox foto */
+.lm-foto-modal-bg {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
+  z-index:10000; justify-content:center; align-items:center;
+}
+.lm-foto-modal-bg.show { display:flex; }
+.lm-foto-modal-img {
+  max-width:92%; max-height:88%; border-radius:8px;
+  box-shadow:0 15px 50px rgba(0,0,0,0.6);
+}
+.lm-foto-modal-close {
+  position:absolute; top:20px; right:30px; color:#fff;
+  font-size:40px; cursor:pointer; line-height:1;
+  transition:transform 0.2s;
+}
+.lm-foto-modal-close:hover { transform:scale(1.15); }
+
 @media print {
-  .lm-sidebar, #lmModalBuat, #lmModalEdit, #lmModalHapus, .no-print { display:none !important; }
+  .lm-sidebar, #lmModalBuat, #lmModalEdit, #lmModalHapus, #lmFotoLightbox,
+  .no-print, .lm-foto-section { display:none !important; }
   .col-md-9 { width:100% !important; max-width:100% !important; flex:0 0 100% !important; }
   .lm-card { page-break-inside:avoid; border:1px solid #999 !important; box-shadow:none !important; }
 }
@@ -295,7 +353,7 @@
       <button class="btn btn-success btn-sm" onclick="lmBukaModalBuat()">
         <i class="bi bi-plus-circle-fill"></i> Buat Laporan
       </button>
-      <button class="btn btn-danger btn-sm" onclick="lmExportPDFAll()" title="Export semua laporan terfilter ke PDF">
+      <button class="btn btn-danger btn-sm" onclick="lmExportPDFAll()" title="Export semua ke PDF">
         <i class="bi bi-file-earmark-pdf-fill"></i> Export PDF
       </button>
       <button class="btn btn-outline-secondary btn-sm" onclick="lmResetFilter()" title="Reset filter">
@@ -304,7 +362,7 @@
       <button class="btn btn-primary btn-sm" onclick="window.print()" title="Print">
         <i class="bi bi-printer-fill"></i>
       </button>
-      <button class="btn btn-info btn-sm" onclick="lmFetchData()" title="Refresh data dari server">
+      <button class="btn btn-info btn-sm" onclick="lmFetchData()" title="Refresh">
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
@@ -339,7 +397,27 @@
     <label class="form-label small">Penulis <span class="text-danger">*</span></label>
     <input id="lmInpPenulis" class="form-control mb-2" placeholder="Nama Pengurus">
     <label class="form-label small">Isi Laporan <span class="text-danger">*</span></label>
-    <textarea id="lmInpIsi" class="form-control mb-2" rows="6" placeholder="Tulis detail kegiatan minggu ini..."></textarea>
+    <textarea id="lmInpIsi" class="form-control mb-2" rows="5" placeholder="Tulis detail kegiatan minggu ini..."></textarea>
+
+    <div class="lm-foto-section">
+      <label class="form-label small mb-1"><i class="bi bi-images"></i> Foto Laporan (Opsional)</label>
+      <div class="row g-2 mb-1">
+        <div class="col-md-7">
+          <textarea id="lmInpFotoLinks" class="form-control form-control-sm" rows="2"
+            placeholder="Paste link Google Drive (pisah baris baru atau koma)"></textarea>
+          <small class="text-muted">Link Drive (1 atau banyak)</small>
+        </div>
+        <div class="col-md-5">
+          <input type="file" id="lmInpFotoFile" class="form-control form-control-sm" accept="image/*" multiple>
+          <small class="text-muted">Upload langsung (auto-compress)</small>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-primary mb-2" onclick="lmAddFotoBuat()">
+        <i class="bi bi-plus-circle"></i> Tambahkan Foto
+      </button>
+      <div id="lmInpFotoPreview" class="lm-foto-preview"></div>
+    </div>
+
     <label class="form-label small">Sandi <span class="text-danger">*</span></label>
     <input type="password" id="lmInpSandi" class="form-control mb-2" placeholder="Sandi pengurus">
     <p id="lmErrBuat" class="text-danger small mb-0" style="display:none;">
@@ -367,7 +445,25 @@
     <label class="form-label small">Penulis <span class="text-danger">*</span></label>
     <input id="lmEditPenulis" class="form-control mb-2">
     <label class="form-label small">Isi Laporan <span class="text-danger">*</span></label>
-    <textarea id="lmEditIsi" class="form-control mb-2" rows="6"></textarea>
+    <textarea id="lmEditIsi" class="form-control mb-2" rows="5"></textarea>
+
+    <div class="lm-foto-section">
+      <label class="form-label small mb-1"><i class="bi bi-images"></i> Foto Laporan</label>
+      <div class="row g-2 mb-1">
+        <div class="col-md-7">
+          <textarea id="lmEditFotoLinks" class="form-control form-control-sm" rows="2"
+            placeholder="Paste link Google Drive (pisah baris baru atau koma)"></textarea>
+        </div>
+        <div class="col-md-5">
+          <input type="file" id="lmEditFotoFile" class="form-control form-control-sm" accept="image/*" multiple>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-primary mb-2" onclick="lmAddFotoEdit()">
+        <i class="bi bi-plus-circle"></i> Tambahkan Foto
+      </button>
+      <div id="lmEditFotoPreview" class="lm-foto-preview"></div>
+    </div>
+
     <label class="form-label small">Sandi <span class="text-danger">*</span></label>
     <input type="password" id="lmEditSandi" class="form-control mb-2" placeholder="Sandi pengurus">
     <p id="lmErrEdit" class="text-danger small mb-0" style="display:none;">
@@ -389,7 +485,7 @@
     <hr class="my-2">
     <p class="mb-2">Yakin menghapus laporan berikut?</p>
     <div id="lmHapusInfo" class="alert alert-warning py-2 small mb-2"></div>
-    <label class="form-label small">Masukkan sandi untuk konfirmasi:</label>
+    <label class="form-label small">Masukkan sandi:</label>
     <input type="password" id="lmInpSandiHapus" class="form-control mb-2" placeholder="Sandi pengurus">
     <p id="lmErrHapus" class="text-danger small mb-0" style="display:none;">
       <i class="bi bi-x-circle-fill"></i> <span id="lmErrHapusMsg">Sandi salah, coba lagi.</span>
@@ -401,6 +497,12 @@
       </button>
     </div>
   </div>
+</div>
+
+<!-- Lightbox Foto -->
+<div class="lm-foto-modal-bg" id="lmFotoLightbox" onclick="lmTutupFotoLightbox(event)">
+  <span class="lm-foto-modal-close" onclick="lmTutupFotoLightbox(event)">&times;</span>
+  <img id="lmFotoLightboxImg" class="lm-foto-modal-img" src="" alt="Foto">
 </div>
 
 
@@ -502,7 +604,10 @@
   let activeDate = null;
   let pendingDeleteId = null;
   let LAPORAN_DATA = [];
+  let fotoCollectorBuat = [];
+  let fotoCollectorEdit = [];
 
+  // ========== HELPERS ==========
   async function sha256(str) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
@@ -525,15 +630,144 @@
   function saveLocalCache(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
   function fmtTanggalID(iso) {
-    const [y,m,d] = iso.split("-");
+    if (!iso || typeof iso !== "string") return "Tanggal tidak valid";
+    const parts = iso.split("-");
+    if (parts.length < 3) return iso;
+    const [y, m, d] = parts;
     return parseInt(d) + " " + BULAN_NAMA[parseInt(m)-1] + " " + y;
   }
+
   function escapeHtml(s) {
     if (s == null) return "";
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  // ========== Fetch dari GAS ==========
+  function convertGdriveLink(link) {
+    if (!link) return "";
+    link = String(link).trim();
+    if (!link) return "";
+    let fileId = null;
+    if (link.indexOf("open?id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    } else if (link.indexOf("/file/d/") !== -1) {
+      fileId = link.split("/file/d/")[1].split("/")[0];
+    } else if (link.indexOf("uc?") !== -1 && link.indexOf("id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    } else if (link.indexOf("thumbnail?id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    }
+    if (fileId) return "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1000";
+    return link;
+  }
+
+  function parseFotoString(s) {
+    if (!s) return [];
+    if (Array.isArray(s)) return s;
+    try {
+      const parsed = JSON.parse(s);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
+  }
+
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 1200;
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = h * (maxW / w); w = maxW; }
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function fotoThumbUrl(foto) {
+    if (!foto) return "";
+    if (foto.type === "base64") return foto.url;
+    if (foto.type === "drive") return convertGdriveLink(foto.url);
+    return foto.url || "";
+  }
+
+  // ========== FOTO MANAGEMENT ==========
+  window.lmAddFotoBuat = async function() {
+    await addFotoToCollector("buat");
+  };
+  window.lmAddFotoEdit = async function() {
+    await addFotoToCollector("edit");
+  };
+
+  async function addFotoToCollector(which) {
+    const linksId = which === "buat" ? "lmInpFotoLinks" : "lmEditFotoLinks";
+    const fileId = which === "buat" ? "lmInpFotoFile" : "lmEditFotoFile";
+    const previewId = which === "buat" ? "lmInpFotoPreview" : "lmEditFotoPreview";
+    const collector = which === "buat" ? fotoCollectorBuat : fotoCollectorEdit;
+
+    // Process Drive links
+    const linksText = document.getElementById(linksId).value || "";
+    const lines = linksText.split(/[\n,]+/).map(s => s.trim()).filter(s => s);
+    lines.forEach(link => {
+      collector.push({ type: "drive", url: link });
+    });
+
+    // Process file uploads (compress to base64)
+    const fileInput = document.getElementById(fileId);
+    const files = fileInput.files;
+    if (files && files.length > 0) {
+      showStatus('<i class="bi bi-hourglass-split"></i> Memproses ' + files.length + ' foto...', "info");
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const dataUrl = await compressImage(files[i]);
+          collector.push({ type: "base64", url: dataUrl });
+        } catch(e) {
+          console.error("Compress error:", e);
+        }
+      }
+      showStatus('<i class="bi bi-check-circle"></i> ' + files.length + ' foto ditambahkan.', "ok");
+    }
+
+    // Clear inputs
+    document.getElementById(linksId).value = "";
+    document.getElementById(fileId).value = "";
+    renderFotoPreview(previewId, collector, which);
+  }
+
+  function renderFotoPreview(containerId, collector, which) {
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    if (collector.length === 0) {
+      c.innerHTML = '<small class="text-muted">Belum ada foto. Tambahkan link Drive atau upload file.</small>';
+      return;
+    }
+    c.innerHTML = collector.map((f, i) => {
+      const url = fotoThumbUrl(f);
+      const badge = f.type === "drive" ? "Drive" : "Upload";
+      return '<div class="lm-foto-preview-item">' +
+        '<img src="' + url + '" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 60%22%3E%3Crect fill=%22%23ddd%22 width=%2280%22 height=%2260%22/%3E%3Ctext x=%2240%22 y=%2235%22 font-size=%2210%22 text-anchor=%22middle%22 fill=%22%23999%22%3EError%3C/text%3E%3C/svg%3E\'">' +
+        '<span class="lm-foto-badge-type">' + badge + '</span>' +
+        '<button type="button" class="remove-btn" onclick="lmRemoveFoto(\'' + which + '\',' + i + ')" title="Hapus foto">×</button>' +
+      '</div>';
+    }).join("");
+  }
+
+  window.lmRemoveFoto = function(which, idx) {
+    const collector = which === "buat" ? fotoCollectorBuat : fotoCollectorEdit;
+    const previewId = which === "buat" ? "lmInpFotoPreview" : "lmEditFotoPreview";
+    collector.splice(idx, 1);
+    renderFotoPreview(previewId, collector, which);
+  };
+
+  // ========== FETCH FROM GAS ==========
   window.lmFetchData = async function() {
     if (!GAS_URL || GAS_URL.indexOf("PASTE_") === 0) {
       LAPORAN_DATA = loadLocalCache();
@@ -560,11 +794,10 @@
     renderLaporan();
   };
 
-  // ========== Sidebar accordion ==========
+  // ========== SIDEBAR ==========
   function buildSidebar() {
     const countMap = {};
-    LAPORAN_DATA.forEach(l => { countMap[l.tanggal] = (countMap[l.tanggal] || 0) + 1; });
-
+    LAPORAN_DATA.forEach(l => { if (l.tanggal) countMap[l.tanggal] = (countMap[l.tanggal] || 0) + 1; });
     const tree = {};
     FRIDAYS.forEach(f => {
       const [y, m] = f.split("-");
@@ -572,7 +805,6 @@
       if (!tree[y][m]) tree[y][m] = [];
       tree[y][m].push(f);
     });
-
     const sidebar = document.getElementById("lmTabList");
     let html = "";
     Object.keys(tree).sort().reverse().forEach(y => {
@@ -602,7 +834,6 @@
       const ic = document.getElementById("lmYearIcon-" + currentYear);
       if (ic) ic.className = "bi bi-chevron-up";
     }
-
     if (activeDate) {
       document.querySelectorAll(".lm-tab-btn").forEach(b => {
         b.classList.toggle("active", b.dataset.date === activeDate);
@@ -629,21 +860,22 @@
     renderLaporan();
   };
 
-  // ========== Render ==========
+  // ========== RENDER ==========
   function getFiltered() {
     const q = (document.getElementById("lmSearch").value || "").toLowerCase();
     const fb = document.getElementById("lmBulan").value;
     const ft = document.getElementById("lmTahun").value;
     return LAPORAN_DATA.filter(l => {
       if (activeDate && l.tanggal !== activeDate) return false;
-      if (fb && l.tanggal.split("-")[1] !== fb) return false;
-      if (ft && l.tanggal.split("-")[0] !== ft) return false;
+      if (fb && l.tanggal && l.tanggal.split("-")[1] !== fb) return false;
+      if (ft && l.tanggal && l.tanggal.split("-")[0] !== ft) return false;
       if (q) {
         const hay = (l.judul + " " + l.isi + " " + l.penulis).toLowerCase();
         if (hay.indexOf(q) === -1) return false;
       }
       return true;
-    }).sort((a,b) => b.tanggal.localeCompare(a.tanggal) || String(b.dibuat).localeCompare(String(a.dibuat)));
+    }).sort((a,b) => String(b.tanggal||"").localeCompare(String(a.tanggal||"")) ||
+                    String(b.dibuat||"").localeCompare(String(a.dibuat||"")));
   }
 
   function renderLaporan() {
@@ -657,15 +889,29 @@
       updateKPI();
       return;
     }
-    area.innerHTML = filtered.map(l =>
-      '<div class="lm-card" id="lmCard-' + l.id + '">' +
+    area.innerHTML = filtered.map(l => {
+      const fotoArr = parseFotoString(l.foto);
+      let fotoStripHtml = "";
+      if (fotoArr.length > 0) {
+        fotoStripHtml = '<div class="lm-foto-strip">' +
+          fotoArr.map(f => {
+            const url = fotoThumbUrl(f);
+            return '<img class="lm-foto-thumb" src="' + url + '" ' +
+              'onclick="lmBukaFotoLightbox(\'' + url.replace(/'/g, "\\'") + '\')" ' +
+              'onerror="this.style.opacity=0.3;this.title=\'Foto error / akses ditolak\'">';
+          }).join("") +
+        '</div>';
+      }
+      return '<div class="lm-card" id="lmCard-' + l.id + '">' +
         '<h6>' + escapeHtml(l.judul) + '</h6>' +
         '<div class="lm-meta">' +
           '<span><i class="bi bi-calendar-event"></i> ' + fmtTanggalID(l.tanggal) + '</span>' +
           '<span><i class="bi bi-person-fill"></i> ' + escapeHtml(l.penulis) + '</span>' +
           '<span><i class="bi bi-clock-history"></i> ' + escapeHtml(String(l.dibuat||"")) + '</span>' +
+          (fotoArr.length > 0 ? '<span><i class="bi bi-images"></i> ' + fotoArr.length + ' foto</span>' : '') +
         '</div>' +
         '<div class="lm-isi">' + escapeHtml(l.isi) + '</div>' +
+        fotoStripHtml +
         '<div class="mt-2 no-print d-flex gap-2 flex-wrap">' +
           '<button class="btn btn-sm btn-outline-warning" onclick="lmBukaModalEdit(\'' + l.id + '\')">' +
             '<i class="bi bi-pencil-square"></i> Edit</button>' +
@@ -674,8 +920,8 @@
           '<button class="btn btn-sm btn-outline-primary" onclick="lmExportPDFOne(\'' + l.id + '\')">' +
             '<i class="bi bi-file-earmark-pdf"></i> Export PDF</button>' +
         '</div>' +
-      '</div>'
-    ).join("");
+      '</div>';
+    }).join("");
     updateKPI();
   }
 
@@ -686,13 +932,14 @@
     const yStr = String(now.getFullYear());
     const mStr = String(now.getMonth()+1).padStart(2,"0");
     elTotal.textContent = LAPORAN_DATA.length;
-    document.getElementById("kpiTahunIni").textContent = LAPORAN_DATA.filter(l => l.tanggal.startsWith(yStr)).length;
-    document.getElementById("kpiBulanIni").textContent = LAPORAN_DATA.filter(l => l.tanggal.startsWith(yStr + "-" + mStr)).length;
-    document.getElementById("kpiJumatIsi").textContent = new Set(LAPORAN_DATA.map(l => l.tanggal)).size;
+    document.getElementById("kpiTahunIni").textContent = LAPORAN_DATA.filter(l => l.tanggal && l.tanggal.startsWith(yStr)).length;
+    document.getElementById("kpiBulanIni").textContent = LAPORAN_DATA.filter(l => l.tanggal && l.tanggal.startsWith(yStr + "-" + mStr)).length;
+    document.getElementById("kpiJumatIsi").textContent = new Set(LAPORAN_DATA.map(l => l.tanggal).filter(t => t)).size;
   }
 
-  // ========== Modal Buat ==========
+  // ========== MODAL BUAT ==========
   window.lmBukaModalBuat = function() {
+    fotoCollectorBuat = [];
     const sel = document.getElementById("lmInpTanggal");
     sel.innerHTML = FRIDAYS.map(f =>
       '<option value="' + f + '"' + (f===activeDate?' selected':'') + '>Jumat, ' + fmtTanggalID(f) + '</option>'
@@ -702,6 +949,9 @@
       const next = FRIDAYS.find(f => f >= today) || FRIDAYS[FRIDAYS.length-1];
       sel.value = next;
     }
+    document.getElementById("lmInpFotoLinks").value = "";
+    document.getElementById("lmInpFotoFile").value = "";
+    renderFotoPreview("lmInpFotoPreview", fotoCollectorBuat, "buat");
     document.getElementById("lmErrBuat").style.display = "none";
     document.getElementById("lmModalBuat").classList.add("show");
   };
@@ -728,10 +978,10 @@
       document.getElementById("lmErrBuat").style.display = "block";
       return;
     }
-
     const id = "lm_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
     const dibuat = new Date().toLocaleString("id-ID");
-    const newItem = { id, tanggal, judul, penulis, isi, dibuat };
+    const fotoJSON = JSON.stringify(fotoCollectorBuat);
+    const newItem = { id, tanggal, judul, penulis, isi, dibuat, foto: fotoJSON };
 
     const btn = document.getElementById("lmBtnSimpan");
     btn.disabled = true; btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
@@ -747,7 +997,13 @@
       const fd = new FormData();
       fd.append("action", "create");
       fd.append("sandi", sandi);
-      Object.keys(newItem).forEach(k => fd.append(k, newItem[k]));
+      fd.append("id", id);
+      fd.append("tanggal", tanggal);
+      fd.append("judul", judul);
+      fd.append("penulis", penulis);
+      fd.append("isi", isi);
+      fd.append("dibuat", dibuat);
+      fd.append("foto", fotoJSON);
       const res = await fetch(GAS_URL, { method: "POST", body: fd });
       const result = await res.json();
       if (result.status === "ok") {
@@ -767,17 +1023,21 @@
   };
 
   function finishSave(btn) {
-    ["lmInpJudul","lmInpIsi","lmInpPenulis","lmInpSandi"].forEach(id => document.getElementById(id).value = "");
+    ["lmInpJudul","lmInpIsi","lmInpPenulis","lmInpSandi","lmInpFotoLinks","lmInpFotoFile"].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = "";
+    });
+    fotoCollectorBuat = [];
     document.getElementById("lmModalBuat").classList.remove("show");
     btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill"></i> Simpan';
     buildSidebar(); renderLaporan();
     showStatus('<i class="bi bi-check-circle-fill"></i> Laporan berhasil disimpan.', "ok");
   }
 
-  // ========== Modal Edit ==========
+  // ========== MODAL EDIT ==========
   window.lmBukaModalEdit = function(id) {
     const item = LAPORAN_DATA.find(l => l.id === id);
     if (!item) return;
+    fotoCollectorEdit = parseFotoString(item.foto).slice();
     const sel = document.getElementById("lmEditTanggal");
     sel.innerHTML = FRIDAYS.map(f =>
       '<option value="' + f + '"' + (f===item.tanggal?' selected':'') + '>Jumat, ' + fmtTanggalID(f) + '</option>'
@@ -787,6 +1047,9 @@
     document.getElementById("lmEditPenulis").value = item.penulis;
     document.getElementById("lmEditIsi").value = item.isi;
     document.getElementById("lmEditSandi").value = "";
+    document.getElementById("lmEditFotoLinks").value = "";
+    document.getElementById("lmEditFotoFile").value = "";
+    renderFotoPreview("lmEditFotoPreview", fotoCollectorEdit, "edit");
     document.getElementById("lmErrEdit").style.display = "none";
     document.getElementById("lmModalEdit").classList.add("show");
   };
@@ -814,6 +1077,7 @@
       document.getElementById("lmErrEdit").style.display = "block";
       return;
     }
+    const fotoJSON = JSON.stringify(fotoCollectorEdit);
     const btn = document.getElementById("lmBtnEditSimpan");
     btn.disabled = true; btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
 
@@ -824,6 +1088,7 @@
         LAPORAN_DATA[idx].judul = judul;
         LAPORAN_DATA[idx].penulis = penulis;
         LAPORAN_DATA[idx].isi = isi;
+        LAPORAN_DATA[idx].foto = fotoJSON;
         LAPORAN_DATA[idx].dibuat = new Date().toLocaleString("id-ID") + " (edited)";
       }
       saveLocalCache(LAPORAN_DATA);
@@ -844,6 +1109,7 @@
       fd.append("judul", judul);
       fd.append("penulis", penulis);
       fd.append("isi", isi);
+      fd.append("foto", fotoJSON);
       const res = await fetch(GAS_URL, { method: "POST", body: fd });
       const result = await res.json();
       if (result.status === "ok") {
@@ -868,7 +1134,7 @@
     showStatus('<i class="bi bi-check-circle-fill"></i> Laporan berhasil diupdate.', "ok");
   }
 
-  // ========== Modal Hapus ==========
+  // ========== MODAL HAPUS ==========
   window.lmBukaModalHapus = function(id) {
     const item = LAPORAN_DATA.find(l => l.id === id);
     if (!item) return;
@@ -937,7 +1203,7 @@
     showStatus('<i class="bi bi-check-circle-fill"></i> Laporan berhasil dihapus.', "ok");
   }
 
-  // ========== Reset filter ==========
+  // ========== RESET FILTER ==========
   window.lmResetFilter = function() {
     document.getElementById("lmSearch").value = "";
     document.getElementById("lmBulan").value = "";
@@ -947,7 +1213,20 @@
     renderLaporan();
   };
 
-  // ========== Export PDF (jsPDF) ==========
+  // ========== LIGHTBOX ==========
+  window.lmBukaFotoLightbox = function(url) {
+    if (!url) return;
+    document.getElementById("lmFotoLightboxImg").src = url;
+    document.getElementById("lmFotoLightbox").classList.add("show");
+    document.body.style.overflow = "hidden";
+  };
+  window.lmTutupFotoLightbox = function(e) {
+    if (e && e.target && e.target.id === "lmFotoLightboxImg") return;
+    document.getElementById("lmFotoLightbox").classList.remove("show");
+    document.body.style.overflow = "";
+  };
+
+  // ========== PDF EXPORT ==========
   function safeName(s) { return String(s||"").replace(/[^a-zA-Z0-9-_]+/g, "_").slice(0, 40); }
 
   function pdfWriteHeader(doc) {
@@ -961,66 +1240,137 @@
     doc.setTextColor(0,0,0);
   }
 
-  function pdfWriteLaporan(doc, l, startY) {
+  async function fotoToDataURL(foto) {
+    if (!foto) return null;
+    if (foto.type === "base64") return foto.url;
+    // Drive type - try to fetch and convert
+    try {
+      const url = convertGdriveLink(foto.url);
+      const res = await fetch(url, { mode: "cors" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      return await new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = reject;
+        fr.readAsDataURL(blob);
+      });
+    } catch (e) {
+      console.warn("Foto fetch failed:", e);
+      return null;
+    }
+  }
+
+  async function pdfWriteLaporan(doc, l, startY) {
     let y = startY;
     doc.setFont("helvetica","bold"); doc.setFontSize(13);
     doc.setTextColor(31, 78, 121);
-    const judulLines = doc.splitTextToSize(l.judul, 180);
+    const judulLines = doc.splitTextToSize(l.judul || "", 180);
     doc.text(judulLines, 14, y); y += judulLines.length * 6 + 2;
 
     doc.setFont("helvetica","normal"); doc.setFontSize(9);
     doc.setTextColor(100,100,100);
-    doc.text("Tanggal: " + fmtTanggalID(l.tanggal) + "   |   Penulis: " + l.penulis + "   |   Dibuat: " + l.dibuat, 14, y);
+    doc.text("Tanggal: " + fmtTanggalID(l.tanggal) + "   |   Penulis: " + (l.penulis||"") +
+             "   |   Dibuat: " + (l.dibuat||""), 14, y);
     y += 6;
     doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 5;
 
     doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(0,0,0);
-    const isiLines = doc.splitTextToSize(l.isi, 180);
+    const isiLines = doc.splitTextToSize(l.isi || "", 180);
     isiLines.forEach(line => {
       if (y > 275) { doc.addPage(); y = 20; }
       doc.text(line, 14, y); y += 6;
     });
+    y += 4;
+
+    // Embed foto
+    const fotoArr = parseFotoString(l.foto);
+    if (fotoArr.length > 0) {
+      if (y > 240) { doc.addPage(); y = 20; }
+      doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(31, 78, 121);
+      doc.text("Lampiran Foto (" + fotoArr.length + "):", 14, y);
+      y += 6;
+      doc.setTextColor(0,0,0);
+
+      const maxFotoPdf = Math.min(fotoArr.length, 6); // max 6 foto per laporan di PDF
+      const fotoW = 55, fotoH = 41;
+      const gap = 5;
+      let x = 14;
+      for (let i = 0; i < maxFotoPdf; i++) {
+        const dataUrl = await fotoToDataURL(fotoArr[i]);
+        if (dataUrl) {
+          try {
+            if (y + fotoH > 285) { doc.addPage(); y = 20; x = 14; }
+            doc.addImage(dataUrl, "JPEG", x, y, fotoW, fotoH, undefined, "FAST");
+          } catch (e) {
+            console.warn("PDF addImage error:", e);
+          }
+        } else {
+          // Placeholder text for failed foto
+          doc.setDrawColor(200,200,200); doc.setFillColor(245,245,245);
+          doc.rect(x, y, fotoW, fotoH, "FD");
+          doc.setFontSize(8); doc.setTextColor(150,150,150);
+          doc.text("[Foto tidak dapat dimuat]", x + 5, y + fotoH/2);
+          doc.setTextColor(0,0,0); doc.setFontSize(11);
+        }
+        x += fotoW + gap;
+        if ((i + 1) % 3 === 0) { // 3 foto per baris
+          x = 14;
+          y += fotoH + gap;
+        }
+      }
+      if (maxFotoPdf % 3 !== 0) y += fotoH + gap;
+      if (fotoArr.length > maxFotoPdf) {
+        doc.setFontSize(8); doc.setTextColor(150,150,150);
+        doc.text("(+ " + (fotoArr.length - maxFotoPdf) + " foto lainnya tidak ditampilkan)", 14, y);
+        y += 5; doc.setTextColor(0,0,0); doc.setFontSize(11);
+      }
+    }
     return y + 8;
   }
 
-  window.lmExportPDFOne = function(id) {
+  window.lmExportPDFOne = async function(id) {
     const l = LAPORAN_DATA.find(x => x.id === id);
     if (!l) return;
     if (!window.jspdf) { alert("Library jsPDF gagal dimuat."); return; }
+    showStatus('<i class="bi bi-hourglass-split"></i> Membuat PDF...', "info");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("p","mm","a4");
     pdfWriteHeader(doc);
-    pdfWriteLaporan(doc, l, 35);
-    doc.save("Laporan_Mingguan_" + l.tanggal + "_" + safeName(l.judul) + ".pdf");
+    await pdfWriteLaporan(doc, l, 35);
+    doc.save("Laporan_Mingguan_" + (l.tanggal||"unknown") + "_" + safeName(l.judul) + ".pdf");
+    showStatus('<i class="bi bi-check-circle"></i> PDF berhasil diunduh.', "ok");
   };
 
-  window.lmExportPDFAll = function() {
+  window.lmExportPDFAll = async function() {
     const filtered = getFiltered();
     if (filtered.length === 0) { alert("Tidak ada laporan untuk di-export."); return; }
     if (!window.jspdf) { alert("Library jsPDF gagal dimuat."); return; }
+    showStatus('<i class="bi bi-hourglass-split"></i> Membuat PDF gabungan (' + filtered.length + ' laporan)...', "info");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("p","mm","a4");
     pdfWriteHeader(doc);
     doc.setFontSize(10); doc.setTextColor(100,100,100);
     doc.text("Total laporan: " + filtered.length + "   |   Dicetak: " + new Date().toLocaleString("id-ID"), 14, 32);
     let y = 42;
-    filtered.forEach((l, idx) => {
+    for (let i = 0; i < filtered.length; i++) {
       if (y > 250) { doc.addPage(); y = 20; }
-      y = pdfWriteLaporan(doc, l, y);
-      if (idx < filtered.length - 1) {
+      y = await pdfWriteLaporan(doc, filtered[i], y);
+      if (i < filtered.length - 1) {
         doc.setDrawColor(180,180,180);
         doc.setLineDashPattern([2,2], 0);
         doc.line(14, y-4, 196, y-4);
         doc.setLineDashPattern([], 0);
       }
-    });
+    }
     const fn = activeDate
       ? "Laporan_Mingguan_" + activeDate + ".pdf"
       : "Laporan_Mingguan_Kumpulan_" + new Date().toISOString().slice(0,10) + ".pdf";
     doc.save(fn);
+    showStatus('<i class="bi bi-check-circle"></i> PDF berhasil diunduh.', "ok");
   };
 
-  // ========== Init ==========
+  // ========== INIT ==========
   document.addEventListener("DOMContentLoaded", function() {
     ["lmSearch","lmBulan","lmTahun"].forEach(id => {
       const el = document.getElementById(id);
@@ -1031,6 +1381,11 @@
         document.getElementById("lmModalBuat").classList.remove("show");
         document.getElementById("lmModalEdit").classList.remove("show");
         document.getElementById("lmModalHapus").classList.remove("show");
+        const lb = document.getElementById("lmFotoLightbox");
+        if (lb && lb.classList.contains("show")) {
+          lb.classList.remove("show");
+          document.body.style.overflow = "";
+        }
       }
     });
     lmFetchData();
