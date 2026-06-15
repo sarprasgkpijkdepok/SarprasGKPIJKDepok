@@ -3,22 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beranda - Dashboard GKPI JK Depok</title>
+
 <!-- ===== PWA Meta Tags ===== -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1F4E79">
-
-<!-- iPhone / iOS specific -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GKPI Depok">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-
-<!-- Standard icon (browser tab) -->
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/logo_gkpi.png">
+<link rel="icon" type="image/png" href="assets/icon-192.png">
 <!-- ===== End PWA Meta Tags ===== -->
-<title>Beranda - Dashboard GKPI JK Depok</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,10 +33,8 @@
     --sidebar-bg:linear-gradient(180deg,#0f2643,#0a1a2e);
     --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
   }
-
   body { margin:0; background:var(--bg); color:var(--text);
          font-family:'Segoe UI',sans-serif; transition:background .25s, color .25s; }
-
   .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px;
              background:var(--sidebar-bg); color:#fff; padding:20px 0;
              overflow-y:auto; z-index:1000; }
@@ -56,7 +50,6 @@
   .sidebar nav a:hover { background:rgba(255,255,255,.08); color:#fff; }
   .sidebar nav a.active { background:var(--accent); color:#15375a; font-weight:600; }
   .sidebar nav a i { width:18px; text-align:center; }
-
   .main { margin-left:240px; padding:20px 25px; }
   .topbar { background:var(--topbar-bg); color:var(--text);
             border-radius:12px; padding:14px 20px; margin-bottom:20px;
@@ -69,18 +62,15 @@
                       border:1px solid var(--border); border-radius:8px;
                       padding:6px 12px; font-size:.85rem; cursor:pointer; }
   .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
-
   .card-kpi { border:1px solid var(--border); border-radius:12px;
               box-shadow:0 2px 8px rgba(0,0,0,.06);
               background:var(--card-bg); color:var(--text); transition:.15s; }
   .card-kpi:hover { transform:translateY(-2px); }
   .card-kpi .num { font-size:1.8rem; font-weight:700; }
   .card-kpi .label { color:var(--muted); font-size:.85rem; }
-
   .section-title { color:var(--primary); border-left:5px solid var(--primary);
                    padding-left:10px; margin:25px 0 15px; font-weight:600; }
   body.dark-mode .section-title { color:var(--accent); border-left-color:var(--accent); }
-
   .table { color:var(--text); background:var(--card-bg); }
   .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; }
   .table-wrap { max-height:480px; overflow:auto; border-radius:8px;
@@ -91,18 +81,15 @@
                           --bs-table-hover-color:#fff;
                           --bs-table-striped-bg:rgba(255,255,255,.03);
                           --bs-table-border-color:var(--border); }
-
   .form-control, .form-select { background:var(--input-bg); color:var(--input-text);
                                 border:1px solid var(--input-border); }
   .form-control:focus, .form-select:focus { background:var(--input-bg);
                                             color:var(--input-text);
                                             border-color:var(--primary);
                                             box-shadow:0 0 0 .2rem rgba(31,78,121,.15); }
-
   .progress { background:var(--border); }
   .footer { text-align:center; padding:20px; color:var(--muted);
             font-size:.85rem; margin-top:30px; }
-
   .badge-baik { background:#28a745; }
   .badge-ringan { background:#ffc107; color:#000; }
   .badge-berat { background:#dc3545; }
@@ -117,7 +104,6 @@
   .badge-tertunda { background:#6c757d; }
   .badge-terjadwal { background:#0d6efd; }
   .badge-berjalan { background:#17a2b8; }
-
   /* Org chart styles */
   .org-node { background:var(--card-bg); border:2px solid var(--primary);
               border-radius:10px; padding:10px 14px; text-align:center;
@@ -128,18 +114,15 @@
   .org-node .nm { color:var(--text); font-size:.95rem; }
   .org-line { height:30px; width:2px; background:var(--primary); margin:0 auto; }
   body.dark-mode .org-line { background:var(--accent); }
-
   @media (max-width: 768px) {
     .sidebar { position:relative; width:100%; height:auto; }
     .main { margin-left:0; }
     .sidebar nav { display:flex; flex-wrap:wrap; }
     .sidebar nav a { flex:1 1 45%; }
-  }
-  
+  }  
 </style>
 </head>
 <body>
-
 <aside class="sidebar">
   <div class="brand">
     <img src="assets/logo_gkpi.png" alt="logo">
@@ -158,7 +141,6 @@
 <a class="" href="pages/laporan_tahunan.html"><i class="bi bi-file-earmark-pdf"></i> Laporan Tahunan</a>
   </nav>
 </aside>
-
 <main class="main" id="mainContent">
   <div class="topbar" id="topbar">
     <div>
@@ -166,6 +148,9 @@
       <small>Dashboard Sarana &amp; Prasarana</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnPrint" title="Cetak halaman">
+        <i class="bi bi-printer"></i> Cetak
+      </button>
       <button class="btn-tool" id="btnPdf" title="Export halaman ini ke PDF">
         <i class="bi bi-file-earmark-pdf"></i> PDF
       </button>
@@ -174,9 +159,7 @@
       </button>
       <small class="text-muted ms-2" id="tsArea">Update: 12 June 2026 03:48</small>
     </div>
-  </div>
-
-  
+  </div>  
 <style>
 .table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
 .scroll-box,.dataTables_scrollBody {
@@ -185,7 +168,6 @@
   overflow-x: auto !important;
 }
 .table-wrap > table,.table-responsive > table { width: 100% !important; }
-
 @media print {
   .table-wrap,.table-responsive,.table-container,.table-wrapper,.table-scroll,
   .scroll-box,.card,.card-body,.card-kpi,.content,.main-content,.page-content,
@@ -212,18 +194,50 @@
   .badge-baik{background:#198754 !important;}
   .badge-ringan{background:#ffc107 !important;color:#000 !important;}
   .badge-berat{background:#dc3545 !important;}
-  @page { size: A4 landscape; margin: 0.8cm; }
+  @page { size: A4 portrait; margin: 1cm; }
   .watermark { opacity: 0.06 !important; }
   body { font-size:9pt !important; }
+  .main { margin-left:0 !important; padding:0 !important; }
+
+  /* ===== PATCH 2: Page break per section ===== */
+  .row.g-3:first-of-type {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+  .section-title, h5.section-title, h4.section-title {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-after: avoid !important;
+  }
+  .section-title:first-of-type {
+    page-break-before: auto !important;
+  }
+  .card-kpi, .card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+  }
+  .row.g-3:last-of-type {
+    page-break-before: always !important;
+    page-break-inside: avoid !important;
+  }
+  .footer {
+    page-break-before: avoid !important;
+    margin-top: 20px !important;
+  }
+  .org-node { page-break-inside: avoid !important; }
+  /* ===== END PATCH 2 ===== */
 }
 </style>
 <div class="row g-3"><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #1F4E79;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Aset</div><div class="num" style="color:#1F4E79;">30</div></div><i class="bi bi-box-seam" style="font-size:1.8rem;color:#1F4E79;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #6f42c1;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Nilai Aset</div><div class="num" style="color:#6f42c1;">Rp 0</div></div><i class="bi bi-currency-dollar" style="font-size:1.8rem;color:#6f42c1;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Aset Baik</div><div class="num" style="color:#28a745;">26</div></div><i class="bi bi-check-circle" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #ffc107;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Ringan</div><div class="num" style="color:#ffc107;">0</div></div><i class="bi bi-exclamation-triangle" style="font-size:1.8rem;color:#ffc107;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #dc3545;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Rusak Berat</div><div class="num" style="color:#dc3545;">0</div></div><i class="bi bi-x-circle" style="font-size:1.8rem;color:#dc3545;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #0d6efd;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Total Anggaran</div><div class="num" style="color:#0d6efd;">Rp 17.910.000</div></div><i class="bi bi-cash-stack" style="font-size:1.8rem;color:#0d6efd;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #17a2b8;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Realisasi</div><div class="num" style="color:#17a2b8;">Rp 3.676.310</div></div><i class="bi bi-cash" style="font-size:1.8rem;color:#17a2b8;opacity:.5;"></i></div></div></div><div class="col-md-4 col-lg-3"><div class="card card-kpi p-3" style="border-top:4px solid #fd7e14;"><div class="d-flex justify-content-between align-items-start"><div><div class="label">Lapor</div><div class="num" style="color:#fd7e14;">6 / 8</div><div class="small text-muted">Selesai / Total</div></div><i class="bi bi-megaphone" style="font-size:1.8rem;color:#fd7e14;opacity:.5;"></i></div></div></div></div><h5 class="section-title">Ringkasan Visual</h5><div class="row g-3"><div class="col-md-6"><div class="card card-kpi p-3"><h6>Distribusi Kondisi Aset</h6><canvas id="chartKondisi"></canvas></div></div><div class="col-md-6"><div class="card card-kpi p-3"><h6>Anggaran vs Realisasi</h6><canvas id="chartAnggaran"></canvas></div></div></div><div class="row g-3 mt-1"><div class="col-md-6"><div class="card card-kpi p-3"><h6>Status Laporan Kerusakan</h6><canvas id="chartLapor"></canvas></div></div><div class="col-md-6"><div class="card card-kpi p-3"><h6>Status Jadwal Pemeliharaan</h6><canvas id="chartJadwal"></canvas></div></div></div><h5 class="section-title">Akses Cepat</h5><div class="row g-3"><div class="col-md-2 col-6"><a href="pages/data_aset.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-box-seam" style="font-size:2rem;color:#1F4E79;"></i><div class="mt-2 fw-bold">Data Aset</div></div></a></div><div class="col-md-2 col-6"><a href="pages/input_aset.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-box-seam" style="font-size:2rem;color:#1F4E79;"></i><div class="mt-2 fw-bold">Input Aset</div></div></a></div><div class="col-md-2 col-6"><a href="pages/jadwal_pemeliharaan.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-calendar-check" style="font-size:2rem;color:#28a745;"></i><div class="mt-2 fw-bold">Jadwal</div></div></a></div><div class="col-md-2 col-6"><a href="pages/lapor_sarpras.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-megaphone" style="font-size:2rem;color:#fd7e14;"></i><div class="mt-2 fw-bold">Lapor</div></div></a></div><div class="col-md-2 col-6"><a href="pages/anggaran.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-cash-coin" style="font-size:2rem;color:#6f42c1;"></i><div class="mt-2 fw-bold">Anggaran</div></div></a></div><div class="col-md-2 col-6"><a href="pages/keanggotaan.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-people-fill" style="font-size:2rem;color:#17a2b8;"></i><div class="mt-2 fw-bold">Keanggotaan</div></div></a></div><div class="col-md-2 col-6"><a href="pages/laporan_mingguan.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center"><i class="bi bi-calendar-week" style="font-size:2rem;color:#fd7e14;"></i><div class="mt-2 fw-bold">Laporan Mingguan</div></div></a></div><div class="col-md-2 col-6"><a href="pages/laporan_tahunan.html" class="text-decoration-none"><div class="card card-kpi p-3 text-center position-relative"><i class="bi bi-file-earmark-pdf-fill" style="font-size:2rem;color:#dc3545;"></i><div class="mt-2 fw-bold">Laporan Tahunan</div></div></a></div></div>
-
   <div class="footer">
     &copy; 2026 GKPI Jemaat Khusus Depok &middot; Dashboard otomatis
   </div>
 </main>
-
 <script>
   // ===== Dark mode =====
   (function() {
@@ -247,35 +261,56 @@
     updateDarkIcon();
   });
 
-  // ===== Export PDF =====
+  // ===== Print (Cetak) =====
+  document.getElementById('btnPrint').addEventListener('click', function() {
+    var wasDark = document.body.classList.contains('dark-mode');
+    if (wasDark) document.body.classList.remove('dark-mode');
+    var origTitle = document.title;
+    document.title = ' ';
+    window.print();
+    setTimeout(function() {
+      document.title = origTitle;
+      if (wasDark) document.body.classList.add('dark-mode');
+    }, 500);
+  });
+
+  // ===== Export PDF (per-section per-halaman) =====
   document.getElementById('btnPdf').addEventListener('click', function() {
     var el = document.getElementById('mainContent');
     var btnPdf = document.getElementById('btnPdf');
+    var btnPrint = document.getElementById('btnPrint');
     var btnDark = document.getElementById('btnDark');
-    var tsArea  = document.getElementById('tsArea');
     var wasDark = document.body.classList.contains('dark-mode');
 
-    // Switch to light mode temporarily for cleaner PDF
     if (wasDark) document.body.classList.remove('dark-mode');
-    btnPdf.style.visibility  = 'hidden';
+    btnPdf.style.visibility = 'hidden';
+    btnPrint.style.visibility = 'hidden';
     btnDark.style.visibility = 'hidden';
 
     var title = document.querySelector('.topbar h4').innerText || 'Dashboard';
-    var fname = 'GKPI_' + title.replace(/[^a-z0-9]+/gi,'_') + '.pdf';
+    var date = new Date().toISOString().slice(0,10);
+    var fname = 'GKPI_' + title.replace(/[^a-z0-9]+/gi,'_') + '_' + date + '.pdf';
 
     var opt = {
-      margin:       [8, 8, 8, 8],
-      filename:     fname,
-      image:        { type: 'jpeg', quality: 0.95 },
-      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      margin: [10, 10, 10, 10],
+      filename: fname,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 1200, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'], before: '.section-title', avoid: ['.card-kpi', 'canvas', 'tr', '.org-node'] }
     };
 
     html2pdf().set(opt).from(el).save().then(function() {
-      btnPdf.style.visibility  = 'visible';
+      btnPdf.style.visibility = 'visible';
+      btnPrint.style.visibility = 'visible';
       btnDark.style.visibility = 'visible';
       if (wasDark) document.body.classList.add('dark-mode');
+    }).catch(function(err) {
+      btnPdf.style.visibility = 'visible';
+      btnPrint.style.visibility = 'visible';
+      btnDark.style.visibility = 'visible';
+      if (wasDark) document.body.classList.add('dark-mode');
+      alert('Gagal export PDF: ' + err.message);
     });
   });
 
@@ -303,17 +338,36 @@
       });
     });
   }
+
+  // ===== Register Service Worker =====
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function(reg) {
+          // Cek update otomatis setiap kali halaman dibuka
+          reg.update();
+          reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'activated') {
+                  console.log('SW updated - new version active');
+                }
+              });
+            }
+          });
+        })
+        .catch(function(err) { console.warn('SW registration failed:', err); });
+    });
+    // Reload otomatis kalau SW baru sudah ambil alih
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+  }
 </script>
-
 <script>var dataKondisi={"labels": ["Baik"], "values": [26]};var dataAnggaran={"labels": ["Rutin - Perawatan Sarana", "Rutin - Pengadaan Sarana", "Rutin - Perawatan Pra Sarana", "Non rutin - Perbaikan Sarana", "Non rutin - Pengadaan Sarana"], "anggaran": [4200000, 2110000, 3600000, 3000000, 5000000], "realisasi": [462000, 650000, 1777600, 519210, 267500]};var dataLapor={"labels": ["Selesai", "Ditunda", "Diproses"], "values": [6, 1, 1]};var dataJadwal={"labels": ["Terjadwal", "Selesai", "Sedang Berjalan", "Tertunda"], "values": [4, 2, 1, 1]};new Chart(document.getElementById("chartKondisi"),{type:"doughnut",data:{labels:dataKondisi.labels,datasets:[{data:dataKondisi.values,backgroundColor:["#28a745","#ffc107","#dc3545"]}]}});new Chart(document.getElementById("chartAnggaran"),{type:"bar",data:{labels:dataAnggaran.labels,datasets:[{label:"Anggaran",data:dataAnggaran.anggaran,backgroundColor:"#1F4E79"},{label:"Realisasi",data:dataAnggaran.realisasi,backgroundColor:"#D4AF37"}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});new Chart(document.getElementById("chartLapor"),{type:"doughnut",data:{labels:dataLapor.labels,datasets:[{data:dataLapor.values,backgroundColor:["#0d6efd","#17a2b8","#28a745","#6c757d"]}]}});new Chart(document.getElementById("chartJadwal"),{type:"doughnut",data:{labels:dataJadwal.labels,datasets:[{data:dataJadwal.values,backgroundColor:["#0d6efd","#17a2b8","#28a745","#6c757d"]}]}});</script>
-// ===== Register Service Worker =====
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('SW registered:', reg.scope); })
-      .catch(function(err) { console.warn('SW registration failed:', err); });
-  });
-}
-
 </body>
 </html>
