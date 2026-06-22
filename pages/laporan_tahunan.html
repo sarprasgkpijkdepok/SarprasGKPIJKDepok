@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laporan Tahunan - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1e3a8a; --accent:#fbbf24; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#2563eb);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#1e40af);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; transition:.25s; }
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px; background:var(--sidebar-bg); color:#fff; padding:20px 0; overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px; padding:10px 14px; color:#cfd9e6; text-decoration:none; border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#1e293b; font-weight:600; }
+  .sidebar nav a .icon { width:22px; text-align:center; font-size:1.1rem; display:inline-block; line-height:1; }
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text); border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+  .card-kpi { border:1px solid var(--border); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); background:var(--card-bg); color:var(--text); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text); border:1px solid var(--input-border); }
+  .footer { text-align:center; padding:20px; color:var(--muted); font-size:.85rem; margin-top:30px; }
+  .pdf-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:18px; transition:.2s; box-shadow:0 2px 6px rgba(0,0,0,.04); height:100%; }
+  .pdf-card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,.12); border-color:var(--primary); }
+  .pdf-card .pdf-icon { font-size:2.5rem; color:#dc3545; }
+  .pdf-card h5 { color:var(--primary); margin:0; font-weight:700; }
+  body.dark-mode .pdf-card h5 { color:var(--accent); }
+  .pdf-card .pdf-size { color:var(--muted); font-size:.85rem; }
+  .pdf-card .pdf-btn-row { display:flex; gap:8px; margin-top:14px; }
+  .pdf-card .pdf-btn-row .btn { flex:1; }
+  .viewer-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:18px; margin-top:20px; }
+  .viewer-info { background:rgba(30,58,138,.08); border:1px solid rgba(30,58,138,.15); border-radius:8px; padding:10px 14px; margin-bottom:14px; color:var(--text); }
+  body.dark-mode .viewer-info { background:rgba(251,191,36,.1); border-color:rgba(251,191,36,.2); }
+  .spinner-load { width:40px;height:40px;border:4px solid #e6e9ee;border-top-color:var(--primary);border-radius:50%;margin:2rem auto;animation:spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+  @media print {
+    .sidebar, .topbar .btn-tool, .no-print { display:none !important; }
+    .main { margin-left:0; }
+    @page { size: A4; margin: 0.8cm; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo" />
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a href="../dashboard.html"><span class="icon">&#127968;</span> Beranda</a>
+    <a href="data_aset.html"><span class="icon">&#128230;</span> Data Aset</a>
+    <a href="input_aset.html"><span class="icon">&#10133;</span> Input Aset</a>
+    <a href="jadwal_pemeliharaan.html"><span class="icon">&#128197;</span> Jadwal Pemeliharaan</a>
+    <a href="lapor_sarpras.html"><span class="icon">&#128227;</span> Lapor Sarpras</a>
+    <a href="anggaran.html"><span class="icon">&#128176;</span> Anggaran</a>
+    <a href="keanggotaan.html"><span class="icon">&#128101;</span> Keanggotaan</a>
+    <a href="laporan_mingguan.html"><span class="icon">&#128202;</span> Laporan Mingguan</a>
+    <a class="active" href="laporan_tahunan.html"><span class="icon">&#128196;</span> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+
+  <div class="topbar">
+    <div>
+      <h4>Laporan Tahunan</h4>
+      <small>Dashboard Sarana &amp; Prasarana - Arsip LPJ Tim Sarpras</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnRefresh" title="Refresh list">&#128260;</button>
+      <button class="btn-tool" id="btnPrint" title="Cetak halaman">&#128424; Cetak</button>
+      <button class="btn-tool" id="btnDark" title="Toggle Dark Mode">&#127769;</button>
+      <small class="text-muted ms-2" id="tsArea">-</small>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3" id="kpiArea">
+    <div class="text-center py-5"><div class="spinner-load"></div></div>
+  </div>
+
+  <div class="card-kpi p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h5 style="margin:0; color:var(--primary);">Daftar Laporan Tersedia</h5>
+      <div class="d-flex gap-2 align-items-center">
+        <input id="searchPdf" class="form-control form-control-sm" style="width:200px;" placeholder="Cari tahun..." />
+        <select id="sortPdf" class="form-select form-select-sm" style="width:170px;">
+          <option value="desc">Tahun: Terbaru</option>
+          <option value="asc">Tahun: Terlama</option>
+        </select>
+      </div>
+    </div>
+    <div class="row g-3" id="pdfListArea"></div>
+  </div>
+
+  <div class="viewer-card" id="viewerCard" style="display:none;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <h5 style="margin:0; color:var(--primary);">PDF Viewer</h5>
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <select id="pdfSelect" class="form-select form-select-sm" style="min-width:240px;" onchange="loadPdf(this.value)"></select>
+        <a id="btnDownload" href="#" download class="btn btn-sm btn-success">&#11015; Download</a>
+        <a id="btnOpenTab" href="#" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Tab Baru</a>
+        <button onclick="closeViewer()" class="btn btn-sm btn-outline-secondary">Tutup</button>
+      </div>
+    </div>
+    <div class="viewer-info">
+      Sedang menampilkan: <strong id="currentInfo">-</strong>
+    </div>
+    <iframe id="pdfFrame" src="about:blank" style="width:100%; height:800px; border:1px solid var(--border); border-radius:8px; background:#f9fafb;"></iframe>
+    <p class="text-muted small mt-2 mb-0">
+      Di mobile, gunakan tombol Download atau Tab Baru bila viewer terbatas.
+    </p>
+  </div>
+
+  <div class="footer">(c) 2026 GKPI Jemaat Khusus Depok - Dashboard Arsip Laporan</div>
+</main>
+
+<script>
+const LAPORAN_FOLDER = '../assets/Laporan_Tahunan/';
+const INDEX_JSON = LAPORAN_FOLDER + 'index.json';
+let LAPORAN_LIST = [];
+
+(function(){ if (localStorage.getItem('gkpi-theme')==='dark') document.body.classList.add('dark-mode'); })();
+document.getElementById('btnDark').addEventListener('click', function(){
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('gkpi-theme', document.body.classList.contains('dark-mode')?'dark':'light');
+});
+document.getElementById('btnRefresh').addEventListener('click', function(){ loadIndex(); });
+document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+
+function formatSize(bytes) {
+  if (!bytes || isNaN(bytes)) return '-';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function loadIndex() {
+  try {
+    document.getElementById('pdfListArea').innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-load"></div><p class="text-muted">Memuat daftar laporan...</p></div>';
+    const res = await fetch(INDEX_JSON + '?t=' + Date.now());
+    if (!res.ok) throw new Error('index.json tidak ditemukan (HTTP ' + res.status + ')');
+    const data = await res.json();
+    LAPORAN_LIST = Array.isArray(data.files) ? data.files : (Array.isArray(data) ? data : []);
+    renderAll();
+    document.getElementById('tsArea').textContent = 'Update: ' + new Date().toLocaleString('id-ID');
+  } catch (err) {
+    console.error(err);
+    document.getElementById('pdfListArea').innerHTML = 
+      '<div class="col-12"><div class="alert alert-warning">Tidak dapat memuat <code>index.json</code><br>' +
+      'Pastikan file <code>assets/Laporan_Tahunan/index.json</code> ada.<br>' +
+      '<small class="text-muted">Error: ' + escapeHtml(err.message) + '</small></div></div>';
+    document.getElementById('kpiArea').innerHTML = 
+      '<div class="col-12 text-center text-muted py-3">Belum ada laporan tersedia</div>';
+  }
+}
+
+function renderAll() {
+  renderKPI();
+  renderList();
+}
+
+function renderKPI() {
+  const list = LAPORAN_LIST;
+  const total = list.length;
+  const tahunMax = list.length ? Math.max(...list.map(x => Number(x.tahun) || 0)) : '-';
+  const totalSize = list.reduce((s,x) => s + (Number(x.size) || 0), 0);
+  
+  document.getElementById('kpiArea').innerHTML =
+    '<div class="col-md-4 col-6">' +
+      '<div class="card-kpi p-3" style="border-top:4px solid #1e3a8a;">' +
+        '<div class="d-flex justify-content-between align-items-start">' +
+          '<div><div class="label">Total Laporan</div><div class="num" style="color:#1e3a8a;">' + total + '</div></div>' +
+        '</div></div></div>' +
+    '<div class="col-md-4 col-6">' +
+      '<div class="card-kpi p-3" style="border-top:4px solid #22c55e;">' +
+        '<div class="d-flex justify-content-between align-items-start">' +
+          '<div><div class="label">Tahun Terbaru</div><div class="num" style="color:#22c55e;">' + tahunMax + '</div></div>' +
+        '</div></div></div>' +
+    '<div class="col-md-4 col-12">' +
+      '<div class="card-kpi p-3" style="border-top:4px solid #f59e0b;">' +
+        '<div class="d-flex justify-content-between align-items-start">' +
+          '<div><div class="label">Total Size</div><div class="num" style="color:#f59e0b;">' + formatSize(totalSize) + '</div></div>' +
+        '</div></div></div>';
+}
+
+function renderList() {
+  const search = (document.getElementById('searchPdf').value || '').toLowerCase();
+  const sort = document.getElementById('sortPdf').value;
+  
+  let list = LAPORAN_LIST.filter(x => {
+    if (!search) return true;
+    return String(x.tahun||'').toLowerCase().indexOf(search) !== -1 
+        || String(x.title||'').toLowerCase().indexOf(search) !== -1
+        || String(x.filename||'').toLowerCase().indexOf(search) !== -1;
+  });
+  
+  list.sort((a,b) => {
+    const ta = Number(a.tahun) || 0;
+    const tb = Number(b.tahun) || 0;
+    return sort === 'desc' ? tb - ta : ta - tb;
+  });
+  
+  if (list.length === 0) {
+    document.getElementById('pdfListArea').innerHTML = 
+      '<div class="col-12"><div class="alert alert-info">Tidak ada laporan yang cocok dengan filter.</div></div>';
+    return;
+  }
+  
+  const sel = document.getElementById('pdfSelect');
+  sel.innerHTML = list.map(x => 
+    '<option value="' + escapeHtml(x.filename) + '">' + 
+    'Laporan Tahun ' + escapeHtml(x.tahun) + ' (' + formatSize(x.size) + ')' +
+    '</option>'
+  ).join('');
+  
+  document.getElementById('pdfListArea').innerHTML = list.map(x => {
+    const path = LAPORAN_FOLDER + x.filename;
+    const title = x.title || ('Laporan Tahun ' + x.tahun);
+    const filenameEsc = x.filename.replace(/'/g,"\\'");
+    return '<div class="col-md-4 col-sm-6">' +
+      '<div class="pdf-card">' +
+        '<div class="d-flex align-items-center gap-3 mb-2">' +
+          '<span class="pdf-icon">&#128213;</span>' +
+          '<div>' +
+            '<h5>' + escapeHtml(title) + '</h5>' +
+            '<div class="pdf-size">' + formatSize(x.size) + (x.date ? ' - ' + escapeHtml(x.date) : '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        (x.description ? '<p class="text-muted small mb-2">' + escapeHtml(x.description) + '</p>' : '') +
+        '<div class="pdf-btn-row">' +
+          '<button class="btn btn-sm btn-primary" onclick="loadPdfByFilename(\'' + filenameEsc + '\')">&#128065; Lihat</button>' +
+          '<a href="' + path + '" download class="btn btn-sm btn-success">&#11015; Download</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function loadPdf(filename) {
+  if (!filename) return;
+  const item = LAPORAN_LIST.find(x => x.filename === filename);
+  if (!item) return;
+  const path = LAPORAN_FOLDER + filename;
+  const iframe = document.getElementById('pdfFrame');
+  iframe.src = 'about:blank';
+  setTimeout(() => { iframe.src = path; }, 50);
+  document.getElementById('btnDownload').href = path;
+  document.getElementById('btnDownload').setAttribute('download', filename);
+  document.getElementById('btnOpenTab').href = path;
+  document.getElementById('currentInfo').textContent = 
+    (item.title || ('Laporan Tahun ' + item.tahun)) + ' - ' + formatSize(item.size);
+  document.getElementById('viewerCard').style.display = 'block';
+  document.getElementById('viewerCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function loadPdfByFilename(filename) {
+  const sel = document.getElementById('pdfSelect');
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === filename) { sel.selectedIndex = i; break; }
+  }
+  loadPdf(filename);
+}
+
+function closeViewer() {
+  document.getElementById('viewerCard').style.display = 'none';
+  document.getElementById('pdfFrame').src = 'about:blank';
+}
+
+document.getElementById('searchPdf').addEventListener('input', renderList);
+document.getElementById('sortPdf').addEventListener('change', renderList);
+
+loadIndex();
+</script>
+
+</body>
+</html>

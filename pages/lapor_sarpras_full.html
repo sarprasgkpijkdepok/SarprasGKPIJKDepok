@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lapor Sarpras (Admin) - GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1e3a8a; --accent:#fbbf24; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#2563eb);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#1e40af);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; transition:.25s; }
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px; background:var(--sidebar-bg); color:#fff; padding:20px 0; overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px; padding:10px 14px; color:#cfd9e6; text-decoration:none; border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#1e293b; font-weight:600; }
+  .sidebar nav a .icon { width:22px; text-align:center; font-size:1.1rem; display:inline-block; line-height:1; }
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text); border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:.85rem; cursor:pointer; text-decoration:none; display:inline-block; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+  .card-kpi { border:1px solid var(--border); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); background:var(--card-bg); color:var(--text); }
+  .card-kpi .num { font-size:1.6rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+  .table { color:var(--text); background:var(--card-bg); }
+  .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; z-index:1; }
+  .table-wrap { max-height:500px; overflow:auto; border-radius:8px; border:1px solid var(--border); }
+  body.dark-mode .table { --bs-table-bg:transparent; --bs-table-color:var(--text); --bs-table-hover-bg:rgba(255,255,255,.05); --bs-table-hover-color:#fff; --bs-table-border-color:var(--border); }
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text); border:1px solid var(--input-border); }
+  .footer { text-align:center; padding:20px; color:var(--muted); font-size:.85rem; margin-top:30px; }
+  .badge-tinggi { background:#fd7e14; }
+  .badge-sedang { background:#ffc107; color:#000; }
+  .badge-rendah { background:#28a745; }
+  .badge-kritis { background:#dc3545; }
+  .badge-baru { background:#0d6efd; }
+  .badge-diproses { background:#17a2b8; }
+  .badge-selesai { background:#28a745; }
+  .badge-ditunda { background:#6c757d; }
+  .spinner-load { width:40px;height:40px;border:4px solid #e6e9ee;border-top-color:var(--primary);border-radius:50%;margin:2rem auto;animation:spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lock-screen { position:fixed; inset:0; background:linear-gradient(135deg,#1e3a8a,#2563eb); display:flex; align-items:center; justify-content:center; z-index:9999; padding:20px; }
+  .lock-box { background:#fff; color:#333; border-radius:16px; padding:35px; max-width:420px; width:100%; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,.3); }
+  .lock-icon { font-size:4rem; margin-bottom:10px; }
+  .lock-box h3 { color:#1e3a8a; font-weight:700; margin-bottom:5px; }
+  .admin-banner { background:linear-gradient(90deg, #fef3c7, #fde68a); border:2px solid #fbbf24; color:#92400e; border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px; }
+  .modal-edit { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:8000; align-items:center; justify-content:center; padding:20px; }
+  .modal-edit.show { display:flex; }
+  .modal-edit .modal-box { background:var(--card-bg); color:var(--text); border-radius:12px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.4); }
+  .modal-edit .modal-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .modal-edit .modal-header h5 { margin:0; color:var(--primary); }
+  body.dark-mode .modal-edit .modal-header h5 { color:var(--accent); }
+  .modal-edit .modal-body { padding:20px; }
+  .modal-edit .modal-footer { padding:14px 20px; border-top:1px solid var(--border); display:flex; gap:8px; justify-content:flex-end; }
+  .modal-edit .close-x { background:transparent; border:none; font-size:1.5rem; color:var(--muted); cursor:pointer; }
+  .readonly-field { background:#f8fafc !important; color:#475569 !important; cursor:not-allowed; }
+  body.dark-mode .readonly-field { background:#1e293b !important; color:#94a3b8 !important; }
+  .field-label-readonly { font-size:.75rem; color:#94a3b8; font-weight:normal; }
+  .foto-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:10000; justify-content:center; align-items:center; padding:20px; }
+  .foto-modal.show { display:flex; }
+  .foto-modal img { max-width:90%; max-height:85%; border-radius:8px; }
+  .foto-modal .close-btn { position:absolute; top:20px; right:30px; color:#fff; font-size:40px; cursor:pointer; line-height:1; }
+  .foto-preview-grid { display:flex; flex-wrap:wrap; gap:6px; min-height:10px; padding:8px; border:1px dashed #cbd5e1; border-radius:6px; background:#f8fafc; }
+  body.dark-mode .foto-preview-grid { background:#1a1d20; border-color:#374151; }
+  .foto-preview-item { position:relative; display:inline-block; }
+  .foto-preview-item img { width:70px; height:70px; object-fit:cover; border-radius:6px; border:1px solid #ddd; }
+  .foto-preview-item .remove-btn { position:absolute; top:-6px; right:-6px; background:#dc3545; color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:11px; line-height:1; }
+  #tblLapor td img { max-width:60px !important; max-height:60px !important; width:60px !important; height:60px !important; object-fit:cover !important; }
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo" />
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a href="../dashboard.html"><span class="icon">&#127968;</span> Beranda</a>
+    <a href="data_aset.html"><span class="icon">&#128230;</span> Data Aset</a>
+    <a href="input_aset.html"><span class="icon">&#10133;</span> Input Aset</a>
+    <a href="jadwal_pemeliharaan.html"><span class="icon">&#128197;</span> Jadwal Pemeliharaan</a>
+    <a class="active" href="lapor_sarpras.html"><span class="icon">&#128227;</span> Lapor Sarpras</a>
+    <a href="anggaran.html"><span class="icon">&#128176;</span> Anggaran</a>
+    <a href="keanggotaan.html"><span class="icon">&#128101;</span> Keanggotaan</a>
+    <a href="laporan_mingguan.html"><span class="icon">&#128202;</span> Laporan Mingguan</a>
+    <a href="laporan_tahunan.html"><span class="icon">&#128196;</span> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<div id="lockScreen" class="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon">&#128274;</div>
+    <h3>Lapor Sarpras Admin</h3>
+    <p class="text-muted">Halaman ini untuk pengurus Sarpras.</p>
+    <input type="password" id="pwdInput" class="form-control mb-2" placeholder="Masukkan password..." />
+    <div id="pwdError" class="text-danger small mb-2" style="display:none;">&#10060; Password salah, coba lagi.</div>
+    <button class="btn btn-primary w-100" onclick="checkPassword()">&#128275; Masuk</button>
+    <a href="lapor_sarpras.html" class="btn btn-link w-100 mt-2">&larr; Kembali ke Mode Publik</a>
+  </div>
+</div>
+
+<main class="main" id="mainContent" style="display:none;">
+
+  <div class="topbar">
+    <div>
+      <h4>&#128274; Lapor Sarpras (Admin) <small class="badge bg-danger">ADMIN MODE</small></h4>
+      <small>Update status, PIC, biaya perbaikan, catatan</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnRefresh" title="Refresh">&#128260;</button>
+      <button class="btn-tool" id="btnPdf" title="Export PDF">&#128196; PDF</button>
+      <button class="btn-tool" id="btnDark" title="Toggle Dark">&#127769;</button>
+      <small class="text-muted ms-2" id="tsArea">-</small>
+    </div>
+  </div>
+
+  <div class="admin-banner">
+    <div>&#128737;&#65039; <strong>CONFIDENTIAL</strong> &mdash; Update tindak lanjut laporan. <span id="lastAccess" style="opacity:.8;"></span></div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <span id="idleTimer" class="badge bg-warning text-dark">Auto-logout: 15:00</span>
+      <button class="btn btn-sm btn-success" onclick="openCreateModal()">&#10133; Buat Laporan</button>
+      <button class="btn btn-sm btn-danger" onclick="doLogout()">&#128682; Logout</button>
+      <a href="lapor_sarpras.html" class="btn btn-sm btn-secondary">&larr; Mode Publik</a>
+    </div>
+  </div>
+
+  <div id="kpiArea">
+    <div class="text-center py-5"><div class="spinner-load"></div></div>
+  </div>
+
+  <div class="card-kpi p-3 mt-3" id="chartArea" style="display:none;">
+    <h6>&#129371; Distribusi Prioritas Laporan</h6>
+    <canvas id="chartPrio" style="max-height:280px;"></canvas>
+  </div>
+
+  <div class="card-kpi p-3 mt-3" id="tableArea" style="display:none;">
+    <h6>&#128203; Daftar Laporan Kerusakan</h6>
+    <div class="row g-2 mb-3">
+      <div class="col-md-5"><input id="searchLapor" class="form-control" placeholder="&#128269; Cari laporan..." /></div>
+      <div class="col-md-3">
+        <select id="filterPrio" class="form-select">
+          <option value="">Semua Prioritas</option>
+          <option value="Kritis">Kritis</option>
+          <option value="Tinggi">Tinggi</option>
+          <option value="Sedang">Sedang</option>
+          <option value="Rendah">Rendah</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="filterStat" class="form-select">
+          <option value="">Semua Status</option>
+          <option value="Baru">Baru</option>
+          <option value="Diproses">Diproses</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditunda">Ditunda</option>
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-outline-secondary w-100" onclick="resetFilters()" title="Reset">&#8634;</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="table table-hover table-bordered align-middle" id="tblLapor">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Deskripsi</th>
+            <th>Lokasi</th>
+            <th>Prioritas</th>
+            <th>Status</th>
+            <th>Foto</th>
+            <th>PIC</th>
+            <th>Tgl Selesai</th>
+            <th>Biaya</th>
+            <th>Catatan</th>
+            <th style="min-width:120px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tblLaporBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">(c) 2026 GKPI Jemaat Khusus Depok - Dashboard Admin Lapor Sarpras</div>
+</main>
+
+<div id="modalEdit" class="modal-edit">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h5 id="modalEditTitle">&#9999;&#65039; Edit Laporan</h5>
+      <button class="close-x" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editRowIndex" />
+      <div class="alert alert-info py-2 small mb-3">&#128274; Field di bawah dari pelapor - tidak bisa di-edit</div>
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <label class="form-label">No <span class="field-label-readonly">(auto)</span></label>
+          <input id="editNo" class="form-control readonly-field" readonly />
+        </div>
+        <div class="col-6">
+          <label class="form-label">Tanggal Laporan <span class="field-label-readonly">(dari Form)</span></label>
+          <input id="editTanggalLapor" class="form-control readonly-field" readonly />
+        </div>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Deskripsi Kerusakan <span class="field-label-readonly">(dari Form)</span></label>
+        <textarea id="editDeskripsi" class="form-control readonly-field" rows="2" readonly></textarea>
+      </div>
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <label class="form-label">Lokasi <span class="field-label-readonly">(dari Form)</span></label>
+          <input id="editLokasi" class="form-control readonly-field" readonly />
+        </div>
+        <div class="col-6">
+          <label class="form-label">Prioritas <span class="field-label-readonly">(dari Form)</span></label>
+          <input id="editPrioritas" class="form-control readonly-field" readonly />
+        </div>
+      </div>
+      <hr class="my-3" />
+      <div class="alert alert-warning py-2 small mb-3">&#9999;&#65039; Field di bawah untuk update tindak lanjut admin</div>
+      <div class="row g-2">
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Status <span class="text-danger">*</span></label>
+          <select id="editStatus" class="form-select" onchange="onStatusChange()">
+            <option value="Baru">Baru</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Ditunda">Ditunda</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">PIC</label>
+          <input id="editPIC" class="form-control" list="picList" placeholder="Nama anggota Sarpras" />
+          <datalist id="picList"></datalist>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Tanggal Selesai</label>
+          <input type="date" id="editTanggalSelesai" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Biaya Perbaikan (Rp)</label>
+          <input type="number" id="editBiaya" class="form-control" min="0" placeholder="0" />
+        </div>
+        <div class="col-12 mb-2">
+          <label class="form-label">Catatan</label>
+          <textarea id="editCatatan" class="form-control" rows="3" placeholder="Catatan tindak lanjut..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+      <button class="btn btn-primary" id="btnSaveEdit" onclick="saveEdit()">&#128190; Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalCreate" class="modal-edit">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h5>&#10133; Buat Laporan Baru (Admin)</h5>
+      <button class="close-x" onclick="closeCreateModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-info py-2 small mb-3">Form untuk admin yang patroli & lapor langsung. Foto bisa upload atau paste link Drive.</div>
+      <div class="row g-2">
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Tanggal Laporan <span class="text-danger">*</span></label>
+          <input type="date" id="createTanggal" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Prioritas <span class="text-danger">*</span></label>
+          <select id="createPrioritas" class="form-select">
+            <option value="Kritis">Kritis</option>
+            <option value="Tinggi" selected>Tinggi</option>
+            <option value="Sedang">Sedang</option>
+            <option value="Rendah">Rendah</option>
+          </select>
+        </div>
+        <div class="col-12 mb-2">
+          <label class="form-label">Deskripsi Kerusakan <span class="text-danger">*</span></label>
+          <textarea id="createDeskripsi" class="form-control" rows="3" placeholder="Contoh: AC ruang ibadah tidak dingin"></textarea>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">Lokasi <span class="text-danger">*</span></label>
+          <input id="createLokasi" class="form-control" list="lokasiList" placeholder="Contoh: Ruang Ibadah Utama" />
+          <datalist id="lokasiList"></datalist>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label">PIC (opsional)</label>
+          <input id="createPIC" class="form-control" list="picList" placeholder="Nama anggota Sarpras" />
+        </div>
+        <div class="col-12 mb-2">
+          <label class="form-label">&#128247; Foto Kerusakan (Opsional)</label>
+          <div class="row g-2 mb-1">
+            <div class="col-md-7">
+              <textarea id="createFotoLinks" class="form-control form-control-sm" rows="2" placeholder="Paste link Drive (pisah baris/koma)"></textarea>
+              <small class="text-muted">Link Drive (multiple)</small>
+            </div>
+            <div class="col-md-5">
+              <input type="file" id="createFotoFile" class="form-control form-control-sm" accept="image/*" multiple />
+              <small class="text-muted">Upload langsung</small>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-primary mb-2" onclick="addFotoCreate()">&#10133; Tambahkan Foto</button>
+          <div id="createFotoPreview" class="foto-preview-grid"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCreateModal()">Batal</button>
+      <button class="btn btn-success" id="btnSaveCreate" onclick="saveCreate()">&#128190; Simpan Laporan</button>
+    </div>
+  </div>
+</div>
+
+<div id="fotoLightbox" class="foto-modal" onclick="closeFotoLightbox(event)">
+  <span class="close-btn" onclick="closeFotoLightbox(event)">&times;</span>
+  <img id="fotoLightboxImg" src="" alt="Foto" />
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/utils.js"></script>
+
+<script>
+var CORRECT_HASH = "ee63d268b32395dab5377a1c201f81ae3467a6c5951e224bc73824d9d762d437";
+var AUTO_LOGOUT_MIN = 15;
+var idleSec = AUTO_LOGOUT_MIN * 60;
+var idleInterval = null;
+var LAPOR_DATA = [];
+var chartPrioInstance = null;
+var fotoCollectorCreate = [];
+
+async function sha256(str) {
+  var buf = new TextEncoder().encode(str);
+  var hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+async function checkPassword() {
+  var pwd = document.getElementById('pwdInput').value;
+  var hash = await sha256(pwd);
+  if (hash === CORRECT_HASH) {
+    sessionStorage.setItem('lapor_unlocked', '1');
+    sessionStorage.setItem('lapor_unlock_time', new Date().toISOString());
+    unlockContent();
+  } else {
+    document.getElementById('pwdError').style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+    if (typeof SarprasAPI !== 'undefined' && SarprasAPI.logAudit) SarprasAPI.logAudit('login_failed', 'lapor_sarpras_full', 'wrong_password');
+  }
+}
+
+function unlockContent() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  var lastTime = sessionStorage.getItem('lapor_unlock_time');
+  if (lastTime) {
+    var d = new Date(lastTime);
+    document.getElementById('lastAccess').innerText = '| Akses: ' + d.toLocaleString('id-ID');
+  }
+  if (SarprasAPI.logAudit) SarprasAPI.logAudit('unlock', 'lapor_sarpras_full', 'success');
+  startIdleTimer();
+  loadData();
+}
+
+function doLogout() {
+  if (SarprasAPI.logAudit) SarprasAPI.logAudit('logout', 'lapor_sarpras_full', 'manual');
+  sessionStorage.removeItem('lapor_unlocked');
+  sessionStorage.removeItem('lapor_unlock_time');
+  if (idleInterval) clearInterval(idleInterval);
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('pwdInput').value = '';
+}
+
+function startIdleTimer() {
+  idleSec = AUTO_LOGOUT_MIN * 60;
+  if (idleInterval) clearInterval(idleInterval);
+  idleInterval = setInterval(function() {
+    idleSec--;
+    var m = Math.floor(idleSec/60), s = idleSec%60;
+    var label = m + ':' + (s<10 ? '0' : '') + s;
+    var el = document.getElementById('idleTimer');
+    if (el) el.innerText = 'Auto-logout: ' + label;
+    if (idleSec <= 0) {
+      alert('Sesi berakhir karena tidak ada aktivitas.');
+      if (SarprasAPI.logAudit) SarprasAPI.logAudit('logout', 'lapor_sarpras_full', 'idle_timeout');
+      doLogout();
+    }
+  }, 1000);
+}
+function resetIdle() { idleSec = AUTO_LOGOUT_MIN * 60; }
+document.addEventListener('mousemove', resetIdle);
+document.addEventListener('keypress', resetIdle);
+document.addEventListener('scroll', resetIdle);
+
+window.addEventListener('DOMContentLoaded', function() {
+  var inp = document.getElementById('pwdInput');
+  if (inp) {
+    inp.addEventListener('keypress', function(e){ if (e.key==='Enter') checkPassword(); });
+    inp.focus();
+  }
+  if (sessionStorage.getItem('lapor_unlocked')==='1') unlockContent();
+});
+
+(function(){ if (localStorage.getItem('gkpi-theme')==='dark') document.body.classList.add('dark-mode'); })();
+document.getElementById('btnDark').addEventListener('click', function(){
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('gkpi-theme', document.body.classList.contains('dark-mode')?'dark':'light');
+});
+document.getElementById('btnRefresh').addEventListener('click', function(){ SarprasAPI.clearCache(); loadData(); });
+document.getElementById('btnPdf').addEventListener('click', function(){
+  var el = document.getElementById('mainContent');
+  document.querySelectorAll('.btn-tool, .admin-banner button, .admin-banner a').forEach(function(b){ b.style.visibility='hidden'; });
+  html2pdf().set({ margin:[8,8,8,8], filename:'GKPI_Lapor_Sarpras_Admin.pdf', image:{type:'jpeg',quality:.95}, html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff'}, jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}, pagebreak:{mode:['avoid-all','css','legacy']} }).from(el).save().then(function(){
+    document.querySelectorAll('.btn-tool, .admin-banner button, .admin-banner a').forEach(function(b){ b.style.visibility='visible'; });
+  });
+  if (SarprasAPI.logAudit) SarprasAPI.logAudit('export_pdf', 'lapor_sarpras_full', '');
+});
+
+function getField(obj, possibleKeys) {
+  for (var i = 0; i < possibleKeys.length; i++) {
+    if (obj[possibleKeys[i]] !== undefined && obj[possibleKeys[i]] !== '') return obj[possibleKeys[i]];
+  }
+  var keyword = possibleKeys[0].toLowerCase();
+  var allKeys = Object.keys(obj);
+  for (var j = 0; j < allKeys.length; j++) {
+    if (allKeys[j].toLowerCase().indexOf(keyword) !== -1) return obj[allKeys[j]];
+  }
+  return '';
+}
+
+function badgePrio(p){
+  var c = String(p||'').toLowerCase();
+  var cls = 'badge bg-secondary';
+  if (c.indexOf('kritis')!==-1) cls = 'badge badge-kritis';
+  else if (c.indexOf('tinggi')!==-1) cls = 'badge badge-tinggi';
+  else if (c.indexOf('sedang')!==-1) cls = 'badge badge-sedang';
+  else if (c.indexOf('rendah')!==-1) cls = 'badge badge-rendah';
+  return '<span class="'+cls+'">'+(p||'-')+'</span>';
+}
+
+function badgeStatus(s){
+  var c = String(s||'').toLowerCase();
+  var cls = 'badge bg-secondary';
+  if (c.indexOf('selesai')!==-1) cls = 'badge badge-selesai';
+  else if (c.indexOf('diproses')!==-1) cls = 'badge badge-diproses';
+  else if (c.indexOf('ditunda')!==-1 || c.indexOf('tertunda')!==-1) cls = 'badge badge-ditunda';
+  else if (c.indexOf('baru')!==-1) cls = 'badge badge-baru';
+  var clean = Utils.cleanStatus ? Utils.cleanStatus(s) : (s || '-');
+  return '<span class="'+cls+'">'+(clean||'-')+'</span>';
+}
+
+function extractDriveId(url){
+  if(!url) return null;
+  var s = String(url).trim();
+  var m = s.match(/\/file\/d\/([-\w]{25,})/);
+  if (m) return m[1];
+  m = s.match(/[?&]id=([-\w]{25,})/);
+  if (m) return m[1];
+  m = s.match(/open\?id=([-\w]{25,})/);
+  if (m) return m[1];
+  m = s.match(/[-\w]{25,}/);
+  return m ? m[0] : null;
+}
+
+function fotoCell(lampiran, status){
+  var rawText = String(lampiran || '').trim();
+  if (!rawText) rawText = String(Utils.extractLink ? Utils.extractLink(status) || '' : '').trim();
+  if (!rawText) return '<span class="text-muted fst-italic" style="font-size:.85em;">- Tidak ada -</span>';
+  var urls = rawText.split(/\s*\|\s*|[\n]+|,(?=\s*https?:)/);
+  var fotoList = [];
+  for (var i = 0; i < urls.length; i++) {
+    var u = urls[i].trim();
+    if (!u) continue;
+    var id = extractDriveId(u);
+    if (id) fotoList.push('https://drive.google.com/thumbnail?id=' + id + '&sz=w400');
+  }
+  if (fotoList.length === 0) return '<span class="text-muted fst-italic" style="font-size:.85em;">- Tidak ada -</span>';
+  var html = '<div style="display:flex;flex-wrap:wrap;gap:4px;max-width:140px;">';
+  for (var j = 0; j < fotoList.length; j++) {
+    var urlEsc = fotoList[j].replace(/'/g, "\\'");
+    html += '<img src="' + fotoList[j] + '" onclick="openFotoLightbox(\'' + urlEsc + '\')" style="width:60px;height:60px;border-radius:6px;cursor:pointer;border:2px solid #ddd;object-fit:cover;" onmouseover="this.style.borderColor=\'#1e3a8a\'" onmouseout="this.style.borderColor=\'#ddd\'" />';
+  }
+  html += '</div>';
+  if (fotoList.length > 1) html += '<small class="text-muted" style="display:block;margin-top:4px;font-size:.7em;">&#128247; ' + fotoList.length + ' foto</small>';
+  return html;
+}
+
+function openFotoLightbox(url) {
+  document.getElementById('fotoLightboxImg').src = url;
+  document.getElementById('fotoLightbox').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeFotoLightbox(e) {
+  if (e && e.target && e.target.id === 'fotoLightboxImg') return;
+  document.getElementById('fotoLightbox').classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeFotoLightbox(); });
+
+async function loadData() {
+  try {
+    var data = await SarprasAPI.fetch('all', true);
+    var lapor = (data.lapor || []).filter(function(x){ return x['Deskripsi Kerusakan'] || x.Deskripsi; });
+    LAPOR_DATA = lapor;
+    var total = lapor.length;
+    var baru = lapor.filter(function(x){ return /baru/i.test(Utils.cleanStatus ? Utils.cleanStatus(x.Status) : x.Status); }).length;
+    var diproses = lapor.filter(function(x){ return /diproses/i.test(Utils.cleanStatus ? Utils.cleanStatus(x.Status) : x.Status); }).length;
+    var ditunda = lapor.filter(function(x){ return /(di|ter)tunda/i.test(Utils.cleanStatus ? Utils.cleanStatus(x.Status) : x.Status); }).length;
+    var selesai = lapor.filter(function(x){ return /selesai/i.test(Utils.cleanStatus ? Utils.cleanStatus(x.Status) : x.Status); }).length;
+    var totalBiaya = lapor.reduce(function(s, x){ var v = Number(x['Biaya Perbaikan']) || 0; return s + v; }, 0);
+
+    document.getElementById('kpiArea').innerHTML =
+      '<div class="row g-3">' +
+      '<div class="col-md-2"><div class="card-kpi p-3" style="border-top:4px solid #1e3a8a;"><div class="label">Total</div><div class="num" style="color:#1e3a8a;">'+total+'</div></div></div>' +
+      '<div class="col-md-2"><div class="card-kpi p-3" style="border-top:4px solid #0d6efd;"><div class="label">Baru</div><div class="num" style="color:#0d6efd;">'+baru+'</div></div></div>' +
+      '<div class="col-md-2"><div class="card-kpi p-3" style="border-top:4px solid #17a2b8;"><div class="label">Diproses</div><div class="num" style="color:#17a2b8;">'+diproses+'</div></div></div>' +
+      '<div class="col-md-2"><div class="card-kpi p-3" style="border-top:4px solid #6c757d;"><div class="label">Ditunda</div><div class="num" style="color:#6c757d;">'+ditunda+'</div></div></div>' +
+      '<div class="col-md-1"><div class="card-kpi p-3" style="border-top:4px solid #28a745;"><div class="label">Selesai</div><div class="num" style="color:#28a745;">'+selesai+'</div></div></div>' +
+      '<div class="col-md-3"><div class="card-kpi p-3" style="border-top:4px solid #6f42c1;"><div class="label">Total Biaya</div><div class="num" style="color:#6f42c1;font-size:1.2rem;">'+Utils.formatRupiah(totalBiaya)+'</div></div></div>' +
+      '</div>';
+
+    var prioCount = {};
+    lapor.forEach(function(x){ var p = String(x.Prioritas || 'Lainnya').trim(); prioCount[p] = (prioCount[p]||0) + 1; });
+    var prioLabels = Object.keys(prioCount);
+    var prioValues = Object.values(prioCount);
+    var prioColors = prioLabels.map(function(p){
+      var pp = p.toLowerCase();
+      if (pp.indexOf('kritis')!==-1) return '#dc3545';
+      if (pp.indexOf('tinggi')!==-1) return '#fd7e14';
+      if (pp.indexOf('sedang')!==-1) return '#ffc107';
+      if (pp.indexOf('rendah')!==-1) return '#28a745';
+      return '#6c757d';
+    });
+
+    document.getElementById('chartArea').style.display = 'block';
+    if (chartPrioInstance) chartPrioInstance.destroy();
+    chartPrioInstance = new Chart(document.getElementById('chartPrio'), {
+      type: 'doughnut',
+      data: { labels: prioLabels, datasets: [{ data: prioValues, backgroundColor: prioColors }] },
+      options: { responsive: true, plugins: { legend: { position: 'top' } } }
+    });
+
+    var lokasiSet = {}, picSet = {};
+    lapor.forEach(function(x){
+      if (x.Lokasi) lokasiSet[x.Lokasi] = true;
+      var pic = x.PIC || '';
+      if (pic) picSet[pic] = true;
+    });
+    (data.keanggotaan || []).forEach(function(m){ if (m.Nama) picSet[m.Nama] = true; });
+
+    var dlLokasi = document.getElementById('lokasiList');
+    dlLokasi.innerHTML = '';
+    Object.keys(lokasiSet).sort().forEach(function(l){ var o=document.createElement('option'); o.value=l; dlLokasi.appendChild(o); });
+    var dlPic = document.getElementById('picList');
+    dlPic.innerHTML = '';
+    Object.keys(picSet).sort().forEach(function(p){ var o=document.createElement('option'); o.value=p; dlPic.appendChild(o); });
+
+    renderTable(lapor);
+    document.getElementById('tableArea').style.display = 'block';
+
+    var t = SarprasAPI.getLastUpdate('all');
+    document.getElementById('tsArea').textContent = t ? 'Update: '+t.toLocaleString('id-ID') : '-';
+  } catch (err) {
+    document.getElementById('kpiArea').innerHTML = '<div class="alert alert-danger">&#9888;&#65039; Gagal memuat: '+err.message+'</div>';
+    console.error(err);
+  }
+}
+
+function renderTable(lapor) {
+  var html = '';
+  lapor.forEach(function(x, i){
+    var biaya = Number(x['Biaya Perbaikan']);
+    var biayaStr = (biaya && !isNaN(biaya)) ? Utils.formatRupiah(biaya) : (x['Biaya Perbaikan'] || '-');
+    var tglLapor = getField(x, ['Tanggal Laporan', 'Tanggal Laporan\n(yyyy/mm/dd)', 'TanggalLaporan']);
+    var tglSelesai = getField(x, ['Tanggal Selesai', 'TanggalSelesai']);
+    var deskripsi = getField(x, ['Deskripsi Kerusakan', 'Deskripsi']);
+    var lampiran = getField(x, ['Lampiran foto kerusakan', 'Lampiran Foto', 'Foto']);
+    html += '<tr data-row="'+x._rowIndex+'">'+
+      '<td>'+(x.No || (i+1))+'</td>'+
+      '<td>'+(Utils.formatDate(tglLapor) || '-')+'</td>'+
+      '<td><small>'+(deskripsi || '-')+'</small></td>'+
+      '<td>'+(x.Lokasi || '-')+'</td>'+
+      '<td>'+badgePrio(x.Prioritas)+'</td>'+
+      '<td>'+badgeStatus(x.Status)+'</td>'+
+      '<td class="text-center">'+fotoCell(lampiran, x.Status)+'</td>'+
+      '<td>'+(x.PIC || '-')+'</td>'+
+      '<td>'+(Utils.formatDate(tglSelesai) || '-')+'</td>'+
+      '<td>'+biayaStr+'</td>'+
+      '<td><small>'+(x.Catatan || '-')+'</small></td>'+
+      '<td class="text-center" style="white-space:nowrap;">'+
+        '<button class="btn btn-sm btn-warning me-1 btn-edit" data-row="'+x._rowIndex+'" title="Edit">&#9999;&#65039;</button>'+
+        '<button class="btn btn-sm btn-danger btn-delete" data-row="'+x._rowIndex+'" title="Hapus">&#128465;&#65039;</button>'+
+      '</td>'+
+      '</tr>';
+  });
+  document.getElementById('tblLaporBody').innerHTML = html;
+}
+
+document.getElementById('tblLaporBody').addEventListener('click', function(e) {
+  var btnEdit = e.target.closest('.btn-edit');
+  var btnDel = e.target.closest('.btn-delete');
+  if (btnEdit) {
+    var rowIdx = Number(btnEdit.getAttribute('data-row'));
+    openEditModal(rowIdx);
+  }
+  if (btnDel) {
+    var rowIdx = Number(btnDel.getAttribute('data-row'));
+    var item = LAPOR_DATA.find(function(x){ return Number(x._rowIndex)===rowIdx; });
+    var nama = item ? (item['Deskripsi Kerusakan'] || item.Deskripsi || 'Laporan') : '';
+    confirmDelete(rowIdx, nama);
+  }
+});
+
+function applyFilters() {
+  var search = document.getElementById('searchLapor').value.toLowerCase();
+  var prio = document.getElementById('filterPrio').value;
+  var stat = document.getElementById('filterStat').value;
+  var filtered = LAPOR_DATA.filter(function(x){
+    var deskripsi = getField(x, ['Deskripsi Kerusakan', 'Deskripsi']);
+    var hay = (String(deskripsi||'')+' '+String(x.Lokasi||'')+' '+String(x.PIC||'')+' '+String(x.Catatan||'')).toLowerCase();
+    if (search && hay.indexOf(search)===-1) return false;
+    if (prio && String(x.Prioritas||'') !== prio) return false;
+    if (stat) {
+      var cleanStat = Utils.cleanStatus ? Utils.cleanStatus(x.Status) : x.Status;
+      if (String(cleanStat||'').toLowerCase().indexOf(stat.toLowerCase()) === -1) return false;
+    }
+    return true;
+  });
+  renderTable(filtered);
+}
+['searchLapor','filterPrio','filterStat'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', applyFilters);
+  document.getElementById(id).addEventListener('change', applyFilters);
+});
+
+function resetFilters() {
+  document.getElementById('searchLapor').value = '';
+  document.getElementById('filterPrio').value = '';
+  document.getElementById('filterStat').value = '';
+  renderTable(LAPOR_DATA);
+}
+
+function openEditModal(rowIndex) {
+  var item = LAPOR_DATA.find(function(x){ return Number(x._rowIndex)===rowIndex; });
+  if (!item) { alert('Data tidak ditemukan. Refresh halaman dulu.'); return; }
+  document.getElementById('editRowIndex').value = rowIndex;
+  document.getElementById('editNo').value = item.No || '';
+  var tglLapor = getField(item, ['Tanggal Laporan', 'Tanggal Laporan\n(yyyy/mm/dd)']);
+  document.getElementById('editTanggalLapor').value = Utils.formatDate(tglLapor) || tglLapor || '-';
+  document.getElementById('editDeskripsi').value = getField(item, ['Deskripsi Kerusakan', 'Deskripsi']) || '';
+  document.getElementById('editLokasi').value = item.Lokasi || '';
+  document.getElementById('editPrioritas').value = item.Prioritas || '';
+  var status = Utils.cleanStatus ? Utils.cleanStatus(item.Status) : (item.Status || 'Baru');
+  var statusOpt = ['Baru','Diproses','Selesai','Ditunda'];
+  var matched = statusOpt.find(function(s){ return String(status).toLowerCase().indexOf(s.toLowerCase()) !== -1; });
+  document.getElementById('editStatus').value = matched || 'Baru';
+  document.getElementById('editPIC').value = item.PIC || '';
+  var tglSelesai = getField(item, ['Tanggal Selesai']);
+  if (tglSelesai) {
+    var d = parseDate(tglSelesai);
+    document.getElementById('editTanggalSelesai').value = d ? d.toISOString().split('T')[0] : '';
+  } else {
+    document.getElementById('editTanggalSelesai').value = '';
+  }
+  document.getElementById('editBiaya').value = Number(item['Biaya Perbaikan']) || '';
+  document.getElementById('editCatatan').value = item.Catatan || '';
+  document.getElementById('modalEdit').classList.add('show');
+}
+
+function closeEditModal() { document.getElementById('modalEdit').classList.remove('show'); }
+
+function onStatusChange() {
+  var status = document.getElementById('editStatus').value;
+  var tglField = document.getElementById('editTanggalSelesai');
+  if (status === 'Selesai' && !tglField.value) tglField.value = new Date().toISOString().split('T')[0];
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  str = String(str).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) return new Date(str.split(' ')[0] + 'T00:00:00');
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
+    var parts = str.split('/');
+    var p1 = Number(parts[0]), p2 = Number(parts[1]), p3 = Number(parts[2]);
+    return p1 > 12 ? new Date(p3, p2-1, p1) : new Date(p3, p1-1, p2);
+  }
+  var d = new Date(str);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+async function saveEdit() {
+  var btn = document.getElementById('btnSaveEdit');
+  var rowIdx = Number(document.getElementById('editRowIndex').value);
+  var data = {
+    'Status': document.getElementById('editStatus').value,
+    'PIC': document.getElementById('editPIC').value,
+    'Tanggal Selesai': document.getElementById('editTanggalSelesai').value,
+    'Biaya Perbaikan': document.getElementById('editBiaya').value,
+    'Catatan': document.getElementById('editCatatan').value
+  };
+  btn.disabled = true;
+  btn.innerHTML = 'Menyimpan...';
+  try {
+    await SarprasAPI.post({ action: 'update_lapor', rowIndex: rowIdx, data: data });
+    if (SarprasAPI.logAudit) SarprasAPI.logAudit('update_lapor', 'lapor_sarpras_full', 'rowIndex=' + rowIdx);
+    closeEditModal();
+    alert('OK Laporan berhasil diupdate');
+    await loadData();
+  } catch (err) { alert('Gagal: ' + err.message); }
+  finally { btn.disabled = false; btn.innerHTML = '&#128190; Simpan'; }
+}
+
+async function confirmDelete(rowIdx, nama) {
+  var preview = String(nama || '').substring(0, 60);
+  if (!confirm('Yakin hapus laporan?\n\n"' + preview + '..."\n\nTIDAK bisa di-undo!')) return;
+  try {
+    await SarprasAPI.post({ action: 'delete_lapor', rowIndex: rowIdx });
+    if (SarprasAPI.logAudit) SarprasAPI.logAudit('delete_lapor', 'lapor_sarpras_full', preview);
+    alert('OK Laporan dihapus');
+    await loadData();
+  } catch (err) { alert('Gagal hapus: ' + err.message); }
+}
+
+function openCreateModal() {
+  fotoCollectorCreate = [];
+  document.getElementById('createTanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('createPrioritas').value = 'Tinggi';
+  document.getElementById('createDeskripsi').value = '';
+  document.getElementById('createLokasi').value = '';
+  document.getElementById('createPIC').value = '';
+  document.getElementById('createFotoLinks').value = '';
+  document.getElementById('createFotoFile').value = '';
+  renderFotoPreview();
+  document.getElementById('modalCreate').classList.add('show');
+}
+
+function closeCreateModal() { document.getElementById('modalCreate').classList.remove('show'); }
+
+function compressImage(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var maxW = 1200;
+        var w = img.width, h = img.height;
+        if (w > maxW) { h = h * (maxW / w); w = maxW; }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = ev.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function addFotoCreate() {
+  var linksText = document.getElementById('createFotoLinks').value || '';
+  var lines = linksText.split(/[\n,]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s; });
+  lines.forEach(function(link){ fotoCollectorCreate.push({ type: 'drive', url: link }); });
+  var fileInput = document.getElementById('createFotoFile');
+  var files = fileInput.files;
+  if (files && files.length > 0) {
+    for (var i = 0; i < files.length; i++) {
+      try {
+        var dataUrl = await compressImage(files[i]);
+        fotoCollectorCreate.push({ type: 'base64', url: dataUrl });
+      } catch(e) { console.error('Compress error:', e); }
+    }
+  }
+  document.getElementById('createFotoLinks').value = '';
+  document.getElementById('createFotoFile').value = '';
+  renderFotoPreview();
+}
+
+function renderFotoPreview() {
+  var c = document.getElementById('createFotoPreview');
+  if (fotoCollectorCreate.length === 0) {
+    c.innerHTML = '<small class="text-muted">Belum ada foto. Tambahkan link Drive atau upload file.</small>';
+    return;
+  }
+  var html = '';
+  fotoCollectorCreate.forEach(function(f, i){
+    var url;
+    if (f.type === 'base64') { url = f.url; }
+    else {
+      var id = extractDriveId(f.url);
+      url = id ? ('https://drive.google.com/thumbnail?id=' + id + '&sz=w400') : f.url;
+    }
+    html += '<div class="foto-preview-item">';
+    html += '<img src="' + url + '" />';
+    html += '<button class="remove-btn" onclick="removeFotoCreate(' + i + ')" title="Hapus">&times;</button>';
+    html += '</div>';
+  });
+  c.innerHTML = html;
+}
+
+function removeFotoCreate(idx) {
+  fotoCollectorCreate.splice(idx, 1);
+  renderFotoPreview();
+}
+
+async function saveCreate() {
+  var btn = document.getElementById('btnSaveCreate');
+  var tgl = document.getElementById('createTanggal').value;
+  var prio = document.getElementById('createPrioritas').value;
+  var deskripsi = document.getElementById('createDeskripsi').value.trim();
+  var lokasi = document.getElementById('createLokasi').value.trim();
+  var pic = document.getElementById('createPIC').value.trim();
+  if (!tgl) { alert('Tanggal wajib diisi'); return; }
+  if (!deskripsi) { alert('Deskripsi kerusakan wajib diisi'); return; }
+  if (!lokasi) { alert('Lokasi wajib diisi'); return; }
+  var data = {
+    'Tanggal Laporan': tgl,
+    'Deskripsi Kerusakan': deskripsi,
+    'Lokasi': lokasi,
+    'Prioritas': prio,
+    'Status': 'Baru',
+    'PIC': pic,
+    foto: JSON.stringify(fotoCollectorCreate)
+  };
+  btn.disabled = true;
+  btn.innerHTML = 'Menyimpan...';
+  try {
+    await SarprasAPI.post({ action: 'add_lapor', data: data });
+    if (SarprasAPI.logAudit) SarprasAPI.logAudit('add_lapor', 'lapor_sarpras_full', deskripsi.substring(0, 60));
+    closeCreateModal();
+    alert('OK Laporan berhasil dibuat!\nDeskripsi: ' + deskripsi.substring(0, 80));
+    await loadData();
+  } catch (err) { alert('Gagal menyimpan: ' + err.message); }
+  finally { btn.disabled = false; btn.innerHTML = '&#128190; Simpan Laporan'; }
+}
+</script>
+
+</body>
+</html>

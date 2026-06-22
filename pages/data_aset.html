@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Data Aset - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1e3a8a; --accent:#fbbf24; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#2563eb);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#1e40af);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; transition:.25s; }
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px; background:var(--sidebar-bg); color:#fff; padding:20px 0; overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px; padding:10px 14px; color:#cfd9e6; text-decoration:none; border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#1e293b; font-weight:600; }
+  .sidebar nav a .icon { width:22px; text-align:center; font-size:1.1rem; display:inline-block; line-height:1; }
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text); border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+  .card-kpi { border:1px solid var(--border); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); background:var(--card-bg); color:var(--text); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+  .table { color:var(--text); background:var(--card-bg); }
+  .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; z-index:1; }
+  .table-wrap { max-height:500px; overflow:auto; border-radius:8px; border:1px solid var(--border); }
+  body.dark-mode .table { --bs-table-bg:transparent; --bs-table-color:var(--text); --bs-table-hover-bg:rgba(255,255,255,.05); --bs-table-hover-color:#fff; --bs-table-border-color:var(--border); }
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text); border:1px solid var(--input-border); }
+  .form-control:focus, .form-select:focus { background:var(--input-bg); color:var(--input-text); border-color:var(--primary); box-shadow:0 0 0 .2rem rgba(30,58,138,.15); }
+  .footer { text-align:center; padding:20px; color:var(--muted); font-size:.85rem; margin-top:30px; }
+  .badge-baik { background:#28a745; }
+  .badge-ringan { background:#ffc107; color:#000; }
+  .badge-berat { background:#dc3545; }
+  .spinner-load { width:40px; height:40px; border:4px solid #e6e9ee; border-top-color:var(--primary); border-radius:50%; margin:2rem auto; animation:spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+  @media print {
+    .sidebar, .topbar .btn-tool, .no-print { display:none !important; }
+    .main { margin-left:0; }
+    .table-wrap { max-height:none !important; overflow:visible !important; }
+    @page { size: A4 landscape; margin: 0.8cm; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo" />
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a href="../dashboard.html"><span class="icon">🏠</span> Beranda</a>
+    <a class="active" href="data_aset.html"><span class="icon">📦</span> Data Aset</a>
+    <a href="input_aset.html"><span class="icon">➕</span> Input Aset</a>
+    <a href="jadwal_pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a>
+    <a href="lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a>
+    <a href="anggaran.html"><span class="icon">💰</span> Anggaran</a>
+    <a href="keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a>
+    <a href="laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a>
+    <a href="laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="topbar">
+    <div>
+      <h4>📦 Data Aset</h4>
+      <small>Dashboard Sarana &amp; Prasarana</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <a class="btn-tool" href="data_aset_full.html" style="background:#fbbf24;color:#1e293b;font-weight:600;text-decoration:none;border-color:#fbbf24;">🔒 Lihat Data Lengkap</a>
+      <button class="btn-tool" id="btnRefresh">🔄</button>
+      <button class="btn-tool" id="btnPdf">📄 PDF</button>
+      <button class="btn-tool" id="btnDark">🌓</button>
+      <small class="text-muted ms-2" id="tsArea">Memuat...</small>
+    </div>
+  </div>
+
+  <div id="kpiArea">
+    <div class="text-center py-5"><div class="spinner-load"></div><p class="text-muted">Memuat data aset...</p></div>
+  </div>
+
+  <div class="row g-3 mt-1" id="chartArea" style="display:none;">
+    <div class="col-md-6">
+      <div class="card card-kpi p-3"><h6>🥧 Distribusi Kondisi Aset</h6><canvas id="chartKondisi" style="max-height:280px;"></canvas></div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-kpi p-3"><h6>📊 Jumlah Aset per Kategori</h6><canvas id="chartKategori" style="max-height:280px;"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card card-kpi p-3 mt-3" id="tableArea" style="display:none;">
+    <h6>📋 Daftar Aset</h6>
+    <div class="row g-2 mb-3">
+      <div class="col-md-5"><input id="searchAset" class="form-control" placeholder="🔍 Cari aset..." /></div>
+      <div class="col-md-3"><select id="filterKategori" class="form-select"><option value="">Semua Kategori</option></select></div>
+      <div class="col-md-2"><select id="filterLokasi" class="form-select"><option value="">Semua Lokasi</option></select></div>
+      <div class="col-md-2"><select id="filterKondisi" class="form-select">
+        <option value="">Semua Kondisi</option>
+        <option value="Baik">Baik</option>
+        <option value="Rusak Ringan">Rusak Ringan</option>
+        <option value="Rusak Berat">Rusak Berat</option>
+      </select></div>
+    </div>
+    <div class="table-wrap">
+      <table class="table table-hover table-bordered align-middle" id="tblAset">
+        <thead>
+          <tr>
+            <th>No Aset</th>
+            <th>Nama Aset</th>
+            <th>Kategori</th>
+            <th>Lokasi</th>
+            <th>Kondisi</th>
+            <th>Tahun Perolehan</th>
+            <th>Jumlah Unit</th>
+            <th>Spesifikasi/Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="tblAsetBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">© 2026 GKPI Jemaat Khusus Depok · Dashboard otomatis</div>
+</main>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/utils.js"></script>
+
+<script>
+(function(){ if (localStorage.getItem('gkpi-theme')==='dark') document.body.classList.add('dark-mode'); })();
+document.getElementById('btnDark').addEventListener('click', function(){
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('gkpi-theme', document.body.classList.contains('dark-mode')?'dark':'light');
+});
+document.getElementById('btnRefresh').addEventListener('click', function(){ SarprasAPI.clearCache(); location.reload(); });
+document.getElementById('btnPdf').addEventListener('click', function(){
+  var el = document.getElementById('mainContent');
+  var wasDark = document.body.classList.contains('dark-mode');
+  if (wasDark) document.body.classList.remove('dark-mode');
+  document.querySelectorAll('.btn-tool').forEach(function(b){ b.style.visibility='hidden'; });
+  var opt = { margin:[8,8,8,8], filename:'GKPI_Data_Aset.pdf', image:{type:'jpeg',quality:.95}, html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff'}, jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}, pagebreak:{mode:['avoid-all','css','legacy']} };
+  html2pdf().set(opt).from(el).save().then(function(){
+    document.querySelectorAll('.btn-tool').forEach(function(b){ b.style.visibility='visible'; });
+    if (wasDark) document.body.classList.add('dark-mode');
+  });
+});
+
+function badgeKondisi(k){
+  var c = String(k||'').toLowerCase();
+  var cls = 'badge bg-secondary';
+  if (c.indexOf('baik') !== -1) cls = 'badge badge-baik';
+  else if (c.indexOf('ringan') !== -1) cls = 'badge badge-ringan';
+  else if (c.indexOf('berat') !== -1) cls = 'badge badge-berat';
+  return '<span class="'+cls+'">'+(k||'-')+'</span>';
+}
+
+function attachSearch(inputId, tableId){
+  document.getElementById(inputId).addEventListener('keyup', function(){
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(tr){
+      tr.style.display = tr.innerText.toLowerCase().indexOf(q)!==-1 ? '' : 'none';
+    });
+  });
+}
+
+function attachSelectFilter(selectId, tableId, colIndex){
+  document.getElementById(selectId).addEventListener('change', function(){
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(tr){
+      if(!q){ tr.style.display=''; return; }
+      var c = tr.children[colIndex];
+      tr.style.display = c && c.innerText.toLowerCase().indexOf(q)!==-1 ? '' : 'none';
+    });
+  });
+}
+
+async function loadData(){
+  try {
+    var data = await SarprasAPI.fetch('all');
+    var aset = (data.data_aset || []).filter(function(x){ return x['Nama Aset']; });
+
+    var total = aset.length;
+    var baik = aset.filter(function(x){ return /baik/i.test(x.Kondisi); }).length;
+    var ringan = aset.filter(function(x){ return /ringan/i.test(x.Kondisi); }).length;
+    var berat = aset.filter(function(x){ return /berat/i.test(x.Kondisi); }).length;
+
+    var kategoriSet = {}, lokasiSet = {};
+    aset.forEach(function(x){
+      if (x.Kategori) kategoriSet[x.Kategori] = (kategoriSet[x.Kategori]||0) + 1;
+      if (x.Lokasi) lokasiSet[x.Lokasi] = true;
+    });
+
+    document.getElementById('kpiArea').innerHTML =
+      '<div class="row g-3">' +
+      '<div class="col-md-3"><div class="card card-kpi p-3" style="border-top:4px solid #1e3a8a;"><div class="d-flex justify-content-between"><div><div class="label">Total Aset</div><div class="num" style="color:#1e3a8a;">'+total+'</div></div><span style="font-size:1.8rem;opacity:.5;">📦</span></div></div></div>' +
+      '<div class="col-md-3"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;"><div class="d-flex justify-content-between"><div><div class="label">Kondisi Baik</div><div class="num" style="color:#28a745;">'+baik+'</div></div><span style="font-size:1.8rem;opacity:.5;">✅</span></div></div></div>' +
+      '<div class="col-md-3"><div class="card card-kpi p-3" style="border-top:4px solid #ffc107;"><div class="d-flex justify-content-between"><div><div class="label">Rusak Ringan</div><div class="num" style="color:#ffc107;">'+ringan+'</div></div><span style="font-size:1.8rem;opacity:.5;">⚠️</span></div></div></div>' +
+      '<div class="col-md-3"><div class="card card-kpi p-3" style="border-top:4px solid #dc3545;"><div class="d-flex justify-content-between"><div><div class="label">Rusak Berat</div><div class="num" style="color:#dc3545;">'+berat+'</div></div><span style="font-size:1.8rem;opacity:.5;">❌</span></div></div></div>' +
+      '</div>';
+
+    document.getElementById('chartArea').style.display = 'flex';
+    var kondData = [baik, ringan, berat].filter(function(v){ return v>0; });
+    var kondLabel = ['Baik','Rusak Ringan','Rusak Berat'].filter(function(_,i){ return [baik,ringan,berat][i]>0; });
+    new Chart(document.getElementById('chartKondisi'), {
+      type:'doughnut',
+      data:{ labels: kondLabel, datasets:[{ data:kondData, backgroundColor:['#28a745','#ffc107','#dc3545'] }] },
+      options:{ responsive:true, plugins:{ legend:{position:'top'} } }
+    });
+
+    new Chart(document.getElementById('chartKategori'), {
+      type:'bar',
+      data:{ labels: Object.keys(kategoriSet), datasets:[{ label:'Jumlah Aset', data: Object.values(kategoriSet), backgroundColor:'#1e3a8a' }] },
+      options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } } }
+    });
+
+    var fk = document.getElementById('filterKategori');
+    Object.keys(kategoriSet).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.text=k; fk.appendChild(o); });
+    var fl = document.getElementById('filterLokasi');
+    Object.keys(lokasiSet).forEach(function(l){ var o=document.createElement('option'); o.value=l; o.text=l; fl.appendChild(o); });
+
+    var html = '';
+    aset.forEach(function(x, i){
+      var spec = String(x['Spesifikasi Teknis/Keterangan']||'-').replace(/\n/g,'<br>');
+      html += '<tr>'+
+        '<td>'+(x['No Aset'] || (i+1))+'</td>'+
+        '<td>'+(x['Nama Aset'] || '-')+'</td>'+
+        '<td>'+(x.Kategori || '-')+'</td>'+
+        '<td>'+(x.Lokasi || '-')+'</td>'+
+        '<td>'+badgeKondisi(x.Kondisi)+'</td>'+
+        '<td>'+(x['Tahun Perolehan'] || '-')+'</td>'+
+        '<td>'+(x['Jumlah Unit'] || '-')+'</td>'+
+        '<td><small>'+spec+'</small></td>'+
+        '</tr>';
+    });
+    document.getElementById('tblAsetBody').innerHTML = html;
+    document.getElementById('tableArea').style.display = 'block';
+
+    attachSearch('searchAset','tblAset');
+    attachSelectFilter('filterKategori','tblAset',2);
+    attachSelectFilter('filterLokasi','tblAset',3);
+    attachSelectFilter('filterKondisi','tblAset',4);
+
+    var t = SarprasAPI.getLastUpdate('all');
+    document.getElementById('tsArea').textContent = t ? 'Update: '+t.toLocaleString('id-ID') : '-';
+
+  } catch (err){
+    document.getElementById('kpiArea').innerHTML = '<div class="alert alert-danger text-center">⚠️ Gagal memuat: '+err.message+'<br><button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">🔄 Coba Lagi</button></div>';
+    console.error(err);
+  }
+}
+loadData();
+</script>
+</body>
+</html>

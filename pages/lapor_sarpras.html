@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lapor Sarpras - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1e3a8a; --accent:#fbbf24; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#2563eb);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#1e40af);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:'Segoe UI',sans-serif; transition:.25s; }
+
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px;
+             background:var(--sidebar-bg); color:#fff; padding:20px 0;
+             overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px;
+                    border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px;
+                   padding:10px 14px; color:#cfd9e6; text-decoration:none;
+                   border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#1e293b; font-weight:600; }
+  .sidebar nav a i { width:18px; text-align:center; }
+  .sidebar nav a .icon {
+  width: 22px;
+  text-align: center;
+  font-size: 1.1rem;
+  display: inline-block;
+  line-height: 1;}
+
+
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text);
+            border-radius:12px; padding:14px 20px; margin-bottom:20px;
+            display:flex; align-items:center; justify-content:space-between;
+            box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text);
+                      border:1px solid var(--border); border-radius:8px;
+                      padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+
+  .card-kpi { border:1px solid var(--border); border-radius:12px;
+              box-shadow:0 2px 8px rgba(0,0,0,.06);
+              background:var(--card-bg); color:var(--text); transition:.15s; }
+  .card-kpi:hover { transform:translateY(-2px); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+
+  .table { color:var(--text); background:var(--card-bg); }
+  .table thead th { background:var(--primary); color:#fff; position:sticky; top:0; z-index:1; }
+  .table-wrap { max-height:480px; overflow:auto; border-radius:8px;
+                border:1px solid var(--border); }
+  body.dark-mode .table { --bs-table-bg:transparent;
+                          --bs-table-color:var(--text);
+                          --bs-table-hover-bg:rgba(255,255,255,.05);
+                          --bs-table-hover-color:#fff;
+                          --bs-table-striped-bg:rgba(255,255,255,.03);
+                          --bs-table-border-color:var(--border); }
+
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text);
+                                border:1px solid var(--input-border); }
+  .form-control:focus, .form-select:focus { background:var(--input-bg);
+                                            color:var(--input-text);
+                                            border-color:var(--primary);
+                                            box-shadow:0 0 0 .2rem rgba(30,58,138,.15); }
+
+  .footer { text-align:center; padding:20px; color:var(--muted);
+            font-size:.85rem; margin-top:30px; }
+
+  .badge-baik     { background:#28a745; }
+  .badge-ringan   { background:#ffc107; color:#000; }
+  .badge-berat    { background:#dc3545; }
+  .badge-kritis   { background:#dc3545; }
+  .badge-tinggi   { background:#fd7e14; }
+  .badge-sedang   { background:#ffc107; color:#000; }
+  .badge-rendah   { background:#28a745; }
+  .badge-baru     { background:#0d6efd; }
+  .badge-diproses { background:#17a2b8; }
+  .badge-selesai  { background:#28a745; }
+  .badge-ditunda  { background:#6c757d; }
+  .badge-tertunda { background:#6c757d; }
+  .badge-terjadwal{ background:#0d6efd; }
+  .badge-berjalan { background:#17a2b8; }
+
+  .spinner-load { width:40px;height:40px;border:4px solid #e6e9ee;
+                  border-top-color:var(--primary);border-radius:50%;
+                  margin:2rem auto;animation:spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+
+  /* PRINT */
+  @media print {
+    .sidebar,.topbar .btn-tool,.no-print { display:none !important; }
+    .main { margin-left:0; }
+    .table-wrap { max-height:none !important; overflow:visible !important; }
+    @page { size: A4 landscape; margin: 0.8cm; }
+  }
+
+  /* === FORCE LIMIT UKURAN FOTO DI TABEL === */
+#tblLapor td img {
+  max-width: 60px !important;
+  max-height: 60px !important;
+  width: 60px !important;
+  height: 60px !important;
+  object-fit: cover !important;
+  display: inline-block !important;
+}
+
+#tblLapor td:nth-child(7) {
+  width: 160px !important;
+  max-width: 160px !important;
+  min-width: 100px !important;
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo">
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a href="../dashboard.html"><span class="icon">🏠</span> Beranda</a>
+    <a href="data_aset.html"><span class="icon">📦</span> Data Aset</a>
+    <a href="input_aset.html"><span class="icon">➕</span> Input Aset</a>
+    <a href="jadwal_pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a>
+    <a class="active" href="lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a>
+    <a href="anggaran.html"><span class="icon">💰</span> Anggaran</a>
+    <a href="keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a>
+    <a href="laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a>
+    <a href="laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="topbar" id="topbar">
+    <div>
+      <h4>📣 Lapor Sarpras</h4>
+      <small>Dashboard Sarana &amp; Prasarana</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <a class="btn-tool" href="lapor_sarpras_full.html" style="background:#fbbf24;color:#1e293b;font-weight:600;text-decoration:none;border-color:#fbbf24;">🔒 Mode Admin</a>
+      <button class="btn-tool" id="btnRefresh" title="Refresh data dari Google Sheets"><i class="bi bi-arrow-clockwise"></i></button>
+      <button class="btn-tool" id="btnPdf" title="Export PDF"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+      <button class="btn-tool" id="btnDark" title="Toggle Dark Mode"><i class="bi bi-moon-stars" id="iconDark"></i></button>
+      <small class="text-muted ms-2" id="tsArea">Memuat...</small>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div id="kpiArea">
+    <div class="text-center py-5"><div class="spinner-load"></div><p class="text-muted">Memuat data laporan...</p></div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card card-kpi p-3 mt-3" id="chartArea" style="display:none;">
+    <h6><i class="bi bi-pie-chart-fill text-primary"></i> Distribusi Prioritas</h6>
+    <canvas id="chartPrio" style="max-height:300px;"></canvas>
+  </div>
+
+  <!-- Table -->
+  <div class="card card-kpi p-3 mt-3" id="tableArea" style="display:none;">
+    <h6><i class="bi bi-list-ul text-primary"></i> Daftar Laporan Kerusakan</h6>
+    <div class="row g-2 mb-3">
+      <div class="col-md-6"><input id="searchLapor" class="form-control" placeholder="🔍 Cari laporan..."></div>
+      <div class="col-md-3">
+        <select id="filterPrio" class="form-select">
+          <option value="">Semua Prioritas</option>
+          <option value="Kritis">Kritis</option>
+          <option value="Tinggi">Tinggi</option>
+          <option value="Sedang">Sedang</option>
+          <option value="Rendah">Rendah</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="filterStat" class="form-select">
+          <option value="">Semua Status</option>
+          <option value="Baru">Baru</option>
+          <option value="Diproses">Diproses</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditunda">Ditunda</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="table table-hover table-bordered align-middle" id="tblLapor">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal Laporan</th>
+            <th>Deskripsi Kerusakan</th>
+            <th>Lokasi</th>
+            <th>Prioritas</th>
+            <th>Status</th>
+            <th>Foto</th>
+            <th>PIC</th>
+            <th>Tanggal Selesai</th>
+            <th>Biaya Perbaikan</th>
+            <th>Catatan</th>
+          </tr>
+        </thead>
+        <tbody id="tblLaporBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Foto Modal -->
+  <div id="fotoModalLapor" class="foto-modal-lapor" onclick="tutupFotoModal(event)">
+    <span class="foto-modal-close" onclick="tutupFotoModal(event)">&times;</span>
+    <img id="fotoModalImg" class="foto-modal-img" src="" alt="Foto Kerusakan">
+    <div class="foto-modal-caption"><i class="bi bi-info-circle"></i> Klik di luar foto atau tekan ESC untuk menutup</div>
+  </div>
+
+  <div class="footer">© 2026 GKPI Jemaat Khusus Depok · Dashboard otomatis</div>
+</main>
+
+<style>
+.foto-modal-lapor{display:none;position:fixed;z-index:9999;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);justify-content:center;align-items:center;flex-direction:column;animation:fadeIn 0.3s ease-out;}
+.foto-modal-lapor.show{display:flex;}
+.foto-modal-img{max-width:90%;max-height:85%;border-radius:10px;box-shadow:0 15px 50px rgba(0,0,0,0.5);object-fit:contain;}
+.foto-modal-close{position:absolute;top:20px;right:35px;color:#fff;font-size:50px;font-weight:bold;cursor:pointer;user-select:none;line-height:1;}
+.foto-modal-close:hover{color:#ff6b6b;}
+.foto-modal-caption{color:#fff;margin-top:20px;font-size:0.9em;opacity:0.85;text-align:center;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+
+<!-- Scripts API -->
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/utils.js"></script>
+
+<script>
+// ===== Dark mode =====
+(function(){
+  if (localStorage.getItem('gkpi-theme') === 'dark') document.body.classList.add('dark-mode');
+  updateDarkIcon();
+})();
+function updateDarkIcon(){
+  var ic = document.getElementById('iconDark');
+  if (!ic) return;
+  ic.className = document.body.classList.contains('dark-mode') ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+document.getElementById('btnDark').addEventListener('click', function(){
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('gkpi-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  updateDarkIcon();
+});
+
+// ===== Refresh =====
+document.getElementById('btnRefresh').addEventListener('click', function(){
+  SarprasAPI.clearCache();
+  location.reload();
+});
+
+// ===== PDF Export =====
+document.getElementById('btnPdf').addEventListener('click', function(){
+  var el = document.getElementById('mainContent');
+  var wasDark = document.body.classList.contains('dark-mode');
+  if (wasDark) document.body.classList.remove('dark-mode');
+  document.querySelectorAll('.btn-tool').forEach(b => b.style.visibility='hidden');
+  var opt = {
+    margin: [8,8,8,8],
+    filename: 'GKPI_Lapor_Sarpras.pdf',
+    image: { type:'jpeg', quality:0.95 },
+    html2canvas: { scale:2, useCORS:true, backgroundColor:'#ffffff' },
+    jsPDF: { unit:'mm', format:'a4', orientation:'landscape' },
+    pagebreak: { mode:['avoid-all','css','legacy'] }
+  };
+  html2pdf().set(opt).from(el).save().then(function(){
+    document.querySelectorAll('.btn-tool').forEach(b => b.style.visibility='visible');
+    if (wasDark) document.body.classList.add('dark-mode');
+  });
+});
+
+// ===== Helpers =====
+function badgePrio(p){
+  var c = String(p||'').toLowerCase();
+  var cls = 'badge-secondary';
+  if (c.includes('kritis')) cls='badge-kritis';
+  else if (c.includes('tinggi')) cls='badge-tinggi';
+  else if (c.includes('sedang')) cls='badge-sedang';
+  else if (c.includes('rendah')) cls='badge-rendah';
+  return '<span class="badge '+cls+'">'+(p||'-')+'</span>';
+}
+function badgeStatus(s){
+  var c = String(s||'').toLowerCase();
+  var cls = 'badge-secondary';
+  if (c.includes('selesai')) cls='badge-selesai';
+  else if (c.includes('diproses')) cls='badge-diproses';
+  else if (c.includes('ditunda') || c.includes('tertunda')) cls='badge-ditunda';
+  else if (c.includes('baru')) cls='badge-baru';
+  var clean = Utils.cleanStatus(s);
+  return '<span class="badge '+cls+'">'+(clean||'-')+'</span>';
+}
+function extractDriveId(url){
+  if(!url) return null;
+  var m = String(url).match(/[-\w]{25,}/);
+  return m ? m[0] : null;
+}
+function fotoCell(lampiran, status){
+  var rawText = String(lampiran || '').trim();
+  if (!rawText) {
+    rawText = String(Utils.extractLink(status) || '').trim();
+  }
+  if (!rawText) {
+    return '<span class="text-muted fst-italic" style="font-size:.85em;">— Tidak ada foto —</span>';
+  }
+  
+  // Split multi URL: support separator " | ", koma, newline
+  var urls = rawText.split(/\s*\|\s*|[\n]+|,(?=\s*https?:)/);
+  var fotoList = [];
+  for (var i = 0; i < urls.length; i++) {
+    var u = urls[i].trim();
+    if (!u) continue;
+    var id = extractDriveId(u);
+    if (id) {
+      fotoList.push({
+        thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
+        view: 'https://drive.google.com/file/d/' + id + '/view'
+      });
+    }
+  }
+  
+  if (fotoList.length === 0) {
+    return '<span class="text-muted fst-italic" style="font-size:.85em;">— Tidak ada foto —</span>';
+  }
+  
+  // Render thumbnails (semua 60x60px, max-width container 140px)
+  var html = '<div style="display:flex;flex-wrap:wrap;gap:4px;max-width:140px;">';
+  for (var j = 0; j < fotoList.length; j++) {
+    var f = fotoList[j];
+    var urlEsc = f.thumb.replace(/'/g, "\\'");
+    html += '<img src="' + f.thumb + '" alt="Foto" ';
+    html += 'onclick="bukaFotoModal(\'' + urlEsc + '\')" ';
+    html += 'style="width:60px;height:60px;max-width:60px;max-height:60px;';
+    html += 'border-radius:6px;cursor:pointer;border:2px solid #ddd;';
+    html += 'object-fit:cover;display:inline-block;flex-shrink:0;" ';
+    html += 'onmouseover="this.style.borderColor=\'#1e3a8a\'" ';
+    html += 'onmouseout="this.style.borderColor=\'#ddd\'" ';
+    html += 'onerror="this.outerHTML=\'<span style=color:#dc3545;font-size:.7em;>❌</span>\'">';
+  }
+  html += '</div>';
+  
+  // Badge counter kalau > 1 foto
+  if (fotoList.length > 1) {
+    html += '<small class="text-muted" style="display:block;margin-top:4px;font-size:.7em;">📸 ' + fotoList.length + ' foto</small>';
+  }
+  
+  return html;
+}
+
+function bukaFotoModal(url){
+  document.getElementById('fotoModalImg').src = url;
+  document.getElementById('fotoModalLapor').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function tutupFotoModal(e){
+  if (e && e.target && e.target.id==='fotoModalImg') return;
+  document.getElementById('fotoModalLapor').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown', function(e){
+  if (e.key==='Escape') tutupFotoModal();
+});
+
+// ===== Filter =====
+function attachSearch(inputId, tableId){
+  document.getElementById(inputId).addEventListener('keyup', function(){
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(tr){
+      tr.style.display = tr.innerText.toLowerCase().indexOf(q)!==-1 ? '' : 'none';
+    });
+  });
+}
+function attachSelectFilter(selectId, tableId, colIndex){
+  document.getElementById(selectId).addEventListener('change', function(){
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(tr){
+      if(!q){ tr.style.display=''; return; }
+      var cell = tr.children[colIndex];
+      tr.style.display = cell && cell.innerText.toLowerCase().indexOf(q)!==-1 ? '' : 'none';
+    });
+  });
+}
+
+// Helper: cari nilai dari object berdasarkan key yang mungkin berbeda format
+function getField(obj, possibleKeys) {
+  for (var i = 0; i < possibleKeys.length; i++) {
+    if (obj[possibleKeys[i]] !== undefined && obj[possibleKeys[i]] !== '') {
+      return obj[possibleKeys[i]];
+    }
+  }
+  // Fuzzy match: cari key yang contains keyword
+  var keyword = possibleKeys[0].toLowerCase();
+  var allKeys = Object.keys(obj);
+  for (var j = 0; j < allKeys.length; j++) {
+    if (allKeys[j].toLowerCase().indexOf(keyword) !== -1) {
+      return obj[allKeys[j]];
+    }
+  }
+  return '';
+}
+// Global chart instance untuk destroy sebelum re-render
+var chartPrioInstance = null;
+// ===== Load Data dari API =====
+async function loadData(){
+  try {
+    var data = await SarprasAPI.fetch('all');
+    var lapor = data.lapor || [];
+
+    // === KPI ===
+    var total = lapor.length;
+    var baru = lapor.filter(x => /baru/i.test(Utils.cleanStatus(x.Status))).length;
+    var diproses = lapor.filter(x => /diproses/i.test(Utils.cleanStatus(x.Status))).length;
+    var ditunda = lapor.filter(x => /(di|ter)tunda/i.test(Utils.cleanStatus(x.Status))).length;
+    var selesai = lapor.filter(x => /selesai/i.test(Utils.cleanStatus(x.Status))).length;
+    var totalBiaya = lapor.reduce((sum, x) => {
+      var v = Number(x['Biaya Perbaikan']) || 0;
+      return sum + v;
+    }, 0);
+
+    document.getElementById('kpiArea').innerHTML = `
+      <div class="row g-3">
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #1e3a8a;">
+          <div class="d-flex justify-content-between"><div><div class="label">Total Laporan</div><div class="num" style="color:#1e3a8a;">${total}</div></div>
+          <i class="bi bi-megaphone" style="font-size:1.8rem;color:#1e3a8a;opacity:.5;"></i></div></div></div>
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #0d6efd;">
+          <div class="d-flex justify-content-between"><div><div class="label">Baru</div><div class="num" style="color:#0d6efd;">${baru}</div></div>
+          <i class="bi bi-bell" style="font-size:1.8rem;color:#0d6efd;opacity:.5;"></i></div></div></div>
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #17a2b8;">
+          <div class="d-flex justify-content-between"><div><div class="label">Diproses</div><div class="num" style="color:#17a2b8;">${diproses}</div></div>
+          <i class="bi bi-gear" style="font-size:1.8rem;color:#17a2b8;opacity:.5;"></i></div></div></div>
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #f0cc00;">
+          <div class="d-flex justify-content-between"><div><div class="label">Ditunda</div><div class="num" style="color:#f0cc00;">${ditunda}</div></div>
+          <i class="bi bi-pause-circle" style="font-size:1.8rem;color:#f0cc00;opacity:.5;"></i></div></div></div>
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #28a745;">
+          <div class="d-flex justify-content-between"><div><div class="label">Selesai</div><div class="num" style="color:#28a745;">${selesai}</div></div>
+          <i class="bi bi-check-circle" style="font-size:1.8rem;color:#28a745;opacity:.5;"></i></div></div></div>
+        <div class="col-md-4 col-lg-2"><div class="card card-kpi p-3" style="border-top:4px solid #6f42c1;">
+          <div class="d-flex justify-content-between"><div><div class="label">Total Biaya</div><div class="num" style="color:#6f42c1;font-size:1.2rem;">${Utils.formatRupiah(totalBiaya)}</div></div>
+          <i class="bi bi-cash-coin" style="font-size:1.8rem;color:#6f42c1;opacity:.5;"></i></div></div></div>
+      </div>
+    `;
+
+    // === Chart Prioritas ===
+    var prioCount = {};
+    lapor.forEach(x => {
+      var p = String(x.Prioritas || 'Lainnya').trim();
+      prioCount[p] = (prioCount[p]||0) + 1;
+    });
+    var prioLabels = Object.keys(prioCount);
+    var prioValues = Object.values(prioCount);
+    var prioColors = prioLabels.map(p => {
+      var pp = p.toLowerCase();
+      if (pp.includes('kritis')) return '#dc3545';
+      if (pp.includes('tinggi')) return '#fd7e14';
+      if (pp.includes('sedang')) return '#ffc107';
+      if (pp.includes('rendah')) return '#28a745';
+      return '#6c757d';
+    });
+
+    document.getElementById('chartArea').style.display = 'block';
+    // Destroy chart lama dulu sebelum bikin baru (fix auto-refresh issue)
+    if (chartPrioInstance) {
+      chartPrioInstance.destroy();
+    }
+    chartPrioInstance = new Chart(document.getElementById('chartPrio'), {
+      type: 'doughnut',
+      data: { labels: prioLabels, datasets: [{ data: prioValues, backgroundColor: prioColors }] },
+      options: { responsive: true, plugins: { legend: { position: 'top' } } }
+    });
+
+    // === Tabel ===
+    var tbody = document.getElementById('tblLaporBody');
+    var html = '';
+    lapor.forEach((x, i) => {
+      var biaya = Number(x['Biaya Perbaikan']);
+      var biayaStr = (biaya && !isNaN(biaya)) ? Utils.formatRupiah(biaya) : (x['Biaya Perbaikan'] || '-');
+      var tglLapor = getField(x, ['Tanggal Laporan', 'Tanggal Laporan\n(yyyy/mm/dd)', 'TanggalLaporan']);
+      var tglSelesai = getField(x, ['Tanggal Selesai', 'TanggalSelesai']);
+      var deskripsi = getField(x, ['Deskripsi Kerusakan', 'Deskripsi']);
+      var lampiran = getField(x, ['Lampiran foto kerusakan', 'Lampiran Foto', 'Foto']);
+  
+      html += `
+        <tr>
+          <td>${x.No || (i+1)}</td>
+          <td>${Utils.formatDate(tglLapor) || '-'}</td>
+          <td>${deskripsi || '-'}</td>
+          <td>${x.Lokasi || '-'}</td>
+          <td>${badgePrio(x.Prioritas)}</td>
+          <td>${badgeStatus(x.Status)}</td>
+          <td class="text-center">${fotoCell(lampiran, x.Status)}</td>
+          <td>${x.PIC || '-'}</td>
+          <td>${Utils.formatDate(tglSelesai) || '-'}</td>
+          <td>${biayaStr}</td>
+          <td>${x.Catatan || '-'}</td>
+          </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+    document.getElementById('tableArea').style.display = 'block';
+
+    attachSearch('searchLapor', 'tblLapor');
+    attachSelectFilter('filterPrio', 'tblLapor', 4);
+    attachSelectFilter('filterStat', 'tblLapor', 5);
+
+    // Timestamp
+    var t = SarprasAPI.getLastUpdate('all');
+    document.getElementById('tsArea').textContent = t
+      ? 'Update: ' + t.toLocaleString('id-ID')
+      : 'Update: -';
+
+  } catch (err) {
+    document.getElementById('kpiArea').innerHTML = `
+      <div class="alert alert-danger text-center">
+        ⚠️ Gagal memuat data: ${err.message}<br>
+        <button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">🔄 Coba Lagi</button>
+      </div>`;
+    console.error(err);
+  }
+}
+
+loadData();
+
+// Auto-refresh setiap 30 detik (opsional, bisa di-remove kalau tidak mau)
+// Auto-refresh 30 detik dengan indicator
+setInterval(async function() {
+  console.log('[Auto-refresh] Polling laporan baru...');
+  try {
+    SarprasAPI.clearCache();
+    await loadData();
+    
+    // Subtle indicator: ubah icon refresh jadi spinning sebentar
+    var btnRefresh = document.getElementById('btnRefresh');
+    if (btnRefresh) {
+      var originalText = btnRefresh.innerHTML;
+      btnRefresh.innerHTML = '⏳';
+      setTimeout(function() {
+        btnRefresh.innerHTML = originalText;
+      }, 500);
+    }
+  } catch (err) {
+    console.warn('[Auto-refresh] Failed:', err.message);
+  }
+}, 30000); // 30 detik
+</script>
+</body>
+</html>
