@@ -597,3 +597,90 @@ body.dark-mode .section-title {
 }
 
 /* JANGAN ada media query 480px yang ubah ke 1 kolom — biarkan tetap 2 kolom */
+
+/* ============================================
+   MOBILE SCALE FIX — Untuk Semua pages/*.html
+   Match scale dengan Beranda yang sudah optimal
+   ============================================ */
+@media (max-width: 768px) {
+  
+  /* Sidebar nav items - sama scale dengan Beranda */
+  body .sidebar nav a {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+    gap: 8px !important;
+  }
+  
+  body .sidebar nav a .icon {
+    font-size: 1rem !important;
+    width: 18px !important;
+  }
+  
+  /* Brand area sama scale */
+  body .sidebar .brand img {
+    width: 70px !important;
+  }
+  
+  body .sidebar .brand h6 {
+    font-size: 0.9rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  body .sidebar .brand small {
+    font-size: 0.8rem !important;
+  }
+  
+  /* Topbar h4 (judul page) sama scale */
+  body .main .topbar h4 {
+    font-size: 1.15rem !important;
+  }
+  
+  body .main .topbar small {
+    font-size: 0.8rem !important;
+  }
+  
+  /* Tombol topbar (Cetak, PDF, Refresh, dll) */
+  body .main .topbar .btn-tool,
+  body .main .topbar a.btn-tool {
+    padding: 5px 10px !important;
+    font-size: 0.78rem !important;
+  }
+  
+  /* KPI Cards angka & label */
+  body .main .card-kpi .num {
+    font-size: 1.4rem !important;
+  }
+  
+  body .main .card-kpi .label {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Padding card kpi lebih compact */
+  body .main .card-kpi.p-3 {
+    padding: 0.85rem !important;
+  }
+  
+  /* Main padding compact */
+  body .main {
+    padding: 12px 14px !important;
+  }
+  
+  /* Topbar padding compact */
+  body .main .topbar {
+    padding: 12px 14px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  /* Topbar action group jadi rapi */
+  body .main .topbar > div:last-child {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  
+  /* Footer compact */
+  body .main .footer {
+    font-size: 0.75rem !important;
+    padding: 12px !important;
+  }
+}
