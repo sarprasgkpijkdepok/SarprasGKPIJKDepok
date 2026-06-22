@@ -423,3 +423,141 @@ body.dark-mode .section-title {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ============================================
+   RESPONSIVE FIX — Mobile Layout untuk Beranda
+   Khusus dashboard.html (Beranda)
+   ============================================ */
+@media (max-width: 768px) {
+  /* Sidebar jadi collapsible di mobile */
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    padding: 15px 10px !important;
+  }
+  
+  .sidebar-brand {
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  .sidebar-brand img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .sidebar-brand h2 {
+    font-size: 0.95rem !important;
+  }
+  
+  /* Nav jadi grid 2 kolom */
+  .sidebar-nav {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4px !important;
+  }
+  
+  .sidebar-nav li {
+    margin: 0 !important;
+  }
+  
+  .sidebar-nav a {
+    padding: 8px 10px !important;
+    font-size: 0.85rem !important;
+    justify-content: center !important;
+  }
+  
+  /* Main content full width */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 1rem !important;
+  }
+  
+  /* Topbar lebih compact */
+  .topbar {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: stretch !important;
+  }
+  
+  .topbar-title h1 {
+    font-size: 1.2rem !important;
+  }
+  
+  .topbar-actions {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  
+  /* KPI Cards smaller */
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  .kpi-card {
+    padding: 0.75rem !important;
+  }
+  
+  .kpi-card .kpi-value {
+    font-size: 1.2rem !important;
+  }
+  
+  .kpi-card .kpi-label {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Charts stack vertikal */
+  .chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .chart-card canvas {
+    max-height: 250px !important;
+  }
+  
+  /* Quick access cards lebih kecil */
+  .quick-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  
+  .quick-card {
+    padding: 1rem 0.5rem !important;
+  }
+  
+  .quick-card .qc-icon {
+    font-size: 1.5rem !important;
+  }
+  
+  .quick-card .qc-label {
+    font-size: 0.8rem !important;
+  }
+  
+  /* Section title */
+  .section-title {
+    font-size: 1rem !important;
+    margin: 1rem 0 0.75rem !important;
+  }
+  
+  /* Menu toggle button visible */
+  .menu-toggle {
+    display: inline-block !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small phones */
+  .sidebar-nav {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .quick-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
