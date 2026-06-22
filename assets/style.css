@@ -425,37 +425,61 @@ body.dark-mode .section-title {
 }
 
 /* ============================================
-   RESPONSIVE FIX — Mobile Layout untuk Beranda
-   Khusus dashboard.html (Beranda)
+   RESPONSIVE FIX — Mobile Layout Beranda
+   Style sama seperti pages/*.html (Bootstrap)
    ============================================ */
 @media (max-width: 768px) {
-  /* Sidebar jadi collapsible di mobile */
-  .sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    padding: 15px 10px !important;
+  /* Body jadi vertical stack */
+  body {
+    flex-direction: column !important;
   }
   
+  /* Sidebar di atas (BUKAN fixed/slide-in) */
+  .sidebar {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 20px 15px !important;
+    transform: none !important;
+    z-index: 1 !important;
+  }
+  
+  /* Brand area rapi */
   .sidebar-brand {
+    text-align: center !important;
     margin-bottom: 1rem !important;
-    padding-bottom: 0.75rem !important;
+    padding-bottom: 1rem !important;
   }
   
   .sidebar-brand img {
-    width: 60px !important;
-    height: 60px !important;
+    width: 90px !important;
+    height: 90px !important;
+    margin: 0 auto 10px !important;
+    display: block !important;
   }
   
   .sidebar-brand h2 {
-    font-size: 0.95rem !important;
+    font-size: 1rem !important;
+    color: #fff !important;
+    margin: 0 0 5px 0 !important;
+    line-height: 1.3 !important;
   }
   
-  /* Nav jadi grid 2 kolom */
+  .sidebar-brand .sub {
+    font-size: 0.9rem !important;
+    color: #fbbf24 !important;
+  }
+  
+  /* Nav grid 2 kolom */
   .sidebar-nav {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 4px !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
   }
   
   .sidebar-nav li {
@@ -463,15 +487,43 @@ body.dark-mode .section-title {
   }
   
   .sidebar-nav a {
-    padding: 8px 10px !important;
-    font-size: 0.85rem !important;
-    justify-content: center !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    color: #cfd9e6 !important;
+    background: transparent !important;
+  }
+  
+  .sidebar-nav a:hover {
+    background: rgba(255,255,255,.12) !important;
+    color: #fff !important;
+  }
+  
+  .sidebar-nav a.active {
+    background: #fbbf24 !important;
+    color: #1e293b !important;
+    font-weight: 600 !important;
+  }
+  
+  .sidebar-nav a .icon {
+    font-size: 1.1rem !important;
+    width: auto !important;
+  }
+  
+  /* Hide hamburger toggle button (tidak perlu lagi) */
+  .menu-toggle {
+    display: none !important;
   }
   
   /* Main content full width */
   .main-content {
     margin-left: 0 !important;
     padding: 1rem !important;
+    width: 100% !important;
   }
   
   /* Topbar lebih compact */
@@ -479,6 +531,7 @@ body.dark-mode .section-title {
     flex-direction: column !important;
     gap: 0.75rem !important;
     align-items: stretch !important;
+    padding: 1rem !important;
   }
   
   .topbar-title h1 {
@@ -490,22 +543,22 @@ body.dark-mode .section-title {
     flex-wrap: wrap !important;
   }
   
-  /* KPI Cards smaller */
+  /* KPI Cards — 1 kolom */
   .kpi-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.5rem !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
   }
   
   .kpi-card {
-    padding: 0.75rem !important;
+    padding: 1rem !important;
   }
   
   .kpi-card .kpi-value {
-    font-size: 1.2rem !important;
+    font-size: 1.5rem !important;
   }
   
   .kpi-card .kpi-label {
-    font-size: 0.75rem !important;
+    font-size: 0.85rem !important;
   }
   
   /* Charts stack vertikal */
@@ -514,12 +567,12 @@ body.dark-mode .section-title {
   }
   
   .chart-card canvas {
-    max-height: 250px !important;
+    max-height: 280px !important;
   }
   
-  /* Quick access cards lebih kecil */
+  /* Quick access cards 2 kolom */
   .quick-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 0.5rem !important;
   }
   
@@ -528,32 +581,23 @@ body.dark-mode .section-title {
   }
   
   .quick-card .qc-icon {
-    font-size: 1.5rem !important;
+    font-size: 1.8rem !important;
   }
   
   .quick-card .qc-label {
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
   }
   
   /* Section title */
   .section-title {
-    font-size: 1rem !important;
-    margin: 1rem 0 0.75rem !important;
-  }
-  
-  /* Menu toggle button visible */
-  .menu-toggle {
-    display: inline-block !important;
+    font-size: 1.1rem !important;
+    margin: 1.25rem 0 0.75rem !important;
   }
 }
 
 @media (max-width: 480px) {
   /* Extra small phones */
   .sidebar-nav {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .kpi-grid {
     grid-template-columns: 1fr !important;
   }
   
