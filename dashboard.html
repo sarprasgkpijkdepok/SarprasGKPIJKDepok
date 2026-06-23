@@ -1,160 +1,86 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
-  <title>Beranda - Dashboard GKPI JK Depok</title>
-
-  <!-- ============ PWA CORE ============ -->
-  json" />
-  <meta name="theme-color" content="#1e3a8a" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
-  <meta name="color-scheme" content="light dark" />
-  <meta name="background-color" content="#1e3a8a" />
-
-  <!-- ============ iOS / iPhone PWA ============ -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Sarpras GKPI" />
-  <meta name="format-detection" content="telephone=no" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="120x120" href="assets/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="assets/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="167x167" href="assets/apple-touch-icon.png" />
-  ets/apple-touch-icon.png" />
-
-  <!-- ============ Android / Chrome PWA ============ -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="application-name" content="Sarpras GKPI" />
-  -192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
-  <link rel="shortcut icon" href="assets/icon-192.png" />
-
-  <!-- ============ Windows Tile ============ -->
-  <meta name="msapplication-TileColor" content="#1e3a8a" />
-  <meta name="msapplication-TileImage" content="assets/icon-192.png" />
-  <meta name="msapplication-tap-highlight" content="no" />
-
-  <!-- ============ Open Graph ============ -->
-  <meta property="og:title" content="Dashboard Sarpras GKPI JK Depok" />
-  <meta property="og:description" content="Dashboard Tim Sarana Prasarana GKPI Jemaat Khusus Depok" />
-  <meta property="og:image" content="assets/icon-512.png" />
-  <meta property="og:type" content="website" />
-
-  <!-- ============ Styles & Libs ============ -->
-  <link rel="stylesheet" href="assets/style.css" />
-  .jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-  <!-- ============ FIX: Samakan skala Beranda dengan halaman lain ============ -->
-  <style>
-    .page-header {
-      background: var(--card-bg, #ffffff);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.25rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,.06);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .page-header .ph-left { display: flex; align-items: flex-start; gap: .9rem; flex: 1 1 auto; min-width: 0; }
-    .page-header .ph-icon { font-size: 2rem; line-height: 1; }
-    .page-header .ph-title { display: flex; flex-direction: column; min-width: 0; }
-    .page-header .ph-title h1 {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary, #1e3a8a);
-      line-height: 1.1;
-    }
-    .page-header .ph-title .sub {
-      margin-top: .25rem;
-      color: var(--muted, #64748b);
-      font-size: 1rem;
-    }
-    .page-header .ph-actions {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .page-header .btn-action {
-      padding: .55rem .9rem;
-      font-size: .95rem;
-      border-radius: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .page-header { padding: 1rem 1.1rem; border-radius: 12px; }
-      .page-header .ph-title h1 { font-size: 1.75rem; }
-      .page-header .ph-title .sub { font-size: .95rem; }
-      .page-header .ph-icon { font-size: 1.6rem; }
-      .page-header .btn-action { padding: .5rem .7rem; font-size: .85rem; }
-      .section-title { font-size: 1.15rem; margin: 1rem 0 .75rem; }
-      .main-content { padding: 1rem !important; }
-    }
-
-    .main-content > .topbar { display: none; }
-
-    @supports (padding: max(0px)) {
-      body { padding-top: env(safe-area-inset-top); }
-    }
-
-    /* Style khusus menu QR Generator (admin) */
-    .sidebar-nav .nav-admin a {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #1e3a8a !important;
-      font-weight: 700;
-      margin-top: 8px;
-    }
-    .sidebar-nav .nav-admin a:hover {
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beranda - Dashboard GKPI JK Depok</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#1e3a8a" />
+<meta name="color-scheme" content="light dark" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Sarpras GKPI" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+<link rel="shortcut icon" href="assets/icon-192.png" />
+<meta name="msapplication-TileColor" content="#1e3a8a" />
+<meta name="msapplication-TileImage" content="assets/icon-192.png" />
+<meta name="application-name" content="Sarpras GKPI" />
+<meta property="og:title" content="Dashboard Sarpras GKPI JK Depok" />
+<meta property="og:description" content="Dashboard Tim Sarana Prasarana GKPI Jemaat Khusus Depok" />
+<meta property="og:image" content="assets/icon-512.png" />
+<meta property="og:type" content="website" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  /* Badge "admin lock" kecil di samping menu QR Generator */
+  .sidebar-nav .nav-lock{
+    font-size:.65rem;
+    margin-left:6px;
+    padding:1px 6px;
+    border-radius:8px;
+    background:rgba(251,191,36,.18);
+    color:#fbbf24;
+    vertical-align:middle;
+  }
+  .sidebar-nav .nav-divider{
+    margin:10px 14px;
+    border-top:1px dashed rgba(255,255,255,.15);
+  }
+</style>
 </head>
 <body>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      assets/logo_gkpi.png
+      <img src="assets/logo_gkpi.png" alt="GKPI" />
       <h2>Dashboard Tim Sarana Prasarana</h2>
       <div class="sub">GKPI JK Depok</div>
     </div>
     <ul class="sidebar-nav">
       <li><a href="dashboard.html" class="active"><span class="icon">🏠</span> Beranda</a></li>
-      <li>/data_aset.html"><span class="icon">📦</span> Data Aset</a></li>
-      <li>_aset.html"><span class="icon">➕</span> Input Aset</a></li>
-      <li>pages/jadwal_pemeliharaan.html<span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
-      <li>pages/lapor_sarpras.html<span class="icon">📣</span> Lapor Sarpras</a></li>
+      <li><a href="pages/data_aset.html"><span class="icon">📦</span> Data Aset</a></li>
+      <li><a href="pages/input_aset.html"><span class="icon">➕</span> Input Aset</a></li>
+      <li><a href="pages/pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
+      <li><a href="pages/lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a></li>
       <li><a href="pages/anggaran.html"><span class="icon">💰</span> Anggaran</a></li>
-      <li>anggotaan.html"><span class="icon">👥</span> Keanggotaan</a></li>
-      <li>pages/laporan_mingguan.html</li>
-      <li>an.html"><span class="icon">📄</span> Laporan Tahunan</a></li>
-      <li class="nav-admin">
-        qr-lapor.html Only - QR Generator">
+      <li><a href="pages/keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a></li>
+      <li><a href="pages/laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a></li>
+      <li><a href="pages/laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a></li>
+      <li class="nav-divider"></li>
+      <li>
+        <a href="qr-lapor.html" title="Admin Only - Butuh password">
           <span class="icon">🎨</span> QR Generator
-          <span style="background:#1e3a8a; color:#fbbf24; font-size:0.6rem; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700;">ADMIN</span>
+          <span class="nav-lock">🔐 Admin</span>
         </a>
       </li>
     </ul>
   </aside>
 
   <main class="main-content">
-    <!-- Mobile menu toggle (floating) -->
-    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" style="margin-bottom:.75rem">☰ Menu</button>
-
-    <!-- ===== PAGE HEADER ===== -->
-    <div class="page-header">
-      <div class="ph-left">
-        <span class="ph-icon">🏠</span>
-        <div class="ph-title">
+    <div class="topbar">
+      <div style="display:flex; align-items:center; gap:.75rem;">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="topbar-title">
           <h1>Beranda</h1>
           <div class="sub">Dashboard Sarana &amp; Prasarana</div>
         </div>
       </div>
-      <div class="ph-actions">
+      <div class="topbar-actions">
         <button class="btn-action" onclick="window.print()">🖨️ Cetak</button>
         <button class="btn-action" onclick="exportPDF()">📄 PDF</button>
         <button class="btn-action" onclick="toggleTheme()" title="Toggle theme">🌓</button>
@@ -189,14 +115,18 @@
 
     <h2 class="section-title akses">Akses Cepat</h2>
     <div class="quick-grid">
-      pages/data_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
-      pages/input_aset.html<span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
-      pages/jadwal_pemeliharaan.html<span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
-      pages/lapor_sarpras.html<span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
+      <a href="pages/data_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
+      <a href="pages/input_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
+      <a href="pages/pemeliharaan.html" class="quick-card"><span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
+      <a href="pages/lapor_sarpras.html" class="quick-card"><span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
       <a href="pages/anggaran.html" class="quick-card"><span class="qc-icon" style="color:var(--purple)">💰</span><div class="qc-label">Anggaran</div></a>
       <a href="pages/keanggotaan.html" class="quick-card"><span class="qc-icon" style="color:var(--teal)">👥</span><div class="qc-label">Keanggotaan</div></a>
-      pages/laporan_mingguan.html<span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
+      <a href="pages/laporan_mingguan.html" class="quick-card"><span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
       <a href="pages/laporan_tahunan.html" class="quick-card"><span class="qc-icon" style="color:var(--danger)">📄</span><div class="qc-label">Laporan Tahunan</div></a>
+      <a href="qr-lapor.html" class="quick-card" title="Admin Only">
+          <span class="qc-icon" style="color:#fbbf24">🎨</span>
+          <div class="qc-label">QR Generator 🔐</div>
+      </a>
     </div>
 
     <footer class="app-footer">
@@ -204,127 +134,125 @@
     </footer>
   </main>
 
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/api.js"></script>
-  js"></script>
-  assets/js/lapor-bubble.js
-  <script>
-    function toggleTheme() {
-      const cur = document.documentElement.getAttribute('data-theme');
-      const next = cur === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      setTimeout(() => location.reload(), 100);
-    }
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/utils.js"></script>
+<script>
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    setTimeout(() => location.reload(), 100);
+  }
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
 
-    function exportPDF() { window.print(); }
+  function exportPDF() { window.print(); }
 
-    if('serviceWorker' in navigator){
-      window.addEventListener('load', ()=> 
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('✅ SW registered:', reg.scope))
-          .catch(err => console.warn('SW failed:', err.message))
-      );
-    }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err.message));
+  }
 
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                      || window.navigator.standalone === true;
-    if (isStandalone) document.documentElement.classList.add('pwa-standalone');
+  async function loadDashboard() {
+    try {
+      const data = await SarprasAPI.fetch('all');
+      const r = data.ringkasan;
+      const getVal = (k) => { const i = r.find(x => x.Kategori === k); return i ? i.Jumlah : 0; };
 
-    async function loadDashboard() {
-      try {
-        const data = await SarprasAPI.fetch('all');
-        const r = data.ringkasan;
-        const getVal = (k) => { const i = r.find(x => x.Kategori === k); return i ? i.Jumlah : 0; };
+      const totalAset    = getVal('Total Aset');
+      const totalNilai   = getVal('Total Nilai Saat Ini') || getVal('Total Nilai Perolehan');
+      const asetBaik     = getVal('Aset Baik');
+      const rusakRingan  = getVal('Aset Rusak Ringan');
+      const rusakBerat   = getVal('Aset Rusak Berat');
+      const totalAnggaran= getVal('Total Anggaran');
+      const realisasi    = getVal('Total Realisasi');
+      const persenReal   = getVal('% Realisasi Anggaran');
 
-        const totalAset     = getVal('Total Aset');
-        const totalNilai    = getVal('Total Nilai Saat Ini') || getVal('Total Nilai Perolehan');
-        const asetBaik      = getVal('Aset Baik');
-        const rusakRingan   = getVal('Aset Rusak Ringan');
-        const rusakBerat    = getVal('Aset Rusak Berat');
-        const totalAnggaran = getVal('Total Anggaran');
-        const realisasi     = getVal('Total Realisasi');
-        const persenReal    = getVal('% Realisasi Anggaran');
-        const totalLapor    = data.lapor.length;
-        const laporSelesai  = data.lapor.filter(x => String(x.Status||'').toLowerCase().includes('selesai')).length;
+      const totalLapor = data.lapor.length;
+      const laporSelesai = data.lapor.filter(x => String(x.Status||'').toLowerCase().includes('selesai')).length;
 
-        document.getElementById('kpi-container').innerHTML = `
-          <div class="kpi-grid">
-            <div class="kpi-card c-blue"><div class="kpi-label">Total Aset</div><div class="kpi-value">${totalAset}</div><span class="kpi-icon">📦</span></div>
-            <div class="kpi-card c-purple"><div class="kpi-label">Total Nilai Aset</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(totalNilai)}</div><span class="kpi-icon">💲</span></div>
-            <div class="kpi-card c-green"><div class="kpi-label">Aset Baik</div><div class="kpi-value">${asetBaik}</div><span class="kpi-icon">✅</span></div>
-            <div class="kpi-card c-yellow"><div class="kpi-label">Rusak Ringan</div><div class="kpi-value">${rusakRingan}</div><span class="kpi-icon">⚠️</span></div>
-            <div class="kpi-card c-red"><div class="kpi-label">Rusak Berat</div><div class="kpi-value">${rusakBerat}</div><span class="kpi-icon">❌</span></div>
-            <div class="kpi-card c-blue"><div class="kpi-label">Total Anggaran</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(totalAnggaran)}</div><span class="kpi-icon">💵</span></div>
-            <div class="kpi-card c-teal"><div class="kpi-label">Realisasi (${Number(persenReal).toFixed(1)}%)</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(realisasi)}</div><span class="kpi-icon">💸</span></div>
-            <div class="kpi-card c-orange"><div class="kpi-label">Lapor (Selesai/Total)</div><div class="kpi-value">${laporSelesai} / ${totalLapor}</div><span class="kpi-icon">📣</span></div>
-          </div>
-        `;
+      document.getElementById('kpi-container').innerHTML = `
+        <div class="kpi-grid">
+          <div class="kpi-card c-blue"><div class="kpi-label">Total Aset</div><div class="kpi-value">${totalAset}</div><span class="kpi-icon">📦</span></div>
+          <div class="kpi-card c-purple"><div class="kpi-label">Total Nilai Aset</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(totalNilai)}</div><span class="kpi-icon">💲</span></div>
+          <div class="kpi-card c-green"><div class="kpi-label">Aset Baik</div><div class="kpi-value">${asetBaik}</div><span class="kpi-icon">✅</span></div>
+          <div class="kpi-card c-yellow"><div class="kpi-label">Rusak Ringan</div><div class="kpi-value">${rusakRingan}</div><span class="kpi-icon">⚠️</span></div>
+          <div class="kpi-card c-red"><div class="kpi-label">Rusak Berat</div><div class="kpi-value">${rusakBerat}</div><span class="kpi-icon">❌</span></div>
+          <div class="kpi-card c-blue"><div class="kpi-label">Total Anggaran</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(totalAnggaran)}</div><span class="kpi-icon">💵</span></div>
+          <div class="kpi-card c-teal"><div class="kpi-label">Realisasi (${Number(persenReal).toFixed(1)}%)</div><div class="kpi-value" style="font-size:1.4rem">${Utils.formatRupiah(realisasi)}</div><span class="kpi-icon">💸</span></div>
+          <div class="kpi-card c-orange"><div class="kpi-label">Lapor (Selesai/Total)</div><div class="kpi-value">${laporSelesai} / ${totalLapor}</div><span class="kpi-icon">📣</span></div>
+        </div>
+      `;
 
-        const kondisiData = [asetBaik, rusakRingan, rusakBerat].filter(v => v > 0);
-        const kondisiLabels = ['Baik', 'Rusak Ringan', 'Rusak Berat'].filter((_, i) => [asetBaik, rusakRingan, rusakBerat][i] > 0);
-        new Chart(document.getElementById('chartKondisi'), {
-          type: 'doughnut',
-          data: { labels: kondisiLabels, datasets: [{ data: kondisiData, backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'], borderWidth: 2 }] },
-          options: { responsive: true, plugins: { legend: { position: 'top' } } }
-        });
+      // Chart 1: Distribusi Kondisi Aset (Doughnut)
+      const kondisiData = [asetBaik, rusakRingan, rusakBerat].filter(v => v > 0);
+      const kondisiLabels = ['Baik', 'Rusak Ringan', 'Rusak Berat'].filter((_, i) => [asetBaik, rusakRingan, rusakBerat][i] > 0);
+      new Chart(document.getElementById('chartKondisi'), {
+        type: 'doughnut',
+        data: { labels: kondisiLabels, datasets: [{ data: kondisiData, backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'], borderWidth: 2 }] },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      });
 
-        const posLabels = data.anggaran.map(x => x['Pos Anggaran']);
-        const posAnggaran = data.anggaran.map(x => Number(x['Anggaran (Rp)']) || 0);
-        const posRealisasi = data.anggaran.map(x => Number(x['Realisasi (Rp)']) || 0);
-        new Chart(document.getElementById('chartAnggaran'), {
-          type: 'bar',
-          data: {
-            labels: posLabels,
-            datasets: [
-              { label: 'Anggaran',  data: posAnggaran,  backgroundColor: '#3b82f6' },
-              { label: 'Realisasi', data: posRealisasi, backgroundColor: '#f59e0b' }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: 'top' } },
-            scales: {
-              x: { ticks: { font: { size: 10 }, maxRotation: 30, minRotation: 20 } },
-              y: { ticks: { callback: v => 'Rp ' + (v/1000).toLocaleString('id') + 'K' } }
-            }
+      // Chart 2: Anggaran vs Realisasi (Bar)
+      const posLabels = data.anggaran.map(x => x['Pos Anggaran']);
+      const posAnggaran = data.anggaran.map(x => Number(x['Anggaran (Rp)']) || 0);
+      const posRealisasi = data.anggaran.map(x => Number(x['Realisasi (Rp)']) || 0);
+      new Chart(document.getElementById('chartAnggaran'), {
+        type: 'bar',
+        data: {
+          labels: posLabels,
+          datasets: [
+            { label: 'Anggaran',  data: posAnggaran,  backgroundColor: '#3b82f6' },
+            { label: 'Realisasi', data: posRealisasi, backgroundColor: '#f59e0b' }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            x: { ticks: { font: { size: 10 }, maxRotation: 30, minRotation: 20 } },
+            y: { ticks: { callback: v => 'Rp ' + (v/1000).toLocaleString('id') + 'K' } }
           }
-        });
+        }
+      });
 
-        const laporStatus = {};
-        data.lapor.forEach(x => {
-          const s = Utils.cleanStatus(x.Status) || 'Lainnya';
-          laporStatus[s] = (laporStatus[s] || 0) + 1;
-        });
-        new Chart(document.getElementById('chartLapor'), {
-          type: 'doughnut',
-          data: { labels: Object.keys(laporStatus), datasets: [{ data: Object.values(laporStatus), backgroundColor: ['#3b82f6', '#14b8a6', '#22c55e', '#ef4444', '#f59e0b'], borderWidth: 2 }] },
-          options: { responsive: true, plugins: { legend: { position: 'top' } } }
-        });
+      // Chart 3: Status Laporan Kerusakan (Doughnut)
+      const laporStatus = {};
+      data.lapor.forEach(x => {
+        const s = Utils.cleanStatus(x.Status) || 'Lainnya';
+        laporStatus[s] = (laporStatus[s] || 0) + 1;
+      });
+      new Chart(document.getElementById('chartLapor'), {
+        type: 'doughnut',
+        data: { labels: Object.keys(laporStatus), datasets: [{ data: Object.values(laporStatus), backgroundColor: ['#3b82f6', '#14b8a6', '#22c55e', '#ef4444', '#f59e0b'], borderWidth: 2 }] },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      });
 
-        const jadwalStatus = {};
-        data.jadwal.forEach(x => {
-          const s = String(x.Status || 'Lainnya').trim();
-          jadwalStatus[s] = (jadwalStatus[s] || 0) + 1;
-        });
-        new Chart(document.getElementById('chartJadwal'), {
-          type: 'doughnut',
-          data: { labels: Object.keys(jadwalStatus), datasets: [{ data: Object.values(jadwalStatus), backgroundColor: ['#3b82f6', '#14b8a6', '#22c55e', '#94a3b8', '#f59e0b'], borderWidth: 2 }] },
-          options: { responsive: true, plugins: { legend: { position: 'top' } } }
-        });
-      } catch (err) {
-        document.getElementById('kpi-container').innerHTML =
-          '<div style="text-align:center; padding:2rem; color:var(--danger)">⚠️ Gagal memuat data: ' + err.message + '<br><br><button class="btn-action" onclick="location.reload()">🔄 Coba Lagi</button></div>';
-        console.error(err);
-      }
+      // Chart 4: Status Jadwal Pemeliharaan (Doughnut)
+      const jadwalStatus = {};
+      data.jadwal.forEach(x => {
+        const s = String(x.Status || 'Lainnya').trim();
+        jadwalStatus[s] = (jadwalStatus[s] || 0) + 1;
+      });
+      new Chart(document.getElementById('chartJadwal'), {
+        type: 'doughnut',
+        data: { labels: Object.keys(jadwalStatus), datasets: [{ data: Object.values(jadwalStatus), backgroundColor: ['#3b82f6', '#14b8a6', '#22c55e', '#94a3b8', '#f59e0b'], borderWidth: 2 }] },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      });
+
+    } catch (err) {
+      document.getElementById('kpi-container').innerHTML =
+        '<div style="text-align:center; padding:2rem; color:var(--danger)">⚠️ Gagal memuat data: ' + err.message + '<br><br><button class="btn-action" onclick="location.reload()">🔄 Coba Lagi</button></div>';
+      console.error(err);
     }
-    loadDashboard();
+  }
 
-    if (typeof CONFIG !== 'undefined' && CONFIG.AUTO_REFRESH_MIN > 0) {
-      setInterval(() => location.reload(), CONFIG.AUTO_REFRESH_MIN * 60 * 1000);
-    }
-  </script>
+  loadDashboard();
+
+  if (CONFIG.AUTO_REFRESH_MIN > 0) {
+    setInterval(() => location.reload(), CONFIG.AUTO_REFRESH_MIN * 60 * 1000);
+  }
+</script>
 </body>
 </html>
