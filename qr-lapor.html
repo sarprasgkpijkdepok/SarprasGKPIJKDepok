@@ -48,6 +48,30 @@
     display:none;
   }
   .password-box .error-msg.show{ display:block; }
+  /* === Tombol Kembali ke Beranda === *//* === Tombol Kembali ke Beran-weight:600;
+  text-decoration:none;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  box-sizing:border-box;
+}
+.password-box .btn-back:hover{
+  background:#1e3a8a;
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(30,58,138,.3);
+}
+.password-box .btn-back{
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  background:#fff;
+  color:#1e3a8a;
+  border:2px solid #1e3a8a;
+  border-radius:12px;
+  font-size:.9rem;
+
   .password-box .footer-note{
     margin-top:20px; padding-top:16px;
     border-top:1px dashed #e5e7eb;
@@ -156,6 +180,7 @@
     <input type="password" id="passwordInput" placeholder="Password" autocomplete="off" />
     <button class="btn-unlock" onclick="checkPassword()">🔓 Buka Akses</button>
     <div class="error-msg" id="errorMsg">❌ Password salah. Coba lagi.</div>
+    <a href="dashboard.html" class="btn-back">🏠 Kembali ke Beranda</a>
     <div class="footer-note">Sarpras GKPI JK Depok · Admin Tool</div>
   </div>
 </div>
