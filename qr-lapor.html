@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QR Generator - Lapor Sarpras GKPI (Dual QR)</title>
+https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js
+<style>
+  body{
+    margin:0; padding:20px;
+    background:#f1f5f9;
+    font-family:'Segoe UI',sans-serif;
+    display:flex; flex-direction:column; align-items:center;
+    min-height:100vh;
+  }
+  
+  /* ===== CONTROLS ===== */
+  .controls{
+    background:#fff; padding:20px; border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    margin-bottom:20px; max-width:600px; width:100%;
+  }
+  .controls h2{ color:#1e3a8a; margin-bottom:14px; font-size:1.2rem; }
+  .controls .row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .controls .col{ flex:1; min-width:240px; }
+  .controls label{ display:block; font-size:.8rem; color:#64748b; margin-top:10px; margin-bottom:4px; font-weight:600; }
+  .controls input, .controls textarea, .controls select{
+    width:100%; padding:9px; border:1px solid #e5e7eb;
+    border-radius:8px; font-size:.88rem; font-family:inherit;
+    box-sizing:border-box;
+  }
+  .controls .icon-hint{ font-size:.72rem; color:#94a3b8; margin-top:3px; }
+  .btn-group{ display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+  .btn{
+    background:#1e3a8a; color:#fff; border:none;
+    padding:10px 18px; border-radius:8px; cursor:pointer;
+    font-weight:600; font-size:.88rem;
+  }
+  .btn:hover{ background:#1e40af; }
+  .btn.success{ background:#22c55e; }
+  .btn.success:hover{ background:#16a34a; }
+  .btn.warning{ background:#f59e0b; color:#1e3a8a; }
+  .btn.warning:hover{ background:#fbbf24; }
+  
+  /* ===== POSTER (siap cetak A4/A5) ===== */
+  .poster{
+    background:#fff; border-radius:18px;
+    padding:30px 28px; max-width:520px; width:100%;
+    text-align:center; box-shadow:0 8px 24px rgba(0,0,0,.12);
+    border:3px solid #1e3a8a;
+    position:relative;
+  }
+  .poster .header{
+    background:linear-gradient(180deg,#1e3a8a,#1e40af);
+    color:#fff; margin:-30px -28px 20px;
+    padding:22px 20px; border-radius:15px 15px 0 0;
+  }
+  .poster .header .logo-wrap{
+    display:inline-block; background:#fff;
+    width:64px; height:64px; border-radius:50%; padding:4px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .poster .header .logo-wrap img{ width:100%; height:100%; border-radius:50%; object-fit:contain; }
+  .poster .header h1{ font-size:1.4rem; margin:10px 0 2px; font-weight:700; }
+  .poster .header p{ color:#fcd34d; font-size:.85rem; font-weight:600; }
+  
+  .main-title{
+    color:#1e3a8a; font-size:1.5rem; font-weight:800;
+    margin:6px 0 4px; letter-spacing:.3px;
+  }
+  .main-subtitle{
+    color:#64748b; font-size:.92rem; margin-bottom:18px;
+    line-height:1.4;
+  }
+  
+  /* ===== DUAL QR SECTION ===== */
+  .qr-section{
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:14px; margin:18px 0;
+  }
+  .qr-card{
+    background:#f8fafc; border-radius:14px;
+    padding:14px 10px; border:2px solid #e5e7eb;
+    transition:all .2s;
+  }
+  .qr-card.bot{ border-color:#1e3a8a; background:#eff6ff; }
+  .qr-card.form{ border-color:#22c55e; background:#f0fdf4; }
+  
+  .qr-card .qr-badge{
+    background:#1e3a8a; color:#fff;
+    padding:4px 10px; border-radius:12px;
+    font-size:.72rem; font-weight:700;
+    display:inline-block; margin-bottom:10px;
+  }
+  .qr-card.form .qr-badge{ background:#22c55e; }
+  
+  .qr-img-wrap{
+    background:#fff; padding:8px; border-radius:10px;
+    display:inline-block; box-shadow:0 2px 6px rgba(0,0,0,.06);
+  }
+  .qr-img-wrap canvas, .qr-img-wrap img{
+    display:block; margin:0 auto;
+  }
+  
+  .qr-card .qr-label{
+    color:#1e3a8a; font-weight:700; font-size:.95rem;
+    margin-top:10px;
+  }
+  .qr-card.form .qr-label{ color:#15803d; }
+  .qr-card .qr-desc{
+    color:#64748b; font-size:.72rem; margin-top:4px; line-height:1.3;
+  }
+  
+  /* ===== OR DIVIDER ===== */
+  .or-divider{
+    color:#94a3b8; font-weight:700; font-size:.85rem;
+    text-align:center; margin:8px 0;
+    position:relative;
+  }
+  .or-divider::before, .or-divider::after{
+    content:''; position:absolute; top:50%;
+    width:42%; height:1px; background:#e5e7eb;
+  }
+  .or-divider::before{ left:0; }
+  .or-divider::after{ right:0; }
+  
+  /* ===== BADGES ===== */
+  .badges{
+    display:flex; gap:8px; justify-content:center;
+    margin-top:14px; flex-wrap:wrap;
+  }
+  .badge{
+    background:#fef3c7; color:#92400e;
+    padding:5px 12px; border-radius:14px;
+    font-size:.72rem; font-weight:600;
+  }
+  
+  /* ===== FOOTER ===== */
+  .poster .footer{
+    margin-top:18px; padding-top:14px;
+    border-top:1px dashed #e5e7eb;
+    color:#64748b; font-size:.75rem; line-height:1.4;
+  }
+  
+  /* ===== PRINT STYLES ===== */
+  @media print{
+    body{ background:#fff; padding:0; }
+    .controls{ display:none; }
+    .poster{ box-shadow:none; border:2px solid #1e3a8a; page-break-inside:avoid; max-width:none; }
+    @page { margin:1cm; size:A4; }
+  }
+  
+  /* ===== MOBILE ===== */
+  @media (max-width:480px){
+    .qr-section{ grid-template-columns:1fr; }
+    .or-divider{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ CONTROLS PANEL ============ -->
+<div class="controls">
+  <h2>🎨 QR Generator Dual: Chatbot + Google Form</h2>
+  
+  <div class="row">
+    <div class="col">
+      <label>🔧 URL Chatbot (Lapor Bot):</label>
+      <input type="text" id="botUrl" value="https://sarprasgkpijkdepok.github.io/SarprasGKPIJKDepok/lapor-bot.html" />
+      <div class="icon-hint">URL ke chatbot conversational (cepat, anonim)</div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      <label>📝 URL Google Form (Lapor Klasik):</label>
+      <input type="text" id="formUrl" value="https://forms.gle/PASTE_FORM_URL_DISINI" />
+      <div class="icon-hint">Paste URL Google Form Bapak (versi singkat dari forms.gle)</div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      <label>📍 Lokasi Poster (opsional):</label>
+      <input type="text" id="lokasiInput" value="" placeholder="Contoh: Sanctuary, Konsistori, Aula..." />
+    </div>
+  </div>
+  
+  <div class="btn-group">
+    <button class="btn" onclick="generateQR()">🔄 Generate Ulang</button>
+    <button class="btn success" onclick="window.print()">🖨️ Cetak / Save PDF</button>
+    <button class="btn warning" onclick="downloadHTML()">💾 Download HTML</button>
+  </div>
+</div>
+
+<!-- ============ POSTER ============ -->
+<div class="poster" id="poster">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap">
+      assets/logo_gkpi.pngthis.style.display='none'" />
+    </div>
+    <h1>Sarpras GKPI</h1>
+    <p>Jemaat Khusus Depok</p>
+  </div>
+  
+  <!-- Main Title -->
+  <div class="main-title">📣 LAPOR KERUSAKAN</div>
+  <div class="main-subtitle" id="subtitleArea">
+    Bantu kami merawat fasilitas gereja.<br>
+    Pilih cara lapor yang Bapak/Ibu sukai 👇
+  </div>
+  
+  <!-- DUAL QR SECTION -->
+  <div class="qr-section">
+    <!-- QR 1: Chatbot -->
+    <div class="qr-card bot">
+      <div class="qr-badge">⚡ CARA CEPAT</div>
+      <div class="qr-img-wrap">
+        <div id="qrBot"></div>
+      </div>
+      <div class="qr-label">🔧 Chatbot</div>
+      <div class="qr-desc">Conversational<br>30 detik · Anonim</div>
+    </div>
+    
+    <!-- QR 2: Google Form -->
+    <div class="qr-card form">
+      <div class="qr-badge">📝 CARA KLASIK</div>
+      <div class="qr-img-wrap">
+        <div id="qrForm"></div>
+      </div>
+      <div class="qr-label">📝 Google Form</div>
+      <div class="qr-desc">Bisa upload foto<br>Lengkap & detail</div>
+    </div>
+  </div>
+  
+  <!-- Badges -->
+  <div class="badges">
+    <span class="badge">⏱️ Cepat</span>
+    <span class="badge">🔒 Anonim</span>
+    <span class="badge">📱 Mudah</span>
+    <span class="badge">✅ 1×24 Jam Respon</span>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <b>Tim Sarana Prasarana</b><br>
+    GKPI Jemaat Khusus Depok · 2026<br>
+    <span style="font-size:.7rem;">Scan salah satu QR di atas untuk mulai lapor</span>
+  </div>
+</div>
+
+<script>
+// =========================================
+// GENERATE QR (Dual)
+// =========================================
+function generateQR(){
+  const botUrl = document.getElementById('botUrl').value.trim();
+  const formUrl = document.getElementById('formUrl').value.trim();
+  const lokasi = document.getElementById('lokasiInput').value.trim();
+  
+  if(!botUrl || !formUrl){
+    alert('⚠️ URL Chatbot dan Google Form keduanya wajib diisi.');
+    return;
+  }
+  
+  // Update subtitle dengan lokasi (opsional)
+  const subtitleArea = document.getElementById('subtitleArea');
+  if(lokasi){
+    subtitleArea.innerHTML = 
+      '<b>📍 Lokasi: ' + lokasi + '</b><br>' +
+      'Pilih cara lapor yang Bapak/Ibu sukai 👇';
+  } else {
+    subtitleArea.innerHTML = 
+      'Bantu kami merawat fasilitas gereja.<br>' +
+      'Pilih cara lapor yang Bapak/Ibu sukai 👇';
+  }
+  
+  // Clear & regenerate Chatbot QR
+  const qrBotDiv = document.getElementById('qrBot');
+  qrBotDiv.innerHTML = '';
+  new QRCode(qrBotDiv, {
+    text: botUrl,
+    width: 160,
+    height: 160,
+    colorDark: '#1e3a8a',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  
+  // Clear & regenerate Form QR
+  const qrFormDiv = document.getElementById('qrForm');
+  qrFormDiv.innerHTML = '';
+  new QRCode(qrFormDiv, {
+    text: formUrl,
+    width: 160,
+    height: 160,
+    colorDark: '#15803d',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  
+  console.log('✅ Dual QR generated');
+  console.log('Chatbot:', botUrl);
+  console.log('Form:', formUrl);
+}
+
+// =========================================
+// DOWNLOAD POSTER as HTML standalone
+// =========================================
+function downloadHTML(){
+  const html = '<!DOCTYPE html><html><head><title>Poster Lapor Sarpras</title></head><body>' +
+    document.getElementById('poster').outerHTML +
+    '</body></html>';
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Poster_Lapor_Sarpras_GKPI.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Auto-generate on load
+window.addEventListener('load', generateQR);
+</script>
+</body>
+</html>
