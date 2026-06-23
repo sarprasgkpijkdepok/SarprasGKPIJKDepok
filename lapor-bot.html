@@ -208,6 +208,31 @@
   .result-card .no{ font-size:1.8rem; font-weight:700; color:var(--success); margin:14px 0; }
   .result-card p{ color:var(--muted); font-size:.9rem; margin-bottom:18px; line-height:1.5; }
   .result-card .btn-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  /* Running text marquee */
+.marquee-bar{
+  background: #fbbf24;
+  color: #1e3a8a;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  position: relative;
+}
+.marquee-track{
+  display: inline-block;
+  white-space: nowrap;
+  animation: marqueeScroll 20s linear infinite;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.marquee-track:hover{
+  animation-play-state: paused;
+}
+@keyframes marqueeScroll{
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
   @media (max-width:480px){
     .app{ max-width:100%; box-shadow:none; }
     .msg{ font-size:.9rem; }
@@ -230,6 +255,16 @@
       <div class="subtitle"> · Jemaat Khusus Depok · </div>
     </div>
   </div>
+  
+
+  <!-- Running text marquee -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span>📣 · Tim Sarana Prasarana GKPI JK Depok · 📣 · Melayani · Bukan Untuk · Dilayani · 📣 · Tim Sarana Prasarana GKPI JK Depok · </span>
+  </div>
+</div>
+
+
 
   <!-- Chat body -->
   <div class="chat-body" id="chatBody"></div>
@@ -349,7 +384,9 @@ async function showGreeting(){
     'Mulai lapor sekarang ya?<br><br>' +
     '⏱️ <i>Hanya butuh 30 detik.</i><br>' +
     '🔒 <i>Laporan bersifat anonim.</i>',
-    [{ label:'🚀 Mulai Lapor', cls:'primary', onClick: askTanggal }]
+    [ { label:'🚀 Mulai Lapor', cls:'primary', onClick: askTanggal },
+      { label:'🏠 Kembali ke Beranda', onClick: goHome }
+    ]
   );
 }
 
