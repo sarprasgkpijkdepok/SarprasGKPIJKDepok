@@ -6,7 +6,7 @@
   <title>Beranda - Dashboard GKPI JK Depok</title>
 
   <!-- ============ PWA CORE ============ -->
-  <link rel="manifest" href="manifest.json" />
+  json" />
   <meta name="theme-color" content="#1e3a8a" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
   <meta name="color-scheme" content="light dark" />
@@ -21,12 +21,12 @@
   <link rel="apple-touch-icon" sizes="120x120" href="assets/apple-touch-icon.png" />
   <link rel="apple-touch-icon" sizes="152x152" href="assets/apple-touch-icon.png" />
   <link rel="apple-touch-icon" sizes="167x167" href="assets/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  ets/apple-touch-icon.png" />
 
   <!-- ============ Android / Chrome PWA ============ -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="application-name" content="Sarpras GKPI" />
-  <link rel="icon" type="image/png" sizes="32x32"   href="assets/icon-192.png" />
+  -192.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
   <link rel="shortcut icon" href="assets/icon-192.png" />
@@ -44,11 +44,10 @@
 
   <!-- ============ Styles & Libs ============ -->
   <link rel="stylesheet" href="assets/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  .jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <!-- ============ FIX: Samakan skala Beranda dengan halaman lain ============ -->
   <style>
-    /* Page header card - samakan style dengan halaman Data Aset, Anggaran, dll */
     .page-header {
       background: var(--card-bg, #ffffff);
       border-radius: 14px;
@@ -88,7 +87,6 @@
       border-radius: 10px;
     }
 
-    /* Mobile tuning - supaya skala sama persis dgn halaman Data Aset */
     @media (max-width: 768px) {
       .page-header { padding: 1rem 1.1rem; border-radius: 12px; }
       .page-header .ph-title h1 { font-size: 1.75rem; }
@@ -99,41 +97,47 @@
       .main-content { padding: 1rem !important; }
     }
 
-    /* Sembunyikan topbar lama jika ada konflik style */
     .main-content > .topbar { display: none; }
 
-    /* Safe area untuk iPhone notch saat PWA standalone */
     @supports (padding: max(0px)) {
       body { padding-top: env(safe-area-inset-top); }
     }
+
+    /* Style khusus menu QR Generator (admin) */
+    .sidebar-nav .nav-admin a {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1e3a8a !important;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    .sidebar-nav .nav-admin a:hover {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
   </style>
 </head>
-<script src="assets/js/lapor-bubble.js"></script>
-</body>
+<body>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <img src="assets/logo_gkpi.png" alt="Logo GKPI" />
+      assets/logo_gkpi.png
       <h2>Dashboard Tim Sarana Prasarana</h2>
       <div class="sub">GKPI JK Depok</div>
     </div>
     <ul class="sidebar-nav">
       <li><a href="dashboard.html" class="active"><span class="icon">🏠</span> Beranda</a></li>
-      <li><a href="pages/data_aset.html"><span class="icon">📦</span> Data Aset</a></li>
-      <li><a href="pages/input_aset.html"><span class="icon">➕</span> Input Aset</a></li>
-      <li><a href="pages/jadwal_pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
-      <li><a href="pages/lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a></li>
+      <li>/data_aset.html"><span class="icon">📦</span> Data Aset</a></li>
+      <li>_aset.html"><span class="icon">➕</span> Input Aset</a></li>
+      <li>pages/jadwal_pemeliharaan.html<span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
+      <li>pages/lapor_sarpras.html<span class="icon">📣</span> Lapor Sarpras</a></li>
       <li><a href="pages/anggaran.html"><span class="icon">💰</span> Anggaran</a></li>
-      <li><a href="pages/keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a></li>
-      <li><a href="pages/laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a></li>
-      <li><a href="pages/laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a></li>
-      <li style="margin-top:auto; padding-top:12px; border-top:1px solid rgba(255,255,255,0.15);">
-      <a href="../qr-lapor.html" title="Admin Only - QR Generator">
-  🎨 QR Generator <span style="...">ADMIN</span>
-      </a>
-      <span style="display:inline-block; background:#fbbf24; color:#1e3a8a; font-size:0.6rem; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700;">ADMIN</span>
-    </a>
-  </li>
-</ul>
+      <li>anggotaan.html"><span class="icon">👥</span> Keanggotaan</a></li>
+      <li>pages/laporan_mingguan.html</li>
+      <li>an.html"><span class="icon">📄</span> Laporan Tahunan</a></li>
+      <li class="nav-admin">
+        qr-lapor.html Only - QR Generator">
+          <span class="icon">🎨</span> QR Generator
+          <span style="background:#1e3a8a; color:#fbbf24; font-size:0.6rem; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:700;">ADMIN</span>
+        </a>
+      </li>
     </ul>
   </aside>
 
@@ -141,7 +145,7 @@
     <!-- Mobile menu toggle (floating) -->
     <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" style="margin-bottom:.75rem">☰ Menu</button>
 
-    <!-- ===== PAGE HEADER (samakan dgn halaman lain) ===== -->
+    <!-- ===== PAGE HEADER ===== -->
     <div class="page-header">
       <div class="ph-left">
         <span class="ph-icon">🏠</span>
@@ -185,13 +189,13 @@
 
     <h2 class="section-title akses">Akses Cepat</h2>
     <div class="quick-grid">
-      <a href="pages/data_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
-      <a href="pages/input_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
-      <a href="pages/jadwal_pemeliharaan.html" class="quick-card"><span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
-      <a href="pages/lapor_sarpras.html" class="quick-card"><span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
+      pages/data_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
+      pages/input_aset.html<span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
+      pages/jadwal_pemeliharaan.html<span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
+      pages/lapor_sarpras.html<span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
       <a href="pages/anggaran.html" class="quick-card"><span class="qc-icon" style="color:var(--purple)">💰</span><div class="qc-label">Anggaran</div></a>
       <a href="pages/keanggotaan.html" class="quick-card"><span class="qc-icon" style="color:var(--teal)">👥</span><div class="qc-label">Keanggotaan</div></a>
-      <a href="pages/laporan_mingguan.html" class="quick-card"><span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
+      pages/laporan_mingguan.html<span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
       <a href="pages/laporan_tahunan.html" class="quick-card"><span class="qc-icon" style="color:var(--danger)">📄</span><div class="qc-label">Laporan Tahunan</div></a>
     </div>
 
@@ -202,7 +206,8 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
-  <script src="assets/js/utils.js"></script>
+  js"></script>
+  assets/js/lapor-bubble.js
   <script>
     function toggleTheme() {
       const cur = document.documentElement.getAttribute('data-theme');
