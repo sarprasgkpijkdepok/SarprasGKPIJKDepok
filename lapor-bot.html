@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#7b3f00" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Lapor Sarpras • GKPI Jemaat Khusus Depok</title>
+<style>
+  :root{
+    --primary:#7b3f00;       /* warm brown */
+    --primary-dark:#5a2d00;
+    --accent:#f0a500;        /* warm gold */
+    --bg:#fdf6ec;            /* cream */
+    --bot-bubble:#ffffff;
+    --user-bubble:#7b3f00;
+    --text:#2b2b2b;
+    --muted:#7a7a7a;
+    --border:#e8dcc4;
+    --success:#2e7d32;
+    --danger:#c62828;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text)}
+  .app{display:flex;flex-direction:column;height:100vh;max-width:560px;margin:0 auto;background:var(--bg);box-shadow:0 0 24px rgba(0,0,0,.06)}
+  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+  .logo{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  header .title{flex:1;line-height:1.2}
+  header .title h1{margin:0;font-size:16px;font-weight:600}
+  header .title p{margin:2px 0 0;font-size:11px;opacity:.85}
+  .reset-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .reset-btn:active{background:rgba(255,255,255,.3)}
+
+  .chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+  .msg{max-width:85%;padding:10px 14px;border-radius:18px;font-size:14.5px;line-height:1.45;animation:pop .25s ease-out;word-wrap:break-word}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .msg.bot{background:var(--bot-bubble);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .msg.user{background:var(--user-bubble);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+  .msg.system{background:transparent;color:var(--muted);font-size:12px;text-align:center;align-self:center;font-style:italic}
+
+  .typing{display:inline-flex;gap:4px;padding:6px 0}
+  .typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.15s}
+  .typing span:nth-child(3){animation-delay:.3s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+  .options{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start;max-width:95%;animation:pop .25s}
+  .opt-btn{background:#fff;border:1.5px solid var(--primary);color:var(--primary);padding:8px 14px;border-radius:20px;font-size:13.5px;cursor:pointer;font-weight:500;transition:all .15s}
+  .opt-btn:active{background:var(--primary);color:#fff;transform:scale(.97)}
+  .opt-btn.secondary{border-color:var(--muted);color:var(--muted)}
+  .opt-btn.primary{background:var(--primary);color:#fff}
+  .opt-btn.danger{border-color:var(--danger);color:var(--danger)}
+
+  .input-area{align-self:stretch;display:flex;flex-direction:column;gap:8px;animation:pop .25s}
+  .input-area input[type=text],.input-area textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;background:#fff;resize:vertical}
+  .input-area textarea{min-height:80px}
+  .input-area input:focus,.input-area textarea:focus{outline:none;border-color:var(--primary)}
+  .input-row{display:flex;gap:8px}
+  .input-row .opt-btn{flex:1}
+
+  .photo-area{align-self:stretch;display:flex;flex-direction:column;gap:10px;animation:pop .25s}
+  .photo-input-wrap{position:relative;border:2px dashed var(--primary);border-radius:12px;padding:18px;text-align:center;background:#fff;cursor:pointer}
+  .photo-input-wrap input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .photo-input-wrap .icon{font-size:30px}
+  .photo-input-wrap .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .thumbs{display:flex;gap:8px;flex-wrap:wrap}
+  .thumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb .x{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+  .summary{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px;font-size:13.5px;align-self:flex-start;max-width:95%}
+  .summary h4{margin:0 0 8px;color:var(--primary);font-size:14px}
+  .summary .row{display:flex;gap:6px;margin:4px 0}
+  .summary .row b{min-width:80px;color:var(--muted);font-weight:600}
+  .summary .photos{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+  .summary .photos img{width:54px;height:54px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
+
+  .loading{display:flex;align-items:center;gap:10px;align-self:flex-start;background:#fff;border:1px solid var(--border);padding:10px 14px;border-radius:18px;border-bottom-left-radius:6px}
+  .spinner{width:18px;height:18px;border:2.5px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  footer{padding:8px 12px;text-align:center;font-size:10.5px;color:var(--muted);border-top:1px solid var(--border);background:#fff}
+
+  /* Toast */
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:24px;font-size:13px;z-index:100;animation:pop .3s}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">⛪</div>
+    <div class="title">
+      <h1>Lapor Sarpras</h1>
+      <p>GKPI Jemaat Khusus Depok</p>
+    </div>
+    <button class="reset-btn" id="resetBtn" title="Mulai ulang">🔄</button>
+  </header>
+  <div class="chat" id="chat"></div>
+  <footer>Sarpras GKPI Jemaat Khusus Depok • Powered by Apps Script</footer>
+</div>
+
+<script>
+/* =====================================================================
+   ⚙️  KONFIGURASI - SILAHKAN ISI BAGIAN INI
+   ===================================================================== */
+const CONFIG = {
+  // URL Web App Apps Script (deploy sebagai "Anyone" / "Anyone with link")
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxe2A3tHw6BbcAl0CJMPcHBq75ly0VUDs_BTxSXb5iYQ94ieNo6FG8GGncD5w3MF3se/exec",
+
+  // API Key sederhana (Opsi B) - samakan dengan yang di Apps Script
+  API_KEY: "GKPI-SARPRAS-2026",
+
+  // Daftar lokasi eksisting (sesuaikan dengan sheet lama)
+  LOKASI: [
+    "Ruang Ibadah Utama",
+    "Balkon",
+    "Konsistori",
+    "Ruang Sekolah Minggu",
+    "Toilet Pria",
+    "Toilet Wanita",
+    "Dapur",
+    "Parkiran",
+    "Halaman",
+    "Sound System",
+    "AC / Pendingin",
+    "Listrik / Lampu"
+  ],
+
+  KATEGORI: [
+    "Kerusakan Fisik",
+    "Kebersihan",
+    "Listrik / Elektronik",
+    "AC / Pendingin",
+    "Plumbing / Air",
+    "Sound System",
+    "Lainnya"
+  ],
+
+  MAX_PHOTOS: 3,
+  MAX_PHOTO_SIZE: 1024 // px, auto-resize
+};
+
+/* =====================================================================
+   💾  STATE
+   ===================================================================== */
+let state = {
+  step: 0,
+  data: { lokasi: "", kategori: "", deskripsi: "", fotos: [] }
+};
+
+const chatEl = document.getElementById("chat");
+const resetBtn = document.getElementById("resetBtn");
+
+/* =====================================================================
+   🧰  UTILITIES
+   ===================================================================== */
+function scrollDown(){ setTimeout(()=>{ chatEl.scrollTop = chatEl.scrollHeight; }, 50); }
+
+function addBot(text, delay=600){
+  return new Promise(res=>{
+    const t = document.createElement("div");
+    t.className = "msg bot";
+    t.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+    chatEl.appendChild(t); scrollDown();
+    setTimeout(()=>{
+      t.innerHTML = text;
+      scrollDown();
+      res();
+    }, delay);
+  });
+}
+
+function addUser(text){
+  const t = document.createElement("div");
+  t.className = "msg user";
+  t.textContent = text;
+  chatEl.appendChild(t); scrollDown();
+}
+
+function addSystem(text){
+  const t = document.createElement("div");
+  t.className = "msg system";
+  t.textContent = text;
+  chatEl.appendChild(t); scrollDown();
+}
+
+function addOptions(opts, container=null){
+  const wrap = document.createElement("div");
+  wrap.className = "options";
+  opts.forEach(o=>{
+    const b = document.createElement("button");
+    b.className = "opt-btn" + (o.variant?` ${o.variant}`:"");
+    b.textContent = o.label;
+    b.onclick = ()=>{
+      wrap.remove();
+      o.onClick();
+    };
+    wrap.appendChild(b);
+  });
+  (container||chatEl).appendChild(wrap);
+  scrollDown();
+  return wrap;
+}
+
+function toast(msg){
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2500);
+}
+
+function saveDraft(){
+  try{ localStorage.setItem("lapor_sarpras_draft", JSON.stringify(state.data)); }catch(e){}
+}
+function loadDraft(){
+  try{
+    const d = localStorage.getItem("lapor_sarpras_draft");
+    return d ? JSON.parse(d) : null;
+  }catch(e){ return null; }
+}
+function clearDraft(){ try{ localStorage.removeItem("lapor_sarpras_draft"); }catch(e){} }
+
+/* Resize image to max dimension and return base64 */
+function resizePhoto(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const max = CONFIG.MAX_PHOTO_SIZE;
+        let {width, height} = img;
+        if(width > max || height > max){
+          if(width > height){ height = Math.round(height*max/width); width = max; }
+          else { width = Math.round(width*max/height); height = max; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =====================================================================
+   🎯  FLOW
+   ===================================================================== */
+async function start(){
+  chatEl.innerHTML = "";
+  state = { step:0, data:{ lokasi:"", kategori:"", deskripsi:"", fotos:[] } };
+
+  await addBot("Shalom! 🙏 Selamat datang di <b>Lapor Sarpras GKPI</b>. Saya akan bantu Bapak/Ibu melaporkan kerusakan atau keluhan fasilitas. Mulai sekarang ya?", 400);
+
+  // Cek draft
+  const draft = loadDraft();
+  if(draft && (draft.lokasi || draft.deskripsi)){
+    addOptions([
+      { label:"📝 Lanjutkan draft", variant:"primary", onClick: ()=>{ state.data = draft; askConfirm(); } },
+      { label:"🆕 Mulai baru", variant:"secondary", onClick: ()=>{ clearDraft(); askLokasi(); } }
+    ]);
+  } else {
+    askLokasi();
+  }
+}
+
+/* STEP 1 — LOKASI */
+async function askLokasi(){
+  await addBot("📍 <b>Lokasi mana</b> yang ingin dilaporkan?");
+  const opts = CONFIG.LOKASI.map(l=>({
+    label: l,
+    onClick: ()=>{ state.data.lokasi = l; addUser(l); saveDraft(); askKategori(); }
+  }));
+  opts.push({
+    label: "📝 Lainnya (tulis sendiri)",
+    variant:"secondary",
+    onClick: ()=> askLokasiCustom()
+  });
+  addOptions(opts);
+}
+
+function askLokasiCustom(){
+  const wrap = document.createElement("div");
+  wrap.className = "input-area";
+  wrap.innerHTML = `
+    <input type="text" id="lokasiInput" placeholder="Tulis nama lokasi/area..." maxlength="80"/>
+    <div class="input-row">
+      <button class="opt-btn secondary" id="lokCancel">Batal</button>
+      <button class="opt-btn primary" id="lokOk">Lanjut</button>
+    </div>`;
+  chatEl.appendChild(wrap); scrollDown();
+  const input = wrap.querySelector("#lokasiInput");
+  input.focus();
+  wrap.querySelector("#lokCancel").onclick = ()=>{ wrap.remove(); askLokasi(); };
+  wrap.querySelector("#lokOk").onclick = ()=>{
+    const v = input.value.trim();
+    if(v.length < 2){ toast("Mohon isi lokasi"); return; }
+    state.data.lokasi = v; wrap.remove();
+    addUser(v); saveDraft(); askKategori();
+  };
+}
+
+/* STEP 2 — KATEGORI */
+async function askKategori(){
+  await addBot("🏷️ <b>Jenis laporan</b> apa?");
+  const opts = CONFIG.KATEGORI.map(k=>({
+    label:k,
+    onClick: ()=>{ state.data.kategori=k; addUser(k); saveDraft(); askDeskripsi(); }
+  }));
+  addOptions(opts);
+}
+
+/* STEP 3 — DESKRIPSI */
+async function askDeskripsi(){
+  await addBot("✍️ Mohon jelaskan <b>detail laporan</b> Bapak/Ibu (minimal 10 karakter):");
+  const wrap = document.createElement("div");
+  wrap.className = "input-area";
+  wrap.innerHTML = `
+    <textarea id="descInput" placeholder="Contoh: AC ruang ibadah tidak dingin sejak Minggu lalu..." maxlength="500"></textarea>
+    <button class="opt-btn primary" id="descOk">Lanjut →</button>`;
+  chatEl.appendChild(wrap); scrollDown();
+  const ta = wrap.querySelector("#descInput");
+  ta.focus();
+  wrap.querySelector("#descOk").onclick = ()=>{
+    const v = ta.value.trim();
+    if(v.length < 10){ toast("Deskripsi minimal 10 karakter"); return; }
+    state.data.deskripsi = v; wrap.remove();
+    addUser(v); saveDraft(); askFoto();
+  };
+}
+
+/* STEP 4 — FOTO */
+async function askFoto(){
+  await addBot(`📸 Lampirkan <b>foto</b> (maks ${CONFIG.MAX_PHOTOS}) untuk memperjelas laporan. Boleh juga dilewati.`);
+  const wrap = document.createElement("div");
+  wrap.className = "photo-area";
+  wrap.innerHTML = `
+    <label class="photo-input-wrap">
+      <div class="icon">📷</div>
+      <div><b>Ketuk untuk pilih / ambil foto</b></div>
+      <div class="hint">Maks ${CONFIG.MAX_PHOTOS} foto • otomatis dikompres</div>
+      <input type="file" accept="image/*" multiple capture="environment" id="photoInput"/>
+    </label>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="input-row">
+      <button class="opt-btn secondary" id="skipPhoto">Lewati foto</button>
+      <button class="opt-btn primary" id="photoOk">Lanjut →</button>
+    </div>`;
+  chatEl.appendChild(wrap); scrollDown();
+  const input = wrap.querySelector("#photoInput");
+  const thumbs = wrap.querySelector("#thumbs");
+
+  function renderThumbs(){
+    thumbs.innerHTML = "";
+    state.data.fotos.forEach((b64,i)=>{
+      const div = document.createElement("div");
+      div.className = "thumb";
+      div.innerHTML = `<img src="${b64}"/><button class="x" data-i="${i}">×</button>`;
+      div.querySelector(".x").onclick = ()=>{ state.data.fotos.splice(i,1); renderThumbs(); saveDraft(); };
+      thumbs.appendChild(div);
+    });
+  }
+
+  input.onchange = async e=>{
+    const files = [...e.target.files];
+    for(const f of files){
+      if(state.data.fotos.length >= CONFIG.MAX_PHOTOS){ toast(`Maksimal ${CONFIG.MAX_PHOTOS} foto`); break; }
+      try{
+        const b64 = await resizePhoto(f);
+        state.data.fotos.push(b64);
+      }catch(err){ toast("Gagal memproses foto"); }
+    }
+    renderThumbs(); saveDraft();
+    input.value = "";
+  };
+
+  wrap.querySelector("#skipPhoto").onclick = ()=>{
+    state.data.fotos = [];
+    wrap.remove();
+    addUser("(tanpa foto)");
+    askConfirm();
+  };
+  wrap.querySelector("#photoOk").onclick = ()=>{
+    wrap.remove();
+    addUser(state.data.fotos.length ? `${state.data.fotos.length} foto dilampirkan 📎` : "(tanpa foto)");
+    askConfirm();
+  };
+}
+
+/* STEP 5 — KONFIRMASI */
+async function askConfirm(){
+  await addBot("Mohon periksa kembali laporan di bawah ini:");
+  const d = state.data;
+  const sum = document.createElement("div");
+  sum.className = "summary";
+  sum.innerHTML = `
+    <h4>📋 Ringkasan Laporan</h4>
+    <div class="row"><b>Lokasi</b><span>${escapeHtml(d.lokasi)}</span></div>
+    <div class="row"><b>Kategori</b><span>${escapeHtml(d.kategori)}</span></div>
+    <div class="row"><b>Deskripsi</b><span>${escapeHtml(d.deskripsi)}</span></div>
+    ${d.fotos.length ? `<div class="row"><b>Foto</b><div class="photos">${d.fotos.map(f=>`<img src="${f}"/>`).join("")}</div></div>` : ""}
+  `;
+  chatEl.appendChild(sum); scrollDown();
+
+  addOptions([
+    { label:"✅ Kirim Laporan", variant:"primary", onClick: ()=> submitReport() },
+    { label:"✏️ Edit", variant:"secondary", onClick: ()=> editMenu() }
+  ]);
+}
+
+function editMenu(){
+  addOptions([
+    { label:"📍 Edit Lokasi", onClick: ()=> askLokasi() },
+    { label:"🏷️ Edit Kategori", onClick: ()=> askKategori() },
+    { label:"✍️ Edit Deskripsi", onClick: ()=> askDeskripsi() },
+    { label:"📸 Edit Foto", onClick: ()=> askFoto() },
+    { label:"⬅️ Kembali", variant:"secondary", onClick: ()=> askConfirm() }
+  ]);
+}
+
+/* STEP 6 — SUBMIT */
+async function submitReport(){
+  const loading = document.createElement("div");
+  loading.className = "loading";
+  loading.innerHTML = `<div class="spinner"></div><div>Mengirim laporan...</div>`;
+  chatEl.appendChild(loading); scrollDown();
+
+  const payload = {
+    apiKey: CONFIG.API_KEY,
+    timestamp: new Date().toISOString(),
+    lokasi: state.data.lokasi,
+    kategori: state.data.kategori,
+    deskripsi: state.data.deskripsi,
+    fotos: state.data.fotos,
+    // nama pelapor dilewati / anonim agar konsisten dgn format sheet eksisting
+    namaPelapor: ""
+  };
+
+  try{
+    const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors", // Apps Script biasanya butuh ini; respons akan opaque
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    // dengan no-cors kita tidak bisa baca status; anggap berhasil jika fetch tidak throw
+    loading.remove();
+    clearDraft();
+    await addBot("✅ <b>Terima kasih!</b> 🙏<br>Laporan Bapak/Ibu sudah kami terima. Tim Sarpras akan segera menindaklanjuti.<br><br><i>Tuhan Yesus memberkati! ✨</i>", 500);
+    addOptions([
+      { label:"🆕 Buat Laporan Baru", variant:"primary", onClick: ()=> start() }
+    ]);
+  }catch(err){
+    loading.remove();
+    await addBot("⚠️ Maaf, terjadi kendala saat mengirim laporan. Mohon coba lagi atau hubungi tim Sarpras.", 400);
+    addOptions([
+      { label:"🔁 Coba Kirim Ulang", variant:"primary", onClick: ()=> submitReport() },
+      { label:"✏️ Edit Laporan", variant:"secondary", onClick: ()=> askConfirm() }
+    ]);
+  }
+}
+
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
+resetBtn.onclick = ()=>{
+  if(confirm("Mulai ulang laporan?")){ clearDraft(); start(); }
+};
+
+start();
+</script>
+
+<!--
+=====================================================================
+📖 PETUNJUK PENGGUNAAN — Anderson Halomoan
+=====================================================================
+
+A. ISI CONFIG di bagian atas <script>
+   - APPS_SCRIPT_URL : URL Web App dari Apps Script (deploy → Web app)
+   - API_KEY        : token rahasia (samakan dgn Apps Script)
+   - LOKASI / KATEGORI : sesuaikan dgn sheet eksisting
+
+B. CONTOH APPS SCRIPT (Code.gs) — doPost handler
+   --------------------------------------------------------------
+   const SHEET_ID = "ISI_SHEET_ID_ANDA";
+   const SHEET_NAME = "Laporan";
+   const API_KEY = "GKPI-SARPRAS-2026"; // samakan dengan CONFIG.API_KEY
+   const DRIVE_FOLDER_ID = "ISI_FOLDER_ID_UNTUK_FOTO";
+
+   function doPost(e){
+     try {
+       const body = JSON.parse(e.postData.contents);
+       if (body.apiKey !== API_KEY) {
+         return ContentService.createTextOutput(JSON.stringify({ok:false,err:"unauthorized"}))
+           .setMimeType(ContentService.MimeType.JSON);
+       }
+       const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+       const urls = (body.fotos||[]).map((b64,i)=>{
+         const data = b64.split(",")[1];
+         const blob = Utilities.newBlob(Utilities.base64Decode(data),"image/jpeg",
+           `lapor_${Date.now()}_${i}.jpg`);
+         return folder.createFile(blob).getUrl();
+       });
+       const sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+       sh.appendRow([
+         new Date(body.timestamp),
+         body.lokasi, body.kategori, body.deskripsi,
+         body.namaPelapor || "Anonim",
+         urls.join(", ")
+       ]);
+       return ContentService.createTextOutput(JSON.stringify({ok:true}))
+         .setMimeType(ContentService.MimeType.JSON);
+     } catch(err){
+       return ContentService.createTextOutput(JSON.stringify({ok:false,err:String(err)}))
+         .setMimeType(ContentService.MimeType.JSON);
+     }
+   }
+   --------------------------------------------------------------
+   Deploy: Deploy → New deployment → Type "Web app"
+           Execute as: Me  | Who has access: Anyone
+   Copy URL → tempel ke CONFIG.APPS_SCRIPT_URL
+
+C. HOSTING & QR CODE (1 QR untuk semua lokasi)
+   - Upload file HTML ini ke GitHub Pages / Netlify / Firebase Hosting
+   - Dapatkan URL public, misal: https://lapor-sarpras-gkpi.netlify.app
+   - Generate QR Code dari URL tersebut (misal pakai qr-code-generator.com
+     atau via Python: qrcode lib) → cetak & tempel di papan pengumuman
+   - Jemaat scan QR → langsung masuk chatbot → pilih lokasi sendiri
+
+=====================================================================
+-->
+</body>
+</html>
