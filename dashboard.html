@@ -17,8 +17,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Sarpras GKPI" />
   <meta name="format-detection" content="telephone=no" />
-
-  <!-- Apple Touch Icons (iPhone & iPad - semua ukuran) -->
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="apple-touch-icon" sizes="120x120" href="assets/apple-touch-icon.png" />
   <link rel="apple-touch-icon" sizes="152x152" href="assets/apple-touch-icon.png" />
@@ -38,7 +36,7 @@
   <meta name="msapplication-TileImage" content="assets/icon-192.png" />
   <meta name="msapplication-tap-highlight" content="no" />
 
-  <!-- ============ Open Graph (Share) ============ -->
+  <!-- ============ Open Graph ============ -->
   <meta property="og:title" content="Dashboard Sarpras GKPI JK Depok" />
   <meta property="og:description" content="Dashboard Tim Sarana Prasarana GKPI Jemaat Khusus Depok" />
   <meta property="og:image" content="assets/icon-512.png" />
@@ -47,6 +45,68 @@
   <!-- ============ Styles & Libs ============ -->
   <link rel="stylesheet" href="assets/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- ============ FIX: Samakan skala Beranda dengan halaman lain ============ -->
+  <style>
+    /* Page header card - samakan style dengan halaman Data Aset, Anggaran, dll */
+    .page-header {
+      background: var(--card-bg, #ffffff);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .page-header .ph-left { display: flex; align-items: flex-start; gap: .9rem; flex: 1 1 auto; min-width: 0; }
+    .page-header .ph-icon { font-size: 2rem; line-height: 1; }
+    .page-header .ph-title { display: flex; flex-direction: column; min-width: 0; }
+    .page-header .ph-title h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary, #1e3a8a);
+      line-height: 1.1;
+    }
+    .page-header .ph-title .sub {
+      margin-top: .25rem;
+      color: var(--muted, #64748b);
+      font-size: 1rem;
+    }
+    .page-header .ph-actions {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .page-header .btn-action {
+      padding: .55rem .9rem;
+      font-size: .95rem;
+      border-radius: 10px;
+    }
+
+    /* Mobile tuning - supaya skala sama persis dgn halaman Data Aset */
+    @media (max-width: 768px) {
+      .page-header { padding: 1rem 1.1rem; border-radius: 12px; }
+      .page-header .ph-title h1 { font-size: 1.75rem; }
+      .page-header .ph-title .sub { font-size: .95rem; }
+      .page-header .ph-icon { font-size: 1.6rem; }
+      .page-header .btn-action { padding: .5rem .7rem; font-size: .85rem; }
+      .section-title { font-size: 1.15rem; margin: 1rem 0 .75rem; }
+      .main-content { padding: 1rem !important; }
+    }
+
+    /* Sembunyikan topbar lama jika ada konflik style */
+    .main-content > .topbar { display: none; }
+
+    /* Safe area untuk iPhone notch saat PWA standalone */
+    @supports (padding: max(0px)) {
+      body { padding-top: env(safe-area-inset-top); }
+    }
+  </style>
 </head>
 <body>
   <aside class="sidebar" id="sidebar">
@@ -69,15 +129,19 @@
   </aside>
 
   <main class="main-content">
-    <div class="topbar">
-      <div style="display:flex; align-items:center; gap:.75rem;">
-        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-        <div class="topbar-title">
+    <!-- Mobile menu toggle (floating) -->
+    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" style="margin-bottom:.75rem">☰ Menu</button>
+
+    <!-- ===== PAGE HEADER (samakan dgn halaman lain) ===== -->
+    <div class="page-header">
+      <div class="ph-left">
+        <span class="ph-icon">🏠</span>
+        <div class="ph-title">
           <h1>Beranda</h1>
           <div class="sub">Dashboard Sarana &amp; Prasarana</div>
         </div>
       </div>
-      <div class="topbar-actions">
+      <div class="ph-actions">
         <button class="btn-action" onclick="window.print()">🖨️ Cetak</button>
         <button class="btn-action" onclick="exportPDF()">📄 PDF</button>
         <button class="btn-action" onclick="toggleTheme()" title="Toggle theme">🌓</button>
@@ -131,7 +195,6 @@
   <script src="assets/js/api.js"></script>
   <script src="assets/js/utils.js"></script>
   <script>
-    // ===== Theme Toggle =====
     function toggleTheme() {
       const cur = document.documentElement.getAttribute('data-theme');
       const next = cur === 'dark' ? 'light' : 'dark';
@@ -144,7 +207,6 @@
 
     function exportPDF() { window.print(); }
 
-    // ===== Service Worker Registration (PWA) =====
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
@@ -153,12 +215,10 @@
       });
     }
 
-    // ===== iOS PWA Detection (informational) =====
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                       || window.navigator.standalone === true;
     if (isStandalone) document.documentElement.classList.add('pwa-standalone');
 
-    // ===== Load Dashboard Data =====
     async function loadDashboard() {
       try {
         const data = await SarprasAPI.fetch('all');
@@ -189,7 +249,6 @@
           </div>
         `;
 
-        // Chart 1: Distribusi Kondisi Aset (Doughnut)
         const kondisiData = [asetBaik, rusakRingan, rusakBerat].filter(v => v > 0);
         const kondisiLabels = ['Baik', 'Rusak Ringan', 'Rusak Berat'].filter((_, i) => [asetBaik, rusakRingan, rusakBerat][i] > 0);
         new Chart(document.getElementById('chartKondisi'), {
@@ -198,7 +257,6 @@
           options: { responsive: true, plugins: { legend: { position: 'top' } } }
         });
 
-        // Chart 2: Anggaran vs Realisasi (Bar)
         const posLabels = data.anggaran.map(x => x['Pos Anggaran']);
         const posAnggaran = data.anggaran.map(x => Number(x['Anggaran (Rp)']) || 0);
         const posRealisasi = data.anggaran.map(x => Number(x['Realisasi (Rp)']) || 0);
@@ -221,7 +279,6 @@
           }
         });
 
-        // Chart 3: Status Laporan Kerusakan (Doughnut)
         const laporStatus = {};
         data.lapor.forEach(x => {
           const s = Utils.cleanStatus(x.Status) || 'Lainnya';
@@ -233,7 +290,6 @@
           options: { responsive: true, plugins: { legend: { position: 'top' } } }
         });
 
-        // Chart 4: Status Jadwal Pemeliharaan (Doughnut)
         const jadwalStatus = {};
         data.jadwal.forEach(x => {
           const s = String(x.Status || 'Lainnya').trim();
