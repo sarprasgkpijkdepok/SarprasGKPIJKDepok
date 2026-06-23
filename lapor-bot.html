@@ -478,10 +478,14 @@ async function submitLapor(){
     const result = await res.json();
     
     if(result.status === 'success'){
-      showResult('success', '🎉 Laporan Terkirim!', 
-        '<div class="no">#' + (result.no || '?') + '</div>' +
-        'Terima kasih atas laporannya.<br>' +
-        'Tim Sarpras GKPI akan tindak lanjut <b>dalam 1×24 jam</b>.');
+  showResult('success', '🎉 Laporan Terkirim!', 
+    '<div class="no">#' + (result.no || '?') + '</div>' +
+    'Terima kasih atas laporannya.<br>' +
+    'Tim Sarpras GKPI akan tindak lanjut <b>dalam 1×24 jam</b>.<br><br>' +
+    '<div style="background:#f1f5f9; padding:12px; border-radius:10px; font-size:.85rem; line-height:1.5;">' +
+      '📊 Untuk melihat status laporan, kunjungi:<br>' +
+      '<a href="https://sarprasgkpijkdepok.github.io/SarprasGKPIJKDepok/pages/lapor_sarpras.html" target="_blank" style="color:#1e3a8a; font-weight:600; word-break:break-all;">Halaman Lapor Sarpras</a>' +
+    '</div>');
     } else {
       throw new Error(result.message || 'Unknown error');
     }
@@ -502,9 +506,9 @@ function showResult(type, title, html){
     '<h3>' + title + '</h3>' +
     '<p>' + html + '</p>' +
     '<div class="btn-row">' +
-      (type === 'success' 
+      (type === 'success'
         ? '<button class="quick-btn primary" onclick="resetForm()">📝 Lapor Lagi</button>' +
-          '<button class="quick-btn" onclick="closeApp()">Tutup</button>'
+          '<button class="quick-btn" onclick="goHome()">🏠 Beranda</button>'
         : '<button class="quick-btn primary" onclick="closeOverlay(); submitLapor()">🔄 Coba Lagi</button>' +
           '<button class="quick-btn" onclick="closeOverlay()">Tutup</button>'
       ) +
@@ -539,6 +543,9 @@ function closeApp(){
   addMsg('bot', '🙏 Terima kasih telah menggunakan Lapor Sarpras GKPI.<br>Tuhan memberkati pelayanan kita semua.', [
     { label:'🚀 Lapor Lagi', cls:'primary', onClick: resetForm }
   ]);
+}
+function goHome(){
+  window.location.href = 'dashboard.html';
 }
 
 function handleInputSubmit(){
