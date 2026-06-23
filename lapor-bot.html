@@ -233,6 +233,87 @@
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+/* Tombol persistent - tidak ikut disabled saat user lanjut flow */
+.quick-btn.persistent {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-color: #fbbf24 !important;
+  opacity: 1 !important;
+  position: relative;
+}
+.quick-btn.persistent:hover, 
+.quick-btn.persistent:active {
+  background: #fbbf24 !important;
+  color: #1e3a8a !important;
+  transform: translateY(-1px);
+}
+.quick-btn.persistent::before {
+  content: '✨';
+  margin-right: 2px;
+  font-size: 0.7rem;
+}
+/* Tombol persistent - tidak ikut disabled saat user lanjut flow */
+.quick-btn.persistent {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-color: #fbbf24 !important;
+  opacity: 1 !important;
+  position: relative;
+}
+.quick-btn.persistent:hover, 
+.quick-btn.persistent:active {
+  background: #fbbf24 !important;
+  color: #1e3a8a !important;
+  transform: translateY(-1px);
+}
+.quick-btn.persistent::before {
+  content: '✨';
+  margin-right: 2px;
+  font-size: 0.7rem;
+}
+
+/* Floating Cancel Bar */
+.cancel-bar {
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+  border-top: 1px solid #fbbf24;
+  padding: 8px 12px;
+  display: none;
+  animation: slideUpBar 0.3s ease;
+}
+.cancel-bar.show {
+  display: block;
+}
+@keyframes slideUpBar {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cancel-btn {
+  width: 100%;
+  background: transparent;
+  color: #92400e;
+  border: 1.5px dashed #d97706;
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.cancel-btn:hover {
+  background: #fbbf24;
+  color: #1e3a8a;
+  border-style: solid;
+  border-color: #1e3a8a;
+}
+.cancel-btn:active {
+  transform: scale(0.98);
+}
   @media (max-width:480px){
     .app{ max-width:100%; box-shadow:none; }
     .msg{ font-size:.9rem; }
@@ -267,13 +348,20 @@
 
 
   <!-- Chat body -->
-  <div class="chat-body" id="chatBody"></div>
+<div class="chat-body" id="chatBody"></div>
 
-  <!-- Input area (hidden by default) -->
-  <div class="input-area" id="inputArea">
-    <input type="text" id="inputField" placeholder="Ketik di sini..." />
-    <button id="sendBtn" onclick="handleInputSubmit()">➤</button>
-  </div>
+<!-- Floating Cancel Bar (muncul saat flow lapor jalan) -->
+<div class="cancel-bar" id="cancelBar">
+  <button class="cancel-btn" onclick="confirmCancel()">
+    ❌ Batal Lapor & Kembali ke Beranda
+  </button>
+</div>
+
+<!-- Input area (hidden by default) -->
+<div class="input-area" id="inputArea">
+  <input type="text" id="inputField" placeholder="Ketik di sini..." />
+  <button id="sendBtn" onclick="handleInputSubmit()">➤</button>
+</div>
 </div>
 
 <!-- Result overlay -->
@@ -345,7 +433,11 @@ function addMsg(role, html, actions){
   scrollBottom();
 }
 function disableAllQuickButtons(){
-  document.querySelectorAll('.quick-btn').forEach(b => { b.disabled = true; b.style.opacity = .5; });
+  document.querySelectorAll('.quick-btn').forEach(b => { 
+    if (b.classList.contains('persistent')) return; // skip tombol persistent
+    b.disabled = true; 
+    b.style.opacity = .5; 
+  });
 }
 
 async function botType(){
@@ -377,15 +469,16 @@ function formatTglID(yyyymmdd){
 }
 
 async function showGreeting(){
+  hideCancelBar(); // sembunyikan tombol cancel di greeting
   await botType();
   addMsg('bot', 
-    'Shalom! 👋 Selamat datang di aplikasi <b>Lapor Sarpras GKPI JK Depok</b>.<br><br>' +
+    'Halo! 👋 Selamat datang di <b>Lapor Sarpras GKPI</b>.<br><br>' +
     'Saya akan bantu Bapak/Ibu lapor kerusakan/keluhan terkait sarana & prasarana gereja.<br><br>' +
-    'Mulai lapor sekarang ya?<br><br>' +
     '⏱️ <i>Hanya butuh 30 detik.</i><br>' +
     '🔒 <i>Laporan bersifat anonim.</i>',
-    [ { label:'🚀 Mulai Lapor', cls:'primary', onClick: askTanggal },
-      { label:'🏠 Kembali ke Beranda', onClick: goHome }
+    [
+      { label:'🚀 Mulai Lapor', cls:'primary', onClick: ()=> { showCancelBar(); askTanggal(); } },
+      { label:'🏠 Kembali ke Beranda', cls:'persistent', onClick: goHome }
     ]
   );
 }
@@ -515,7 +608,8 @@ async function submitLapor(){
     const result = await res.json();
     
     if(result.status === 'success'){
-  showResult('success', '🎉 Laporan Terkirim!', 
+    hideCancelBar();
+    showResult('success', '🎉 Laporan Terkirim!', 
     '<div class="no">#' + (result.no || '?') + '</div>' +
     'Terima kasih atas laporannya.<br>' +
     'Tim Sarpras GKPI akan tindak lanjut <b>dalam 1×24 jam</b>.<br><br>' +
@@ -570,6 +664,7 @@ async function cancelForm(){
 }
 function resetForm(){
   closeOverlay();
+  hideCancelBar();
   $body.innerHTML = '';
   formData = { tanggal:'', lokasi:'', deskripsi:'', prioritas:'' };
   showGreeting();
@@ -582,7 +677,22 @@ function closeApp(){
   ]);
 }
 function goHome(){
-  window.location.href = 'dashboard.html';
+  window.location.href = DASHBOARD_URL;
+}
+
+// =========================================
+// CANCEL BAR HELPERS
+// =========================================
+function showCancelBar(){
+  document.getElementById('cancelBar').classList.add('show');
+}
+function hideCancelBar(){
+  document.getElementById('cancelBar').classList.remove('show');
+}
+function confirmCancel(){
+  if(confirm('Yakin ingin batal lapor dan kembali ke Beranda?\n\nSemua data yang sudah diisi akan hilang.')){
+    goHome();
+  }
 }
 
 function handleInputSubmit(){
