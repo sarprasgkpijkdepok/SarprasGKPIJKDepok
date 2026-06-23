@@ -1,15 +1,19 @@
 {
   "name": "Dashboard Sarpras GKPI JK Depok",
   "short_name": "Sarpras GKPI",
-  "description": "Dashboard Tim Sarana & Prasarana GKPI Jemaat Khusus Depok",
-  "start_url": "./dashboard.html",
+  "description": "Dashboard Tim Sarana Prasarana GKPI Jemaat Khusus Depok",
+  "id": "/dashboard.html",
+  "start_url": "dashboard.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait",
   "background_color": "#1e3a8a",
   "theme_color": "#1e3a8a",
   "lang": "id",
-  "categories": ["productivity", "business"],
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -18,22 +22,42 @@
       "purpose": "any"
     },
     {
-      "src": "assets/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
       "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "assets/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Data Aset",
+      "short_name": "Aset",
+      "url": "pages/data_aset.html",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Lapor Sarpras",
+      "short_name": "Lapor",
+      "url": "pages/lapor_sarpras.html",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Anggaran",
+      "short_name": "Anggaran",
+      "url": "pages/anggaran.html",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
