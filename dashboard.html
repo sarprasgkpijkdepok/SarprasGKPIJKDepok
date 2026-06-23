@@ -1,34 +1,60 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Sarpras GKPI JK Depok</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1e3a8a" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="assets/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beranda - Dashboard GKPI JK Depok</title>
+
+manifest.json
+
+<meta name="theme-color" content="#1e3a8a" />
+<meta name="color-scheme" content="light dark" />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Sarpras GKPI" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+
+assets/apple-touch-icon.png
+assets/apple-touch-icon.png
+assets/icon-192.png
+assets/icon-512.png
+
+assets/icon-192.png
+assets/icon-512.png
+assets/icon-192.png
+
+<meta name="msapplication-TileColor" content="#1e3a8a" />
+<meta name="msapplication-TileImage" content="assets/icon-192.png" />
+<meta name="application-name" content="Sarpras GKPI" />
+
+<meta property="og:title" content="Dashboard Sarpras GKPI JK Depok" />
+<meta property="og:description" content="Dashboard Tim Sarana Prasarana GKPI Jemaat Khusus Depok" />
+<meta property="og:image" content="assets/icon-512.png" />
+<meta property="og:type" content="website" />
+
+assets/style.css
+.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <img src="assets/logo_gkpi.png" alt="GKPI" />
+    assets/logo_gkpi.png="GKPI Logo" />
     <h2>Dashboard Tim Sarana Prasarana</h2>
     <div class="sub">GKPI JK Depok</div>
   </div>
   <ul class="sidebar-nav">
-    <li><a href="dashboard.html" class="active"><span class="icon">🏠</span> Beranda</a></li>
-    <li><a href="pages/data_aset.html"><span class="icon">📦</span> Data Aset</a></li>
-    <li><a href="pages/input_aset.html"><span class="icon">➕</span> Input Aset</a></li>
-    <li><a href="pages/jadwal_pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
-    <li><a href="pages/lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a></li>
-    <li><a href="pages/anggaran.html"><span class="icon">💰</span> Anggaran</a></li>
-    <li><a href="pages/keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a></li>
-    <li><a href="pages/laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a></li>
-    <li><a href="pages/laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a></li>
+    dashboard.html
+    pages/data_aset.html<span class="icon">📦</span> Data Aset</a></li>
+    pages/input_aset.html<span class="icon">➕</span> Input Aset</a></li>
+    pages/jadwal_pemeliharaan.html<span class="icon">📅</span> Jadwal Pemeliharaan</a></li>
+    pages/lapor_sarpras.html<span class="icon">📣</span> Lapor Sarpras</a></li>
+    pages/anggaran.html<span class="icon">💰</span> Anggaran</a></li>
+    pages/keanggotaan.html<span class="icon">👥</span> Keanggotaan</a></li>
+    pages/laporan_mingguan.html<span class="icon">📊</span> Laporan Mingguan</a></li>
+    pages/laporan_tahunan.html<span class="icon">📄</span> Laporan Tahunan</a></li>
   </ul>
 </aside>
 
@@ -79,14 +105,14 @@
 
   <h2 class="section-title akses">Akses Cepat</h2>
   <div class="quick-grid">
-    <a href="pages/data_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
-    <a href="pages/input_aset.html" class="quick-card"><span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
-    <a href="pages/jadwal_pemeliharaan.html" class="quick-card"><span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
-    <a href="pages/lapor_sarpras.html" class="quick-card"><span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
-    <a href="pages/anggaran.html" class="quick-card"><span class="qc-icon" style="color:var(--purple)">💰</span><div class="qc-label">Anggaran</div></a>
-    <a href="pages/keanggotaan.html" class="quick-card"><span class="qc-icon" style="color:var(--teal)">👥</span><div class="qc-label">Keanggotaan</div></a>
-    <a href="pages/laporan_mingguan.html" class="quick-card"><span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
-    <a href="pages/laporan_tahunan.html" class="quick-card"><span class="qc-icon" style="color:var(--danger)">📄</span><div class="qc-label">Laporan Tahunan</div></a>
+    pages/data_aset.html<span class="qc-icon" style="color:var(--primary)">📦</span><div class="qc-label">Data Aset</div></a>
+    pages/input_aset.html<span class="qc-icon" style="color:var(--info)">➕</span><div class="qc-label">Input Aset</div></a>
+    pages/jadwal_pemeliharaan.html<span class="qc-icon" style="color:var(--success)">📅</span><div class="qc-label">Jadwal</div></a>
+    pages/lapor_sarpras.html<span class="qc-icon" style="color:var(--orange)">📣</span><div class="qc-label">Lapor</div></a>
+    pages/anggaran.html<span class="qc-icon" style="color:var(--purple)">💰</span><div class="qc-label">Anggaran</div></a>
+    pages/keanggotaan.html<span class="qc-icon" style="color:var(--teal)">👥</span><div class="qc-label">Keanggotaan</div></a>
+    pages/laporan_mingguan.html<span class="qc-icon" style="color:var(--warning)">📊</span><div class="qc-label">Laporan Mingguan</div></a>
+    pages/laporan_tahunan.html<span class="qc-icon" style="color:var(--danger)">📄</span><div class="qc-label">Laporan Tahunan</div></a>
   </div>
 
   <footer class="app-footer">
@@ -95,11 +121,12 @@
 
 </main>
 
-<script src="assets/js/config.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/utils.js"></script>
+assets/js/config.js
+assets/js/api.js
+assets/js/utils.js
 
 <script>
+  // Theme toggle
   function toggleTheme() {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
@@ -110,8 +137,10 @@
   const savedTheme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
 
+  // PDF Export
   function exportPDF() { window.print(); }
 
+  // Service Worker registration (PWA)
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err.message));
   }
@@ -147,6 +176,8 @@
         </div>
       `;
 
+
+      // Chart 1: Distribusi Kondisi Aset (Doughnut)
       const kondisiData = [asetBaik, rusakRingan, rusakBerat].filter(v => v > 0);
       const kondisiLabels = ['Baik', 'Rusak Ringan', 'Rusak Berat'].filter((_, i) => [asetBaik, rusakRingan, rusakBerat][i] > 0);
       new Chart(document.getElementById('chartKondisi'), {
@@ -155,6 +186,7 @@
         options: { responsive: true, plugins: { legend: { position: 'top' } } }
       });
 
+      // Chart 2: Anggaran vs Realisasi (Bar)
       const posLabels = data.anggaran.map(x => x['Pos Anggaran']);
       const posAnggaran = data.anggaran.map(x => Number(x['Anggaran (Rp)']) || 0);
       const posRealisasi = data.anggaran.map(x => Number(x['Realisasi (Rp)']) || 0);
@@ -177,6 +209,7 @@
         }
       });
 
+      // Chart 3: Status Laporan Kerusakan (Doughnut)
       const laporStatus = {};
       data.lapor.forEach(x => {
         const s = Utils.cleanStatus(x.Status) || 'Lainnya';
@@ -188,6 +221,7 @@
         options: { responsive: true, plugins: { legend: { position: 'top' } } }
       });
 
+      // Chart 4: Status Jadwal Pemeliharaan (Doughnut)
       const jadwalStatus = {};
       data.jadwal.forEach(x => {
         const s = String(x.Status || 'Lainnya').trim();
@@ -208,6 +242,7 @@
 
   loadDashboard();
 
+  // Auto-refresh setiap X menit (dari CONFIG)
   if (CONFIG.AUTO_REFRESH_MIN > 0) {
     setInterval(() => location.reload(), CONFIG.AUTO_REFRESH_MIN * 60 * 1000);
   }
