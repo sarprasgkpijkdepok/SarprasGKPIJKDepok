@@ -159,14 +159,148 @@
   .poster .footer{ margin-top:18px; padding-top:14px; border-top:1px dashed #e5e7eb; color:#64748b; font-size:.75rem; line-height:1.4; }
   
   @media print{
-    body{ background:#fff; padding:0; }
-    .controls, .password-gate{ display:none !important; }
-    .poster{ box-shadow:none; border:2px solid #1e3a8a; page-break-inside:avoid; max-width:none; }
-    @page { margin:1cm; size:A4; }
+  @page { 
+    margin: 0.8cm; 
+    size: A4 portrait; 
   }
-  @media (max-width:480px){
-    .qr-section{ grid-template-columns:1fr; }
+  
+  html, body{
+    background:#fff !important;
+    margin:0 !important;
+    padding:0 !important;
+    width:100% !important;
+    height:auto !important;
   }
+  
+  /* Sembunyikan elemen non-poster */
+  .controls, .password-gate, .app-content > *:not(.poster){ 
+    display:none !important; 
+  }
+  
+  .app-content{
+    display:block !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  
+  /* Poster: fill A4 maksimal */
+  .poster{ 
+    box-shadow:none !important; 
+    border:3px solid #1e3a8a !important; 
+    page-break-inside:avoid !important; 
+    max-width:none !important;
+    width:100% !important;
+    margin:0 auto !important;
+    padding:36px 32px !important;
+    border-radius:18px !important;
+    box-sizing:border-box !important;
+  }
+  
+  /* Header dengan logo */
+  .poster .header{
+    margin:-36px -32px 24px !important;
+    padding:32px 24px !important;
+    background:linear-gradient(180deg,#1e3a8a,#1e40af) !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    color-adjust:exact !important;
+  }
+  .poster .header .logo-wrap{
+    width:90px !important;
+    height:90px !important;
+  }
+  .poster .header h1{
+    font-size:2rem !important;
+    margin:14px 0 4px !important;
+  }
+  .poster .header p{
+    font-size:1.1rem !important;
+    color:#fcd34d !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  
+  /* Judul utama */
+  .main-title{
+    font-size:2.2rem !important;
+    margin:14px 0 8px !important;
+  }
+  .main-subtitle{
+    font-size:1.1rem !important;
+    margin-bottom:24px !important;
+    line-height:1.5 !important;
+  }
+  
+  /* QR Section - lebih besar untuk cetak */
+  .qr-section{
+    grid-template-columns:1fr 1fr !important;
+    gap:20px !important;
+    margin:24px 0 !important;
+  }
+  .qr-card{
+    padding:20px 14px !important;
+    border-width:3px !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  .qr-card .qr-badge{
+    font-size:.95rem !important;
+    padding:6px 14px !important;
+    margin-bottom:14px !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  .qr-img-wrap{
+    padding:12px !important;
+  }
+  /* PENTING: scale up QR code image untuk cetak */
+  .qr-img-wrap canvas, 
+  .qr-img-wrap img{
+    width:230px !important;
+    height:230px !important;
+    max-width:100% !important;
+  }
+  .qr-card .qr-label{
+    font-size:1.25rem !important;
+    margin-top:14px !important;
+  }
+  .qr-card .qr-desc{
+    font-size:.92rem !important;
+    margin-top:6px !important;
+    line-height:1.4 !important;
+  }
+  
+  /* Badges */
+  .badges{
+    gap:10px !important;
+    margin-top:20px !important;
+  }
+  .badge{
+    font-size:.92rem !important;
+    padding:7px 16px !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  
+  /* Footer */
+  .poster .footer{
+    margin-top:24px !important;
+    padding-top:18px !important;
+    font-size:1rem !important;
+    line-height:1.6 !important;
+  }
+  .poster .footer span{
+    font-size:.9rem !important;
+  }
+  
+  /* Paksa semua warna tampil saat cetak */
+  *{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    color-adjust:exact !important;
+  }
+}
 </style>
 </head>
 <body>
