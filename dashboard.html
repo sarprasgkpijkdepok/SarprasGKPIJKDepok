@@ -192,8 +192,8 @@
   function exportPDF() { window.print(); }
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW:', err.message));
-  }
+  navigator.serviceWorker.register('service-worker.js').catch(err => console.warn('SW:', err.message));
+}
 
   async function loadDashboard() {
     try {
