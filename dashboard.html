@@ -42,52 +42,7 @@
     margin:10px 14px;
     border-top:1px dashed rgba(255,255,255,.15);
   }
-</style>
-</head>
-
-<style>
-  @keyframes bobble {
-    0%,100% { transform: translateY(0); }
-    50%     { transform: translateY(-4px); }
-  }
-  @media (max-width:768px){
-    #lapor-bot-tooltip { display:none; }
-    #lapor-bot-modal   { right:10px; bottom:90px; width:calc(100vw - 20px); height:70vh; }
-    #lapor-bot-fab     { bottom:18px; right:18px; width:58px; height:58px; }
-  }
-</style>
-<!-- ============================================
-     FLOATING BUTTON — LAPOR SARPRAS BOT
-     Langsung redirect ke lapor-bot.html
-     ============================================ -->
-<a id="lapor-bot-fab" 
-   href="lapor-bot.html" 
-   title="Lapor Sarpras via Chat Bot"
-   style="position:fixed; bottom:24px; right:24px; width:64px; height:64px;
-          background:linear-gradient(135deg,#1e3a8a,#2563eb);
-          border-radius:50%; box-shadow:0 6px 20px rgba(30,58,138,.45);
-          display:flex; align-items:center; justify-content:center;
-          cursor:pointer; z-index:9999; transition:transform .25s;
-          border:3px solid #fbbf24; text-decoration:none;"
-   onmouseover="this.style.transform='scale(1.1)'"
-   onmouseout="this.style.transform='scale(1)'">
-  <img src="assets/logo_gkpi.png" alt="Lapor Bot"
-       style="width:38px; height:38px; border-radius:50%; background:white; padding:2px;" />
-  <span style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:white;
-               font-size:.65rem; font-weight:700; padding:3px 7px; border-radius:10px;
-               border:2px solid white;">BOT</span>
-</a>
-
-<!-- Tooltip "Yuk Lapor" -->
-<a href="lapor-bot.html" id="lapor-bot-tooltip"
-   style="position:fixed; bottom:38px; right:100px; background:#fbbf24; color:#1e293b;
-          padding:6px 12px; border-radius:8px; font-size:.8rem; font-weight:600;
-          box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:9998; animation:bobble 2s infinite;
-          text-decoration:none;">
-  💬 Yuk Lapor!
-</a>
-
-<style>
+  /* Floating Bot Button */
   @keyframes bobble {
     0%,100% { transform: translateY(0); }
     50%     { transform: translateY(-4px); }
@@ -98,15 +53,7 @@
     #lapor-bot-fab     { bottom:18px; right:18px; width:58px; height:58px; }
   }
 </style>
-
-<script>
-  // Auto-fade tooltip setelah 8 detik biar tidak ganggu
-  setTimeout(() => {
-    const tip = document.getElementById('lapor-bot-tooltip');
-    if (tip) tip.style.opacity = '0.7';
-  }, 8000);
-</script>
-
+</head>
 <body>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
@@ -196,6 +143,37 @@
       © 2026 Sarpras GKPI Jemaat Khusus Depok • Dashboard otomatis
     </footer>
   </main>
+
+  <!-- ============================================
+       FLOATING BUTTON — LAPOR SARPRAS BOT
+       Langsung redirect ke lapor-bot.html
+       ============================================ -->
+  <a id="lapor-bot-fab"
+     href="lapor-bot.html"
+     title="Lapor Sarpras via Chat Bot"
+     style="position:fixed; bottom:24px; right:24px; width:64px; height:64px;
+            background:linear-gradient(135deg,#1e3a8a,#2563eb);
+            border-radius:50%; box-shadow:0 6px 20px rgba(30,58,138,.45);
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; z-index:9999; transition:transform .25s;
+            border:3px solid #fbbf24; text-decoration:none;"
+     onmouseover="this.style.transform='scale(1.1)'"
+     onmouseout="this.style.transform='scale(1)'">
+    <img src="assets/logo_gkpi.png" alt="Lapor Bot"
+         style="width:38px; height:38px; border-radius:50%; background:white; padding:2px;" />
+    <span style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:white;
+                 font-size:.65rem; font-weight:700; padding:3px 7px; border-radius:10px;
+                 border:2px solid white;">BOT</span>
+  </a>
+
+  <!-- Tooltip "Yuk Lapor" -->
+  <a href="lapor-bot.html" id="lapor-bot-tooltip"
+     style="position:fixed; bottom:38px; right:100px; background:#fbbf24; color:#1e293b;
+            padding:6px 12px; border-radius:8px; font-size:.8rem; font-weight:600;
+            box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:9998; animation:bobble 2s infinite;
+            text-decoration:none;">
+    💬 Yuk Lapor!
+  </a>
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/api.js"></script>
@@ -316,12 +294,12 @@
   if (CONFIG.AUTO_REFRESH_MIN > 0) {
     setInterval(() => location.reload(), CONFIG.AUTO_REFRESH_MIN * 60 * 1000);
   }
-}
-// Sembunyikan tooltip otomatis setelah 8 detik agar tidak mengganggu
-setTimeout(() => {
-  const tip = document.getElementById('lapor-bot-tooltip');
-  if (tip) tip.style.opacity = '0.7';
-}, 8000);
+
+  // Auto-fade tooltip "Yuk Lapor" setelah 8 detik biar tidak ganggu
+  setTimeout(() => {
+    const tip = document.getElementById('lapor-bot-tooltip');
+    if (tip) tip.style.opacity = '0.7';
+  }, 8000);
 </script>
 </body>
 </html>
