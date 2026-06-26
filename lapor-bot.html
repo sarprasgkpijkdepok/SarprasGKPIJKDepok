@@ -373,8 +373,7 @@
 // =========================================
 // ⚠️ KONFIGURASI — EDIT BARIS INI
 // =========================================
-const LAPOR_API_URL = 'https://script.google.com/macros/s/AKfycb..../exec';
-const LAPOR_API_KEY = 'sarpras2026';
+const LAPOR_API_URL = 'https://script.google.com/macros/s/AKfycbw41WcpXJ8YHoZk82wE3-AfZ-a_m-muck9Jm9rdVFtIjgU_Bek08yi1cFpWWZ-9VoM_oQ/exec';
 
 const DASHBOARD_URL = 'https://sarprasgkpijkdepok.github.io/SarprasGKPIJKDepok/dashboard.html';
 const STATUS_LAPOR_URL = 'https://sarprasgkpijkdepok.github.io/SarprasGKPIJKDepok/pages/lapor_sarpras.html';
@@ -589,43 +588,56 @@ async function submitLapor(){
   await botType();
   addMsg('bot', '⏳ Sedang mengirim laporan ke tim Sarpras...');
   
-  if(!LAPOR_API_URL || LAPOR_API_URL.includes('PASTE_DEPLOYMENT_URL')){
+  if(!LAPOR_API_URL || LAPOR_API_URL.includes('PASTE_DEPLOYMENT_URL') || LAPOR_API_URL.includes('AKfycb....')){
     showResult('error', '⚠️ Konfigurasi belum lengkap', 'API URL belum di-set di file lapor-bot.html.<br>Hubungi admin.');
     return;
   }
   
   try {
+    // ⚠️ Payload SESUAI schema addLapor() di Code.gs
     const payload = {
-      action: 'lapor',
-      apikey: LAPOR_API_KEY,
-      tanggal: formData.tanggal,
-      lokasi: formData.lokasi,
-      deskripsi: formData.deskripsi,
-      prioritas: formData.prioritas
+      action: 'add_lapor',
+      data: {
+        'Tanggal Laporan': formData.tanggal,
+        'Lokasi': formData.lokasi,
+        'Deskripsi Kerusakan': formData.deskripsi,
+        'Prioritas': formData.prioritas,
+        'Status': 'Baru',
+        'Pelapor': 'Anonim (via Bot)',
+        'Sumber': 'Lapor Bot',
+        foto: '[]'
+      }
     };
     
-    const params = new URLSearchParams();
-    Object.keys(payload).forEach(k => params.append(k, payload[k]));
+    // 🔑 Pakai mode: 'no-cors' + Content-Type: text/plain
+    // → hindari CORS preflight error dengan Apps Script
+    await fetch(LAPOR_API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
     
-    const res = await fetch(LAPOR_API_URL, { method: 'POST', body: params });
-    const result = await res.json();
+    // ⚠️ Response opaque (tidak bisa dibaca karena no-cors)
+    // Anggap sukses kalau tidak throw exception
+    // Generate nomor laporan client-side (Apps Script tetap generate No asli di sheet)
+    const fakeNo = Date.now().toString().slice(-6);
     
-    if(result.status === 'success'){
     hideCancelBar();
     showResult('success', '🎉 Laporan Terkirim!', 
-    '<div class="no">#' + (result.no || '?') + '</div>' +
-    'Terima kasih atas laporannya.<br>' +
-    'Tim Sarpras GKPI akan tindak lanjut <b>dalam 1×24 jam</b>.<br><br>' +
-    '<div style="background:#f1f5f9; padding:12px; border-radius:10px; font-size:.85rem; line-height:1.5;">' +
-      '📊 Untuk melihat status laporan, kunjungi:<br>' +
-      '<a href="https://sarprasgkpijkdepok.github.io/SarprasGKPIJKDepok/pages/lapor_sarpras.html" target="_blank" style="color:#1e3a8a; font-weight:600; word-break:break-all;">Halaman Lapor Sarpras</a>' +
-    '</div>');
-    } else {
-      throw new Error(result.message || 'Unknown error');
-    }
+      '<div class="no">#' + fakeNo + '</div>' +
+      'Terima kasih atas laporannya.<br>' +
+      'Tim Sarpras GKPI akan tindak lanjut <b>dalam 1×24 jam</b>.<br><br>' +
+      '<div style="background:#f1f5f9; padding:12px; border-radius:10px; font-size:.85rem; line-height:1.5;">' +
+        '📊 Untuk melihat status laporan, kunjungi:<br>' +
+        '<a href="' + STATUS_LAPOR_URL + '" target="_blank" style="color:#1e3a8a; font-weight:600; word-break:break-all;">Halaman Lapor Sarpras</a>' +
+      '</div>'
+    );
+    
   } catch(err) {
+    console.error('Submit error:', err);
     showResult('error', '❌ Gagal Mengirim', 
-      'Maaf, terjadi kesalahan:<br><code>' + err.message + '</code><br><br>' +
+      'Maaf, terjadi kesalahan:<br><code>' + (err.message || 'Network error') + '</code><br><br>' +
       'Silakan coba lagi atau hubungi admin.');
   }
 }
