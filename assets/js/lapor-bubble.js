@@ -1,23 +1,24 @@
 // =========================================
 // Floating Bubble + Marquee Lapor Bot
 // File: assets/js/lapor-bubble.js
-// v4.1 - Bug fixes + improvements
+// v5 - Style disamakan dengan dashboard (logo GKPI + badge BOT)
 // =========================================
 (function () {
   'use strict';
 
-  // Guard: prevent double-inject if included twice by accident
+  // Guard: prevent double-inject
   if (window.__LAPOR_BUBBLE_INJECTED__) return;
   window.__LAPOR_BUBBLE_INJECTED__ = true;
 
-  // Guard: don't show on bot page itself or admin pages
+  // Guard: skip halaman bot itu sendiri
   const currentFile = (location.pathname.split('/').pop() || '').toLowerCase();
   if (currentFile === 'lapor-bot.html' || currentFile === 'qr-lapor.html') return;
 
-  // Smart path detection
-  const LAPOR_BOT_URL = location.pathname.includes('/pages/')
-    ? '../lapor-bot.html'
-    : 'lapor-bot.html';
+  // Smart path detection (root vs pages/)
+  const inSubfolder = location.pathname.toLowerCase().includes('/pages/');
+  const PREFIX = inSubfolder ? '../' : '';
+  const LAPOR_BOT_URL = PREFIX + 'lapor-bot.html';
+  const LOGO_URL = PREFIX + 'assets/logo_gkpi.png';
 
   // =========================================
   // INJECT CSS
@@ -26,7 +27,7 @@
     if (document.getElementById('lapor-bubble-css')) return;
 
     const css = `
-      /* Container floating: bubble + marquee */
+      /* Container floating: bubble + tooltip */
       #lapor-float-container {
         position: fixed;
         bottom: 24px;
@@ -34,108 +35,95 @@
         z-index: 9999;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
       }
 
-      /* Marquee strip "Yuk Lapor" */
-      .lapor-marquee-strip {
-        background: linear-gradient(90deg, #fbbf24, #f59e0b);
-        border-radius: 22px;
+      /* Tooltip "Yuk Lapor!" (kuning, sederhana - match dashboard) */
+      #lapor-bot-tooltip {
+        background: #fbbf24;
+        color: #1e293b;
         padding: 8px 14px;
-        max-width: 140px;
-        overflow: hidden;
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
-        text-decoration: none;
-        cursor: pointer;
-        position: relative;
-        transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-        border: 2px solid rgba(255,255,255,0.5);
-        animation: floatGentle 3s ease-in-out infinite;
-      }
-      .lapor-marquee-strip:hover {
-        transform: scale(1.08);
-        background: linear-gradient(90deg, #f59e0b, #ef4444);
-        box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
-      }
-      .lapor-marquee-strip .marquee-inner {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        font-size: 0.82rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
         font-weight: 700;
-        color: #1e3a8a;
-        letter-spacing: 0.3px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        text-decoration: none;
+        white-space: nowrap;
+        animation: laporBobble 2s ease-in-out infinite;
+        transition: opacity 0.5s ease, transform 0.2s ease;
+        position: relative;
       }
-      .lapor-marquee-strip .marquee-track {
-        display: inline-block;
-        animation: laporMarquee 12s linear infinite;
-        will-change: transform;
+      #lapor-bot-tooltip:hover {
+        transform: scale(1.05);
+        color: #1e293b;
       }
-      .lapor-marquee-strip:hover .marquee-track {
-        animation-play-state: paused;
+      #lapor-bot-tooltip .lb-close {
+        margin-left: 8px;
+        opacity: 0.55;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.95rem;
       }
-      .lapor-marquee-strip:hover .marquee-inner {
-        color: #fff;
-      }
+      #lapor-bot-tooltip .lb-close:hover { opacity: 1; }
 
-      /* Arrow pointer ke bubble */
-      .lapor-marquee-strip::after {
-        content: '';
-        position: absolute;
-        right: -7px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        border-left: 7px solid #f59e0b;
-        transition: border-left-color 0.25s ease;
-      }
-      .lapor-marquee-strip:hover::after {
-        border-left-color: #ef4444;
-      }
-
-      /* -50% karena teks diduplikasi 2x untuk loop mulus */
-      @keyframes laporMarquee {
-        0%   { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      @keyframes floatGentle {
+      @keyframes laporBobble {
         0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-3px); }
+        50%      { transform: translateY(-4px); }
       }
 
-      /* Floating Bubble */
+      /* Floating Bubble (biru gradient + logo GKPI + border kuning) */
       #lapor-bubble-btn {
+        position: relative;
         width: 64px;
         height: 64px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #ef4444, #f97316);
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        box-shadow: 0 6px 20px rgba(30, 58, 138, 0.45);
+        border: 3px solid #fbbf24;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.8rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-        animation: laporPulse 2.5s ease-in-out infinite;
+        cursor: pointer;
         text-decoration: none;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
         flex-shrink: 0;
       }
       #lapor-bubble-btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
-        color: #fff;
+        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.6);
       }
       #lapor-bubble-btn:active {
         transform: scale(0.95);
       }
-      @keyframes laporPulse {
-        0%, 100% { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
-        50%      { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.7), 0 0 0 12px rgba(239, 68, 68, 0.1); }
+      #lapor-bubble-btn img {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #fff;
+        padding: 2px;
+        display: block;
+      }
+      /* Fallback emoji kalau logo gagal load */
+      #lapor-bubble-btn .lb-fallback {
+        font-size: 28px;
+        color: #fff;
+        display: none;
+      }
+
+      /* Badge "BOT" merah di kanan-atas */
+      #lapor-bubble-btn .lb-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 3px 7px;
+        border-radius: 10px;
+        border: 2px solid #fff;
+        line-height: 1;
+        letter-spacing: 0.3px;
       }
 
       /* Sembunyikan saat print */
@@ -150,38 +138,25 @@
       }
 
       /* Mobile responsive */
-      @media (max-width: 600px) {
+      @media (max-width: 768px) {
+        #lapor-bot-tooltip { display: none; }
         #lapor-float-container {
           bottom: 18px;
           right: 18px;
-          gap: 8px;
         }
         #lapor-bubble-btn {
-          width: 56px;
-          height: 56px;
-          font-size: 1.6rem;
+          width: 58px;
+          height: 58px;
         }
-        .lapor-marquee-strip {
-          max-width: 120px;
-          padding: 6px 10px;
-        }
-        .lapor-marquee-strip .marquee-inner {
-          font-size: 0.72rem;
-        }
-      }
-      @media (max-width: 380px) {
-        .lapor-marquee-strip {
-          max-width: 100px;
+        #lapor-bubble-btn img {
+          width: 34px;
+          height: 34px;
         }
       }
 
-      /* Respect reduced motion preference */
+      /* Respect reduced motion */
       @media (prefers-reduced-motion: reduce) {
-        .lapor-marquee-strip,
-        #lapor-bubble-btn,
-        .lapor-marquee-strip .marquee-track {
-          animation: none !important;
-        }
+        #lapor-bot-tooltip { animation: none !important; }
       }
     `;
 
@@ -192,7 +167,7 @@
   }
 
   // =========================================
-  // INJECT FLOATING CONTAINER (bubble + marquee)
+  // INJECT FLOATING CONTAINER (tooltip + bubble)
   // =========================================
   function injectFloatingUI() {
     if (!document.body) {
@@ -201,34 +176,39 @@
     }
     if (document.getElementById('lapor-float-container')) return;
 
-    // Container holds both marquee and bubble
+    // Container
     const container = document.createElement('div');
     container.id = 'lapor-float-container';
 
-    // Marquee strip "Yuk Lapor" (teks diduplikasi 2x untuk loop mulus)
-    const marquee = document.createElement('a');
-    marquee.href = LAPOR_BOT_URL;
-    marquee.target = '_self';
-    marquee.className = 'lapor-marquee-strip';
-    marquee.title = 'Klik untuk Lapor Sarpras';
-    marquee.setAttribute('aria-label', 'Lapor kerusakan sarana prasarana');
-    marquee.innerHTML =
-      '<span class="marquee-inner">' +
-        '<span class="marquee-track">' +
-          ' · 📣 Yuk Lapor Sekarang · 📣 Yuk Lapor Sekarang ' +
-        '</span>' +
-      '</span>';
+    // Tooltip "💬 Yuk Lapor!" (match dashboard style)
+    const tipDismissed = localStorage.getItem('laporBubbleTipDismissed');
+    if (!tipDismissed) {
+      const tip = document.createElement('a');
+      tip.id = 'lapor-bot-tooltip';
+      tip.href = LAPOR_BOT_URL;
+      tip.setAttribute('aria-label', 'Lapor kerusakan sarana prasarana');
+      tip.innerHTML =
+        '💬 Yuk Lapor!' +
+        '<span class="lb-close" title="Sembunyikan" ' +
+        'onclick="event.preventDefault(); event.stopPropagation(); ' +
+        'localStorage.setItem(\'laporBubbleTipDismissed\',\'1\'); ' +
+        'this.parentNode.remove();">×</span>';
+      container.appendChild(tip);
+    }
 
-    // Bubble
+    // Bubble (logo GKPI + badge BOT)
     const btn = document.createElement('a');
     btn.id = 'lapor-bubble-btn';
     btn.href = LAPOR_BOT_URL;
-    btn.target = '_self';
-    btn.title = 'Lapor Kerusakan';
+    btn.title = 'Lapor Sarpras via Chat Bot';
     btn.setAttribute('aria-label', 'Buka form lapor kerusakan');
-    btn.innerHTML = '🔧';
+    btn.innerHTML =
+      '<img src="' + LOGO_URL + '" alt="Lapor Bot" ' +
+      'onerror="this.style.display=\'none\'; ' +
+      'this.nextElementSibling.style.display=\'inline\';" />' +
+      '<span class="lb-fallback">💬</span>' +
+      '<span class="lb-badge">BOT</span>';
 
-    container.appendChild(marquee);
     container.appendChild(btn);
     document.body.appendChild(container);
 
@@ -249,7 +229,7 @@
     initAll();
   }
 
-  // Safety net: retry after full load in case body wasn't ready
+  // Safety net
   window.addEventListener('load', function () {
     if (!document.getElementById('lapor-float-container')) injectFloatingUI();
   });
