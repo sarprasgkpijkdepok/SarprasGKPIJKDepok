@@ -1,100 +1,1297 @@
-
-
-<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
 <!DOCTYPE html>
-<html dir="ltr" class="" lang="en">
+<html lang="id">
 <head>
-    <title>Sign in to your account</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="-1">
-    <link rel="preconnect" href="https://aadcdn.msauth.net" crossorigin>
-<meta http-equiv="x-dns-prefetch-control" content="on">
-<link rel="dns-prefetch" href="//aadcdn.msauth.net">
-<link rel="dns-prefetch" href="//aadcdn.msftauth.net">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laporan Mingguan - Dashboard GKPI JK Depok</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --bg:#f4f6f9; --card-bg:#ffffff; --text:#2b2f38; --muted:#888;
+    --primary:#1e3a8a; --accent:#fbbf24; --border:#e6e9ee;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#2563eb);
+    --topbar-bg:#ffffff;
+    --input-bg:#ffffff; --input-text:#2b2f38; --input-border:#ced4da;
+  }
+  body.dark-mode {
+    --bg:#1a1d24; --card-bg:#252a35; --text:#e0e0e0; --muted:#9aa1ad;
+    --border:#3a3f4b; --topbar-bg:#252a35;
+    --sidebar-bg:linear-gradient(180deg,#1e3a8a,#1e40af);
+    --input-bg:#2f3543; --input-text:#e0e0e0; --input-border:#3a3f4b;
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; transition:.25s; }
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:240px; background:var(--sidebar-bg); color:#fff; padding:20px 0; overflow-y:auto; z-index:1000; }
+  .sidebar .brand { text-align:center; padding:0 15px 15px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar .brand img { width:80px; background:#fff; border-radius:50%; padding:4px; }
+  .sidebar .brand h6 { margin-top:10px; font-weight:700; color:#fff; }
+  .sidebar .brand small { color:var(--accent); }
+  .sidebar nav { padding:15px 10px; }
+  .sidebar nav a { display:flex; align-items:center; gap:10px; padding:10px 14px; color:#cfd9e6; text-decoration:none; border-radius:8px; margin-bottom:4px; transition:.15s; }
+  .sidebar nav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .sidebar nav a.active { background:var(--accent); color:#1e293b; font-weight:600; }
+  .sidebar nav a .icon { width:22px; text-align:center; font-size:1.1rem; display:inline-block; line-height:1; }
+  .main { margin-left:240px; padding:20px 25px; }
+  .topbar { background:var(--topbar-bg); color:var(--text); border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 6px rgba(0,0,0,.05); border:1px solid var(--border); }
+  .topbar h4 { margin:0; color:var(--primary); }
+  body.dark-mode .topbar h4 { color:var(--accent); }
+  .topbar small { color:var(--muted); }
+  .topbar .btn-tool { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:.85rem; cursor:pointer; }
+  .topbar .btn-tool:hover { background:var(--primary); color:#fff; }
+  .card-kpi { border:1px solid var(--border); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); background:var(--card-bg); color:var(--text); }
+  .card-kpi .num { font-size:1.8rem; font-weight:700; }
+  .card-kpi .label { color:var(--muted); font-size:.85rem; }
+  .form-control, .form-select { background:var(--input-bg); color:var(--input-text); border:1px solid var(--input-border); }
+  .footer { text-align:center; padding:20px; color:var(--muted); font-size:.85rem; margin-top:30px; }
 
-    <meta name="PageID" content="ConvergedSignIn" />
-    <meta name="SiteID" content="" />
-    <meta name="ReqLC" content="1033" />
-    <meta name="LocLC" content="en-US" />
+  /* LM specific styles */
+  .lm-sidebar-title { font-weight:600; color:var(--primary); padding:8px 4px; font-size:.9rem; border-bottom:2px solid var(--primary); margin-bottom:8px; }
+  body.dark-mode .lm-sidebar-title { color:var(--accent); border-color:var(--accent); }
+  .lm-sidebar { max-height:70vh; overflow-y:auto; padding:8px; border:1px solid var(--border); border-radius:8px; background:var(--bg); }
+  .lm-tab-group { margin-bottom:8px; }
+  .lm-tab-year { font-weight:700; color:var(--primary); padding:6px 8px; font-size:.85rem; background:#e3f2fd; border-radius:6px; margin-bottom:4px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+  body.dark-mode .lm-tab-year { color:var(--accent); background:#1e3a5f; }
+  .lm-tab-month { font-weight:600; color:#555; padding:4px 12px; font-size:.78rem; margin:4px 0 2px; user-select:none; }
+  body.dark-mode .lm-tab-month { color:#aaa; }
+  .lm-tab-btn { display:block; width:100%; text-align:left; padding:5px 12px; margin-bottom:2px; border:1px solid transparent; background:transparent; cursor:pointer; border-radius:5px; font-size:.82rem; color:var(--text); transition:.15s; }
+  .lm-tab-btn:hover { background:#e3eefc; border-color:#cfe2ff; }
+  body.dark-mode .lm-tab-btn:hover { background:#2a3744; }
+  .lm-tab-btn.active { background:var(--primary); color:#fff !important; font-weight:600; border-color:var(--primary); }
+  .lm-tab-btn .lm-badge { background:#22c55e; color:#fff; font-size:.7rem; padding:1px 6px; border-radius:10px; margin-left:6px; }
 
+  .lm-card { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; background:var(--card-bg); box-shadow:0 1px 3px rgba(0,0,0,.04); }
+  .lm-card h6 { margin:0 0 6px 0; color:var(--primary); font-weight:700; }
+  body.dark-mode .lm-card h6 { color:var(--accent); }
+  .lm-meta { font-size:.78rem; color:var(--muted); margin-bottom:10px; display:flex; gap:12px; flex-wrap:wrap; }
+  .lm-meta span i { margin-right:3px; }
+  .lm-isi { white-space:pre-wrap; line-height:1.5; color:var(--text); font-size:.92rem; }
 
-        <meta name="format-detection" content="telephone=no" />
+  .lm-foto-strip { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+  .lm-foto-thumb { width:80px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid #ddd; transition:transform .2s; }
+  .lm-foto-thumb:hover { transform:scale(1.1); border-color:var(--primary); }
+  .lm-foto-section { border:1px dashed #cbd5e1; border-radius:8px; padding:10px; margin-bottom:10px; background:#f8fafc; }
+  body.dark-mode .lm-foto-section { background:#1a1d20; border-color:#374151; }
+  .lm-foto-preview { display:flex; flex-wrap:wrap; gap:6px; min-height:10px; }
+  .lm-foto-preview-item { position:relative; display:inline-block; }
+  .lm-foto-preview-item img { width:80px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #ddd; }
+  .lm-foto-preview-item .remove-btn { position:absolute; top:-6px; right:-6px; background:#dc3545; color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:11px; line-height:1; display:flex; align-items:center; justify-content:center; }
+  .lm-foto-badge-type { position:absolute; bottom:2px; left:2px; background:rgba(0,0,0,.65); color:#fff; font-size:9px; padding:1px 5px; border-radius:3px; pointer-events:none; }
 
-    <noscript>
-        <meta http-equiv="Refresh" content="0; URL=https://login.microsoftonline.com/jsdisabled" />
-    </noscript>
+  .lm-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9000; justify-content:center; align-items:center; padding:20px; }
+  .lm-modal.show { display:flex; }
+  .lm-modal-box { background:var(--card-bg); color:var(--text); padding:22px; border-radius:12px; width:620px; max-width:95%; max-height:92vh; overflow-y:auto; box-shadow:0 15px 50px rgba(0,0,0,.3); }
+  .lm-foto-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:10000; justify-content:center; align-items:center; }
+  .lm-foto-modal-bg.show { display:flex; }
+  .lm-foto-modal-img { max-width:92%; max-height:88%; border-radius:8px; box-shadow:0 15px 50px rgba(0,0,0,.6); }
+  .lm-foto-modal-close { position:absolute; top:20px; right:30px; color:#fff; font-size:40px; cursor:pointer; line-height:1; }
 
-    
-    
-<meta name="robots" content="none" />
-
-<script type="text/javascript" nonce='txVbcl24ZdEKPm9H-2VyPg'>//<![CDATA[
-$Config={"fShowPersistentCookiesWarning":false,"urlMsaSignUp":"https://login.live.com/oauth20_authorize.srf?scope=openid+profile+email+offline_access\u0026response_type=code\u0026client_id=51483342-085c-4d86-bf88-cf50c7252078\u0026response_mode=form_post\u0026redirect_uri=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2ffederation%2foauth2msa\u0026state=rQQIARAAnVNbiCRXGe6a3vTudCaZ2RZRH5R13ECSsWfq2lU9uGJdzqmu2q7qrnt3SRiqq6qnq7uqu6bv1cuaxRc3KDgvizFB0EQfXPIQhECybkB80BAhLhgIrggJGIiBaAgJrvoivb74GPzh_Hznv3x85_z8j-exfezwIvpfI8prX0a7Xazsh2v0PzYuFXeee_SRV_VruXTvqcGVBv-FjWeQzaM4mof7_ii5iVC96TSdHB4ceONZ6qV-Ocn2Jz1vHKajaDhd1xwcdUfjZHIQhF1vFk_3vUm6fBlB7iDIewhyc-OkwkK6CmkOA1gV0hAQNEoAnK0IEHAChGwV5zBIAg4n0AqPY3yZwEgOoByDQoBCSDEEAymBBhUAeJpBBYKjOUDigMQZDuNYBsNojgZVAUKCpniUx-9ubDfY2bSHr91oHK3CjzY21xqP0tFk-kz-9pmGgC7kvpI1LciZllpxUchplqyrK4lUYjiwsLjuJS5noWnbiKxMTyTSs0ekvbJxr6ZWQgtG7ftxqIWgN1dbsiubMu8m-tImXBBalGEMGDwYLCcdAHEloWxTjMV23Jv6cdo3LbWuD1VFiaGgoCoaDqqKKqhtF-hSO6HMILIyLXFbNqAapmCtQkuWGi2omUKgK4mrOFZv0BB02R4sgQtd2xgeZ65hZVqszrTYtn3UNbyhQnUgnHkiHOkY17AIlwqAXfNM2DPxUawMXNLsa6RqwpVX81derFNrDn14TMmmLAY1H1NsN9Ydt-c4cU8RVG8dVwfxMIjjExvqZgBVwsbbqL9il3YyXfhOCttJQJhQxQJMlVxBwf2hG1sAoqpYBS7qivZQWgX92FLxZcsGU8Hs-5iJQ8PO1m9GyYYorbVVdBwOgkRCtaGcBk574YhU00CDuQ1Vx3CkhUFIeAev4kq2noOOr_9fdxaZI0JZG7hNB97noax-z_LAdKqtBeMo5Ypu5Aic06gBwhGnvLdyHQuNyU6fG3UI2dATXfZ5K9P66mXFVi3X5oCO6kPZVMH63Mx_qs36Rf4i6YUk0yGxMooRdJmkqtUyU6lg5a5fIbFuSNOd0Hs9Xxil4TAK7pxB3j-zheYPz50r7uQ-n7uQu3cGee6BUnHnyjWQ3D4-qb_6_I7x9a6We_2Bg8z1DT5pDwIi5sUpsCuiiNe7J0p1NKHGxnyxPLFDsa1YemRdqhxipwXktFA4Lcinhc_cKmyey-_kdvN8E_uwgFw_m7u1-f_t-NNF5M6DyItbyN0trLjpjzpjbxhEQekihnUCBmWIMkOHaJnEOlS506GZMtrxScJnPCZkvLtbZLHgx16UTEqPX9mNgqPpaBAOdw-v7C6TyZHvr9Hci2fhZPfwm7t8E9t94urVq99-6FOx_-qh3L2Hf_nuj5_99bVX_l57f_urVbe6NCaZTikwG-tMvQ_tk4kEav1Vy--CibWgHUlOah1_CS69uJN7eyd38_y7G8W0SOZyOfQT6XPf-WD-g-6X__jmF3_2gfnn8u_qrxwxP33yvR9evnG7uC099vM3WpyUbV-gHvnrP56v75bud_3oyaeKW_8c7X82b3zl1uCt49HHf-j-e_5g_LVvvDDE__X0d3974-z2ay9x3__NX9740_gnf1teQB5FSg8X8158XDoLeKFWBsb6Hg790lkWpyoir5TuIMW8l85LryEsy7K8Zff8gTrxHHsWiMcsy3JQQycrZZ1s2jIku9MgDRIpGFo1rzW1VXSaoRnVWkWD7l7kGpTD8MdV-bI3bDhAlkONOVaNVlqtqIqUYgeRNlL2HGYGNdWU6HSM4cG8qqrJHtGud4QlOxbJbC-N6kvKqglMhGmjA5FS6I5_UpuFaw1cT0IzoZ9Y84hhm8nYsjxWY0Xx8iKYkM2sOVlcunW-VNyZX3_n3ML7Vu3ll35_Y-tL7e-9fT537_xp_nop9x81\u0026estsfed=1\u0026uaid=bd2528a2805270002b896b7b4f431902\u0026signup=1\u0026lw=1\u0026fl=easi2\u0026cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a\u0026fci=00000003-0000-0ff1-ce00-000000000000\u0026wsucxt=1","urlMsaLogout":"https://login.live.com/logout.srf?iframed_by=https%3a%2f%2flogin.microsoftonline.com","urlOtherIdpForget":"https://login.live.com/forgetme.srf?iframed_by=https%3a%2f%2flogin.microsoftonline.com","showCantAccessAccountLink":true,"arrExternalTrustedRealmFederatedIdps":[{"IdpType":400,"IdpSignInUrl":"https://login.live.com/oauth20_authorize.srf?scope=openid+profile+email+offline_access\u0026response_type=code\u0026client_id=51483342-085c-4d86-bf88-cf50c7252078\u0026response_mode=form_post\u0026redirect_uri=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2ffederation%2foauth2msa\u0026state=rQQIARAAnVNbiCRXGe6a3vTudCaZ2RZRH5R13ECSsWfq2lU9uGJdzqmu2q7qrnt3SRiqq6qnq7uqu6bv1cuaxRc3KDgvizFB0EQfXPIQhECybkB80BAhLhgIrggJGIiBaAgJrvoivb74GPzh_Hznv3x85_z8j-exfezwIvpfI8prX0a7Xazsh2v0PzYuFXeee_SRV_VruXTvqcGVBv-FjWeQzaM4mof7_ii5iVC96TSdHB4ceONZ6qV-Ocn2Jz1vHKajaDhd1xwcdUfjZHIQhF1vFk_3vUm6fBlB7iDIewhyc-OkwkK6CmkOA1gV0hAQNEoAnK0IEHAChGwV5zBIAg4n0AqPY3yZwEgOoByDQoBCSDEEAymBBhUAeJpBBYKjOUDigMQZDuNYBsNojgZVAUKCpniUx-9ubDfY2bSHr91oHK3CjzY21xqP0tFk-kz-9pmGgC7kvpI1LciZllpxUchplqyrK4lUYjiwsLjuJS5noWnbiKxMTyTSs0ekvbJxr6ZWQgtG7ftxqIWgN1dbsiubMu8m-tImXBBalGEMGDwYLCcdAHEloWxTjMV23Jv6cdo3LbWuD1VFiaGgoCoaDqqKKqhtF-hSO6HMILIyLXFbNqAapmCtQkuWGi2omUKgK4mrOFZv0BB02R4sgQtd2xgeZ65hZVqszrTYtn3UNbyhQnUgnHkiHOkY17AIlwqAXfNM2DPxUawMXNLsa6RqwpVX81derFNrDn14TMmmLAY1H1NsN9Ydt-c4cU8RVG8dVwfxMIjjExvqZgBVwsbbqL9il3YyXfhOCttJQJhQxQJMlVxBwf2hG1sAoqpYBS7qivZQWgX92FLxZcsGU8Hs-5iJQ8PO1m9GyYYorbVVdBwOgkRCtaGcBk574YhU00CDuQ1Vx3CkhUFIeAev4kq2noOOr_9fdxaZI0JZG7hNB97noax-z_LAdKqtBeMo5Ypu5Aic06gBwhGnvLdyHQuNyU6fG3UI2dATXfZ5K9P66mXFVi3X5oCO6kPZVMH63Mx_qs36Rf4i6YUk0yGxMooRdJmkqtUyU6lg5a5fIbFuSNOd0Hs9Xxil4TAK7pxB3j-zheYPz50r7uQ-n7uQu3cGee6BUnHnyjWQ3D4-qb_6_I7x9a6We_2Bg8z1DT5pDwIi5sUpsCuiiNe7J0p1NKHGxnyxPLFDsa1YemRdqhxipwXktFA4Lcinhc_cKmyey-_kdvN8E_uwgFw_m7u1-f_t-NNF5M6DyItbyN0trLjpjzpjbxhEQekihnUCBmWIMkOHaJnEOlS506GZMtrxScJnPCZkvLtbZLHgx16UTEqPX9mNgqPpaBAOdw-v7C6TyZHvr9Hci2fhZPfwm7t8E9t94urVq99-6FOx_-qh3L2Hf_nuj5_99bVX_l57f_urVbe6NCaZTikwG-tMvQ_tk4kEav1Vy--CibWgHUlOah1_CS69uJN7eyd38_y7G8W0SOZyOfQT6XPf-WD-g-6X__jmF3_2gfnn8u_qrxwxP33yvR9evnG7uC099vM3WpyUbV-gHvnrP56v75bud_3oyaeKW_8c7X82b3zl1uCt49HHf-j-e_5g_LVvvDDE__X0d3974-z2ay9x3__NX9740_gnf1teQB5FSg8X8158XDoLeKFWBsb6Hg790lkWpyoir5TuIMW8l85LryEsy7K8Zff8gTrxHHsWiMcsy3JQQycrZZ1s2jIku9MgDRIpGFo1rzW1VXSaoRnVWkWD7l7kGpTD8MdV-bI3bDhAlkONOVaNVlqtqIqUYgeRNlL2HGYGNdWU6HSM4cG8qqrJHtGud4QlOxbJbC-N6kvKqglMhGmjA5FS6I5_UpuFaw1cT0IzoZ9Y84hhm8nYsjxWY0Xx8iKYkM2sOVlcunW-VNyZX3_n3ML7Vu3ll35_Y-tL7e-9fT537_xp_nop9x81\u0026estsfed=1\u0026uaid=bd2528a2805270002b896b7b4f431902\u0026cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a\u0026fci=00000003-0000-0ff1-ce00-000000000000\u0026wsucxt=1\u0026idp_hint=github.com","DisplayName":"GitHub","Promoted":false}],"fEnableShowResendCode":true,"iShowResendCodeDelay":90000,"sSMSCtryPhoneData":"AF~Afghanistan~93!!!AX~Åland Islands~358!!!AL~Albania~355!!!DZ~Algeria~213!!!AS~American Samoa~1!!!AD~Andorra~376!!!AO~Angola~244!!!AI~Anguilla~1!!!AG~Antigua and Barbuda~1!!!AR~Argentina~54!!!AM~Armenia~374!!!AW~Aruba~297!!!AC~Ascension Island~247!!!AU~Australia~61!!!AT~Austria~43!!!AZ~Azerbaijan~994!!!BS~Bahamas~1!!!BH~Bahrain~973!!!BD~Bangladesh~880!!!BB~Barbados~1!!!BY~Belarus~375!!!BE~Belgium~32!!!BZ~Belize~501!!!BJ~Benin~229!!!BM~Bermuda~1!!!BT~Bhutan~975!!!BO~Bolivia~591!!!BQ~Bonaire~599!!!BA~Bosnia and Herzegovina~387!!!BW~Botswana~267!!!BR~Brazil~55!!!IO~British Indian Ocean Territory~246!!!VG~British Virgin Islands~1!!!BN~Brunei~673!!!BG~Bulgaria~359!!!BF~Burkina Faso~226!!!BI~Burundi~257!!!CV~Cabo Verde~238!!!KH~Cambodia~855!!!CM~Cameroon~237!!!CA~Canada~1!!!KY~Cayman Islands~1!!!CF~Central African Republic~236!!!TD~Chad~235!!!CL~Chile~56!!!CN~China~86!!!CX~Christmas Island~61!!!CC~Cocos (Keeling) Islands~61!!!CO~Colombia~57!!!KM~Comoros~269!!!CG~Congo~242!!!CD~Congo (DRC)~243!!!CK~Cook Islands~682!!!CR~Costa Rica~506!!!CI~Côte d\u0027Ivoire~225!!!HR~Croatia~385!!!CU~Cuba~53!!!CW~Curaçao~599!!!CY~Cyprus~357!!!CZ~Czechia~420!!!DK~Denmark~45!!!DJ~Djibouti~253!!!DM~Dominica~1!!!DO~Dominican Republic~1!!!EC~Ecuador~593!!!EG~Egypt~20!!!SV~El Salvador~503!!!GQ~Equatorial Guinea~240!!!ER~Eritrea~291!!!EE~Estonia~372!!!ET~Ethiopia~251!!!FK~Falkland Islands~500!!!FO~Faroe Islands~298!!!FJ~Fiji~679!!!FI~Finland~358!!!FR~France~33!!!GF~French Guiana~594!!!PF~French Polynesia~689!!!GA~Gabon~241!!!GM~Gambia~220!!!GE~Georgia~995!!!DE~Germany~49!!!GH~Ghana~233!!!GI~Gibraltar~350!!!GR~Greece~30!!!GL~Greenland~299!!!GD~Grenada~1!!!GP~Guadeloupe~590!!!GU~Guam~1!!!GT~Guatemala~502!!!GG~Guernsey~44!!!GN~Guinea~224!!!GW~Guinea-Bissau~245!!!GY~Guyana~592!!!HT~Haiti~509!!!HN~Honduras~504!!!HK~Hong Kong SAR~852!!!HU~Hungary~36!!!IS~Iceland~354!!!IN~India~91!!!ID~Indonesia~62!!!IR~Iran~98!!!IQ~Iraq~964!!!IE~Ireland~353!!!IM~Isle of Man~44!!!IL~Israel~972!!!IT~Italy~39!!!JM~Jamaica~1!!!JP~Japan~81!!!JE~Jersey~44!!!JO~Jordan~962!!!KZ~Kazakhstan~7!!!KE~Kenya~254!!!KI~Kiribati~686!!!KR~Korea~82!!!KW~Kuwait~965!!!KG~Kyrgyzstan~996!!!LA~Laos~856!!!LV~Latvia~371!!!LB~Lebanon~961!!!LS~Lesotho~266!!!LR~Liberia~231!!!LY~Libya~218!!!LI~Liechtenstein~423!!!LT~Lithuania~370!!!LU~Luxembourg~352!!!MO~Macao SAR~853!!!MG~Madagascar~261!!!MW~Malawi~265!!!MY~Malaysia~60!!!MV~Maldives~960!!!ML~Mali~223!!!MT~Malta~356!!!MH~Marshall Islands~692!!!MQ~Martinique~596!!!MR~Mauritania~222!!!MU~Mauritius~230!!!YT~Mayotte~262!!!MX~Mexico~52!!!FM~Micronesia~691!!!MD~Moldova~373!!!MC~Monaco~377!!!MN~Mongolia~976!!!ME~Montenegro~382!!!MS~Montserrat~1!!!MA~Morocco~212!!!MZ~Mozambique~258!!!MM~Myanmar~95!!!NA~Namibia~264!!!NR~Nauru~674!!!NP~Nepal~977!!!NL~Netherlands~31!!!NC~New Caledonia~687!!!NZ~New Zealand~64!!!NI~Nicaragua~505!!!NE~Niger~227!!!NG~Nigeria~234!!!NU~Niue~683!!!NF~Norfolk Island~672!!!KP~North Korea~850!!!MK~North Macedonia~389!!!MP~Northern Mariana Islands~1!!!NO~Norway~47!!!OM~Oman~968!!!PK~Pakistan~92!!!PW~Palau~680!!!PS~Palestinian Authority~970!!!PA~Panama~507!!!PG~Papua New Guinea~675!!!PY~Paraguay~595!!!PE~Peru~51!!!PH~Philippines~63!!!PL~Poland~48!!!PT~Portugal~351!!!PR~Puerto Rico~1!!!QA~Qatar~974!!!RE~Réunion~262!!!RO~Romania~40!!!RU~Russia~7!!!RW~Rwanda~250!!!BL~Saint Barthélemy~590!!!KN~Saint Kitts and Nevis~1!!!LC~Saint Lucia~1!!!MF~Saint Martin~590!!!PM~Saint Pierre and Miquelon~508!!!VC~Saint Vincent and the Grenadines~1!!!WS~Samoa~685!!!SM~San Marino~378!!!ST~São Tomé and Príncipe~239!!!SA~Saudi Arabia~966!!!SN~Senegal~221!!!RS~Serbia~381!!!SC~Seychelles~248!!!SL~Sierra Leone~232!!!SG~Singapore~65!!!SX~Sint Maarten~1!!!SK~Slovakia~421!!!SI~Slovenia~386!!!SB~Solomon Islands~677!!!SO~Somalia~252!!!ZA~South Africa~27!!!SS~South Sudan~211!!!ES~Spain~34!!!LK~Sri Lanka~94!!!SH~St Helena, Ascension, and Tristan da Cunha~290!!!SD~Sudan~249!!!SR~Suriname~597!!!SJ~Svalbard~47!!!SZ~Swaziland~268!!!SE~Sweden~46!!!CH~Switzerland~41!!!SY~Syria~963!!!TW~Taiwan~886!!!TJ~Tajikistan~992!!!TZ~Tanzania~255!!!TH~Thailand~66!!!TL~Timor-Leste~670!!!TG~Togo~228!!!TK~Tokelau~690!!!TO~Tonga~676!!!TT~Trinidad and Tobago~1!!!TA~Tristan da Cunha~290!!!TN~Tunisia~216!!!TR~Turkey~90!!!TM~Turkmenistan~993!!!TC~Turks and Caicos Islands~1!!!TV~Tuvalu~688!!!VI~U.S. Virgin Islands~1!!!UG~Uganda~256!!!UA~Ukraine~380!!!AE~United Arab Emirates~971!!!GB~United Kingdom~44!!!US~United States~1!!!UY~Uruguay~598!!!UZ~Uzbekistan~998!!!VU~Vanuatu~678!!!VA~Vatican City~39!!!VE~Venezuela~58!!!VN~Vietnam~84!!!WF~Wallis and Futuna~681!!!YE~Yemen~967!!!ZM~Zambia~260!!!ZW~Zimbabwe~263","fUseInlinePhoneNumber":true,"fDetectBrowserCapabilities":true,"fUseMinHeight":true,"fShouldSupportTargetCredentialForRecovery":true,"fAvoidNewOtcGenerationWhenAlreadySent":true,"fEnableProofTypeValidation":true,"fUseCertificateInterstitialView":true,"fIsPasskeySupportEnabled":true,"arrPromotedFedCredTypes":[],"fShowUserAlreadyExistErrorHandling":true,"fBlockOnAppleEmailClaimError":true,"fIsVerifiableCredentialsSupportEnabled":true,"iVerifiableCredentialPresentationPollingIntervalSeconds":0.5,"iVerifiableCredentialPresentationPollingTimeoutSeconds":300,"fIsQrPinEnabled":true,"fPasskeyAssertionRedirect":true,"fShowProgressForPasskeyAutofill":true,"fFixUrlExternalIdpFederation":true,"fEnableBackButtonBugFix":true,"fEnableTotalLossRecovery":true,"fUpdatePromotedCredTypesOrder":true,"fUseNewPromotedCredsComponent":true,"urlSessionState":"https://login.microsoftonline.com/common/DeviceCodeStatus","urlResetPassword":"https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2f4ae48b41-0137-4599-8661-fc641fe77bea%2freprocess%3fctx%3drQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2\u0026mkt=en-US\u0026hosted=0\u0026device_platform=Windows+10","urlMsaResetPassword":"https://account.live.com/password/reset?wreply=https%3a%2f%2flogin.microsoftonline.com%2f4ae48b41-0137-4599-8661-fc641fe77bea%2freprocess%3fctx%3drQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2\u0026mkt=en-US","fFixUrlResetPassword":true,"urlGetCredentialType":"https://login.microsoftonline.com/common/GetCredentialType?mkt=en-US","urlGetRecoveryCredentialType":"https://login.microsoftonline.com/common/getrecoverycredentialtype?mkt=en-US","urlGetOneTimeCode":"https://login.microsoftonline.com/common/GetOneTimeCode","urlLogout":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/uxlogout","urlForget":"https://login.microsoftonline.com/forgetuser","urlDisambigRename":"https://go.microsoft.com/fwlink/p/?LinkID=733247","urlGoToAADError":"https://login.live.com/oauth20_authorize.srf?scope=openid+profile+email+offline_access\u0026response_type=code\u0026client_id=51483342-085c-4d86-bf88-cf50c7252078\u0026response_mode=form_post\u0026redirect_uri=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2ffederation%2foauth2msa\u0026state=rQQIARAAnVNbiCRXGe6a3vTudCaZ2RZRH5R13ECSsWfq2lU9uGJdzqmu2q7qrnt3SRiqq6qnq7uqu6bv1cuaxRc3KDgvizFB0EQfXPIQhECybkB80BAhLhgIrggJGIiBaAgJrvoivb74GPzh_Hznv3x85_z8j-exfezwIvpfI8prX0a7Xazsh2v0PzYuFXeee_SRV_VruXTvqcGVBv-FjWeQzaM4mof7_ii5iVC96TSdHB4ceONZ6qV-Ocn2Jz1vHKajaDhd1xwcdUfjZHIQhF1vFk_3vUm6fBlB7iDIewhyc-OkwkK6CmkOA1gV0hAQNEoAnK0IEHAChGwV5zBIAg4n0AqPY3yZwEgOoByDQoBCSDEEAymBBhUAeJpBBYKjOUDigMQZDuNYBsNojgZVAUKCpniUx-9ubDfY2bSHr91oHK3CjzY21xqP0tFk-kz-9pmGgC7kvpI1LciZllpxUchplqyrK4lUYjiwsLjuJS5noWnbiKxMTyTSs0ekvbJxr6ZWQgtG7ftxqIWgN1dbsiubMu8m-tImXBBalGEMGDwYLCcdAHEloWxTjMV23Jv6cdo3LbWuD1VFiaGgoCoaDqqKKqhtF-hSO6HMILIyLXFbNqAapmCtQkuWGi2omUKgK4mrOFZv0BB02R4sgQtd2xgeZ65hZVqszrTYtn3UNbyhQnUgnHkiHOkY17AIlwqAXfNM2DPxUawMXNLsa6RqwpVX81derFNrDn14TMmmLAY1H1NsN9Ydt-c4cU8RVG8dVwfxMIjjExvqZgBVwsbbqL9il3YyXfhOCttJQJhQxQJMlVxBwf2hG1sAoqpYBS7qivZQWgX92FLxZcsGU8Hs-5iJQ8PO1m9GyYYorbVVdBwOgkRCtaGcBk574YhU00CDuQ1Vx3CkhUFIeAev4kq2noOOr_9fdxaZI0JZG7hNB97noax-z_LAdKqtBeMo5Ypu5Aic06gBwhGnvLdyHQuNyU6fG3UI2dATXfZ5K9P66mXFVi3X5oCO6kPZVMH63Mx_qs36Rf4i6YUk0yGxMooRdJmkqtUyU6lg5a5fIbFuSNOd0Hs9Xxil4TAK7pxB3j-zheYPz50r7uQ-n7uQu3cGee6BUnHnyjWQ3D4-qb_6_I7x9a6We_2Bg8z1DT5pDwIi5sUpsCuiiNe7J0p1NKHGxnyxPLFDsa1YemRdqhxipwXktFA4Lcinhc_cKmyey-_kdvN8E_uwgFw_m7u1-f_t-NNF5M6DyItbyN0trLjpjzpjbxhEQekihnUCBmWIMkOHaJnEOlS506GZMtrxScJnPCZkvLtbZLHgx16UTEqPX9mNgqPpaBAOdw-v7C6TyZHvr9Hci2fhZPfwm7t8E9t94urVq99-6FOx_-qh3L2Hf_nuj5_99bVX_l57f_urVbe6NCaZTikwG-tMvQ_tk4kEav1Vy--CibWgHUlOah1_CS69uJN7eyd38_y7G8W0SOZyOfQT6XPf-WD-g-6X__jmF3_2gfnn8u_qrxwxP33yvR9evnG7uC099vM3WpyUbV-gHvnrP56v75bud_3oyaeKW_8c7X82b3zl1uCt49HHf-j-e_5g_LVvvDDE__X0d3974-z2ay9x3__NX9740_gnf1teQB5FSg8X8158XDoLeKFWBsb6Hg790lkWpyoir5TuIMW8l85LryEsy7K8Zff8gTrxHHsWiMcsy3JQQycrZZ1s2jIku9MgDRIpGFo1rzW1VXSaoRnVWkWD7l7kGpTD8MdV-bI3bDhAlkONOVaNVlqtqIqUYgeRNlL2HGYGNdWU6HSM4cG8qqrJHtGud4QlOxbJbC-N6kvKqglMhGmjA5FS6I5_UpuFaw1cT0IzoZ9Y84hhm8nYsjxWY0Xx8iKYkM2sOVlcunW-VNyZX3_n3ML7Vu3ll35_Y-tL7e-9fT537_xp_nop9x81\u0026estsfed=1\u0026uaid=bd2528a2805270002b896b7b4f431902\u0026cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a\u0026fci=00000003-0000-0ff1-ce00-000000000000\u0026wsucxt=1","urlDeviceFingerprinting":"","urlPIAEndAuth":"https://login.microsoftonline.com/common/PIA/EndAuth","urlStartTlr":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/tlr/start","fKMSIEnabled":false,"iLoginMode":1,"fAllowPhoneSignIn":true,"fAllowPhoneInput":true,"fAllowSkypeNameLogin":true,"iMaxPollErrors":5,"iPollingTimeout":300,"srsSuccess":true,"fShowSwitchUser":true,"arrValErrs":["50058"],"sErrorCode":"50058","sWAMExtension":"ppnbnpeolgkicgegkbkbjmhlideopiji","sWAMChannel":"53ee284d-920a-4b59-9d30-a60315b26836","sErrTxt":"","sResetPasswordPrefillParam":"username","onPremPasswordValidationConfig":{"isUserRealmPrecheckEnabled":true},"fSwitchDisambig":true,"oCancelPostParams":{"error":"access_denied","error_subcode":"cancel","state":"OD0wJjMyPUFBTUN6Z0FBQUJRNzI4MlFkU1lLamZBU0pYSiUyRmI4aVo4VzV2aHN6eUFiYiUyRmFQeEhvNXJZJTJCZmRxV3ZEeU5SSk82dkxsbEF2Mm5VTGlGYlhtclpjTUNLRnNMMlFDM0N0ek9MNDNYZERIYm5TdiUyQmZXVE5OTDUzeUJIOXFQTDdRMmZMWUhkODRJVkxEZFZVSngyZSUyQlNuQlVVc0ZSanM5bFFuaGFoR1BOU3Z5dEVHaTFhT2olMkZ4TjQ4NTFzaHczalR5ZSUyRng5JTJGdHc1MVZlRWZhWWlhMDNaJTJGNklndllqVFRTdFN3V2Y0czAxVmtwcWpFYmd3TFN1d1NIZDM2cnZlUEF0NG9EZ0ZGVnIzdjlUN2xXVEtDTjc1T2FSVyUyQm04OGIlMkZ6R2FkdmI0QnJpdWYwWG5PS0dvVFNWSWIwS3I2b292MyUyRmR2JTJCRWwyWGFJQkZPWFIlMkZ5UjhUaEttQVFRT205ZGZiWDBWOHE3WGtCazZWU0l4bjBob3JSRmRJcCUyQjNKMVNUZVBER0RnJTNEJTNE","canary":"yZcSCmYkd3lCGtEV6GG2LfqM9os5rSvwxqVeGYMURiU=6:1:CANARY:9Z9xSsyR5MFyrR8LjFVqsIEHjzXcfEsUw7WIJmHbcxE="},"iRemoteNgcPollingType":2,"fUseNewNoPasswordTypes":true,"urlAadSignup":"https://signup.microsoft.com/signup?sku=teams_commercial_trial\u0026origin=ests\u0026culture=en-US","urlTenantedEndpointFormat":"https://login.microsoftonline.com/{0}/oauth2/authorize?client_id=00000003-0000-0ff1-ce00-000000000000\u0026response_mode=form_post\u0026ear_jwe_crypto=eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImFwdiI6IkFBQUFDVVZoY2tOc2FXVnVkR2dBQUFCRlEwc3pNQUFBQVBWSkY0ZnRkcGRtSWRuVUhhWHRWTjB0eTB5NVh6aWtmK2laUzVXOENnOUpLYW5PV0VKSmVROGdOU1hwOTZOTUlwMS9pUW9NK1c4dUZRTlRJN3ByMTJkdjlOTm0rM1lMYkR4QXJHNHkrcGlMeDVVSEQ4aTFRby9HNU03YmNxSHVlQUFBQUJoSTB5RGptVXZpOEFQbXJVVWFBUUFHR0t3ZHM0UHlQc3c9In0%3d\u0026ear_jwk=eyJhbGciOiJFQ0RILUVTIiwiY3J2IjoiUC0zODQiLCJ4IjoiQUFBQU1QVkpGNGZ0ZHBkbUlkblVIYVh0Vk4wdHkweTVYemlrZitpWlM1VzhDZzlKS2FuT1dFSkplUThnTlNYcDk2Tk1JZz09IiwieSI6IkFBQUFNSjEvaVFvTStXOHVGUU5USTdwcjEyZHY5Tk5tKzNZTGJEeEFyRzR5K3BpTHg1VUhEOGkxUW8vRzVNN2JjcUh1ZUE9PSIsImt0eSI6IkVDIn0%3d\u0026spa_client_id=08e18876-6177-487e-b8b5-cf950c1e598c\u0026client_info=1\u0026response_type=code+id_token+spa_rt\u0026resource=00000003-0000-0ff1-ce00-000000000000\u0026scope=openid\u0026nonce=6AF79F7B1E19F7FE3703E2A6DFEBDFFA92B1F4EB2306C21C-314BE0B80FE0FF5838F5D7E6EEC780D3B7BE42E428B1BA8117B7E9DFF375C0C2\u0026redirect_uri=https%3a%2f%2farupapc-my.sharepoint.com%2f_forms%2fdefault.aspx\u0026state=OD0wJjMyPUFBTUN6Z0FBQUJRNzI4MlFkU1lLamZBU0pYSiUyRmI4aVo4VzV2aHN6eUFiYiUyRmFQeEhvNXJZJTJCZmRxV3ZEeU5SSk82dkxsbEF2Mm5VTGlGYlhtclpjTUNLRnNMMlFDM0N0ek9MNDNYZERIYm5TdiUyQmZXVE5OTDUzeUJIOXFQTDdRMmZMWUhkODRJVkxEZFZVSngyZSUyQlNuQlVVc0ZSanM5bFFuaGFoR1BOU3Z5dEVHaTFhT2olMkZ4TjQ4NTFzaHczalR5ZSUyRng5JTJGdHc1MVZlRWZhWWlhMDNaJTJGNklndllqVFRTdFN3V2Y0czAxVmtwcWpFYmd3TFN1d1NIZDM2cnZlUEF0NG9EZ0ZGVnIzdjlUN2xXVEtDTjc1T2FSVyUyQm04OGIlMkZ6R2FkdmI0QnJpdWYwWG5PS0dvVFNWSWIwS3I2b292MyUyRmR2JTJCRWwyWGFJQkZPWFIlMkZ5UjhUaEttQVFRT205ZGZiWDBWOHE3WGtCazZWU0l4bjBob3JSRmRJcCUyQjNKMVNUZVBER0RnJTNEJTNE\u0026claims=%7b%22id_token%22%3a%7b%22xms_cc%22%3a%7b%22values%22%3a%5b%22CP1%22%5d%7d%7d%7d\u0026wsucxt=1\u0026cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a\u0026client-request-id=bd2528a2-8052-7000-2b89-6b7b4f431902\u0026allowbacktocommon=True","sCloudInstanceName":"microsoftonline.com","fShowSignInOptionsAsButton":true,"fUseNewPhoneSignInError":true,"fIsUpdatedAutocompleteEnabled":true,"fActivateFocusOnApprovalNumberRemoteNGC":true,"fIsPasskey":true,"fEnableDFPIntegration":true,"fEnableCenterFocusedApprovalNumber":true,"fShowPassKeyErrorUCP":true,"fFixPhoneDisambigSignupRedirect":true,"fEnableQrCodeA11YFixes":true,"fEnablePasskeyAwpError":true,"fEnableAuthenticatorTimeoutFix":true,"fEnablePasskeyAutofillUI":true,"sCrossDomainCanary":"PAQABDgEAAAAdDD7nC9b5Q7JPd_okEQRFRXZvU3RzQXJ0aWZhY3RzCAAAAAAAB21takyisXEmyiCrDjGVIk4XvW2juBB_vFxmrv-ycgsoutt7mgeofZ_0-6e4yzPUOyqTsnZl9rCzi_CEmINnQeUq84dQqS7MQgDAhv5mCbv99sPR9xYVocY_d4MhvTYxSJwIB-2ejvkVmSzkaXG2NVgwdqasblLyprbSZPyIbYucDX0LR1Xe8SMw6RtyF8Fuj5BH7haZ1QEFBpRMbOI9MCAA","arrExcludedDisplayNames":["unknown"],"fFixShowRevealPassword":true,"fRemoveTLRFragment":true,"fEnableCredentialPickerBranding":true,"fWaitForCustomStringsBeforeRender":true,"iMaxStackForKnockoutAsyncComponents":10000,"fShowButtons":true,"urlCdn":"https://aadcdn.msauth.net/shared/1.0/","urlDefaultFavicon":"https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/favicon?ts=638112938312684505","urlFooterTOU":"https://www.arup.com/en-us/projects/50-fenchurch-street/","urlFooterPrivacy":"https://www.arup.com/","urlPost":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/login","urlPostAad":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/login","urlPostMsa":"https://login.live.com/ppsecure/partnerpost.srf?scope=openid+profile+email+offline_access\u0026response_type=code\u0026client_id=51483342-085c-4d86-bf88-cf50c7252078\u0026response_mode=form_post\u0026redirect_uri=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2ffederation%2foauth2msa\u0026state=rQQIARAAnVNbiCRXGe6a3vTudCaZ2RZRH5R13ECSsWfq2lU9uGJdzqmu2q7qrnt3SRiqq6qnq7uqu6bv1cuaxRc3KDgvizFB0EQfXPIQhECybkB80BAhLhgIrggJGIiBaAgJrvoivb74GPzh_Hznv3x85_z8j-exfezwIvpfI8prX0a7Xazsh2v0PzYuFXeee_SRV_VruXTvqcGVBv-FjWeQzaM4mof7_ii5iVC96TSdHB4ceONZ6qV-Ocn2Jz1vHKajaDhd1xwcdUfjZHIQhF1vFk_3vUm6fBlB7iDIewhyc-OkwkK6CmkOA1gV0hAQNEoAnK0IEHAChGwV5zBIAg4n0AqPY3yZwEgOoByDQoBCSDEEAymBBhUAeJpBBYKjOUDigMQZDuNYBsNojgZVAUKCpniUx-9ubDfY2bSHr91oHK3CjzY21xqP0tFk-kz-9pmGgC7kvpI1LciZllpxUchplqyrK4lUYjiwsLjuJS5noWnbiKxMTyTSs0ekvbJxr6ZWQgtG7ftxqIWgN1dbsiubMu8m-tImXBBalGEMGDwYLCcdAHEloWxTjMV23Jv6cdo3LbWuD1VFiaGgoCoaDqqKKqhtF-hSO6HMILIyLXFbNqAapmCtQkuWGi2omUKgK4mrOFZv0BB02R4sgQtd2xgeZ65hZVqszrTYtn3UNbyhQnUgnHkiHOkY17AIlwqAXfNM2DPxUawMXNLsa6RqwpVX81derFNrDn14TMmmLAY1H1NsN9Ydt-c4cU8RVG8dVwfxMIjjExvqZgBVwsbbqL9il3YyXfhOCttJQJhQxQJMlVxBwf2hG1sAoqpYBS7qivZQWgX92FLxZcsGU8Hs-5iJQ8PO1m9GyYYorbVVdBwOgkRCtaGcBk574YhU00CDuQ1Vx3CkhUFIeAev4kq2noOOr_9fdxaZI0JZG7hNB97noax-z_LAdKqtBeMo5Ypu5Aic06gBwhGnvLdyHQuNyU6fG3UI2dATXfZ5K9P66mXFVi3X5oCO6kPZVMH63Mx_qs36Rf4i6YUk0yGxMooRdJmkqtUyU6lg5a5fIbFuSNOd0Hs9Xxil4TAK7pxB3j-zheYPz50r7uQ-n7uQu3cGee6BUnHnyjWQ3D4-qb_6_I7x9a6We_2Bg8z1DT5pDwIi5sUpsCuiiNe7J0p1NKHGxnyxPLFDsa1YemRdqhxipwXktFA4Lcinhc_cKmyey-_kdvN8E_uwgFw_m7u1-f_t-NNF5M6DyItbyN0trLjpjzpjbxhEQekihnUCBmWIMkOHaJnEOlS506GZMtrxScJnPCZkvLtbZLHgx16UTEqPX9mNgqPpaBAOdw-v7C6TyZHvr9Hci2fhZPfwm7t8E9t94urVq99-6FOx_-qh3L2Hf_nuj5_99bVX_l57f_urVbe6NCaZTikwG-tMvQ_tk4kEav1Vy--CibWgHUlOah1_CS69uJN7eyd38_y7G8W0SOZyOfQT6XPf-WD-g-6X__jmF3_2gfnn8u_qrxwxP33yvR9evnG7uC099vM3WpyUbV-gHvnrP56v75bud_3oyaeKW_8c7X82b3zl1uCt49HHf-j-e_5g_LVvvDDE__X0d3974-z2ay9x3__NX9740_gnf1teQB5FSg8X8158XDoLeKFWBsb6Hg790lkWpyoir5TuIMW8l85LryEsy7K8Zff8gTrxHHsWiMcsy3JQQycrZZ1s2jIku9MgDRIpGFo1rzW1VXSaoRnVWkWD7l7kGpTD8MdV-bI3bDhAlkONOVaNVlqtqIqUYgeRNlL2HGYGNdWU6HSM4cG8qqrJHtGud4QlOxbJbC-N6kvKqglMhGmjA5FS6I5_UpuFaw1cT0IzoZ9Y84hhm8nYsjxWY0Xx8iKYkM2sOVlcunW-VNyZX3_n3ML7Vu3ll35_Y-tL7e-9fT537_xp_nop9x81\u0026flow=fido\u0026estsfed=1\u0026uaid=bd2528a2805270002b896b7b4f431902\u0026cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a\u0026fci=00000003-0000-0ff1-ce00-000000000000\u0026wsucxt=1","urlRefresh":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/reprocess?ctx=rQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2","urlCancel":"https://arupapc-my.sharepoint.com/_forms/default.aspx","urlResume":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/resume?ctx=rQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2","iPawnIcon":0,"iPollingInterval":1,"sPOST_Username":"","fEnableNumberMatching":true,"sFT":"BgABIQEAAAAdDD7nC9b5Q7JPd_okEQRFRXZvU3RzQXJ0aWZhY3RzAQAAAAAA_q3fpcyxJZw1dkJDKNQ7zYSCHIw-KOaDqKIcssU3ZiNEFKRd9uo6XFa52HRZTrHU5pFL0m-FWhCExs5bF7uAqw0QOCJ4k5zPtZMIayM-udIq88cQ4wp7dBMc7lGpbMs9IXVqDyJ3neldZR_QYARnw9CdSa-jiBqDdxERxxvtiH-iodpb7iMx6Oa8sGr__7J9_al0SHkKlINY2om3X-22Xcgv7komTXZyz5i2rBpOCiicm9lcrpbtA5lXyjmNfnraQACV3jGjktXQCMr8HciV0g6Moa1RN4z7F4mHP54GrhU-B-wZWF9gyg3XlI40QQKKIB_Vw_cHfTrREsyhqZ-gYBOeUHrrpja3YEk6eiKBjU5vBaC0-s_xevTNtdmoJSa_9VAPx8x6ltLIQ6JE1GWoDjTPZcZsLmvfZVqSjOtRXCUWFJrSqBXcNRM3uMt_5OgAeyCxpUWH6mpzX_BUq6u-IFBvhlzDjpjxA4hsxRmDCWrU5grMLYQWrGxwxJoDyqWY9bfdvtr6cLuhNTQl5hvTPu4S5Wo91hSst0Lgg5L_OgJQXePc0AcQ93n2nkUIKnbijMpkOzrRElAOlSSTP_F6BBeD5n-y0b1UJljBWfLpLJ_29pAX7ZbiiWOPw8po3YbniXy792K90-t0bpccd-igvxfhHMerA9-Jztbx2RuWb0LXYfqGLibijvww-vkl0h_La3jCl9qX5La__2aadtjX8-_vhiDQ9b85lWvFL1I0B8JfTetfhEwRJlsBGEHSkI8gLMq84_58j-oFbx7HnNuojY-tGoecHttVhxG_XTB_R02W1yM240-IDqOS6HQG8bjfUDI5UL-rjWj5oJhCt2dEwPvVdwWJ3Uj_9eI63rm57mPZPaZ1AXlBlIh92f-uZ29dTQgG682a_9HItoihrum4tnBtiDH-XCYQQQ84SAdKPbneDU7UFVjm5H9-K6HzSCDfcUUJhcam5yUioNpa9wopg1Q9jbVh7pe-Ytecg3mfDMcnBBvsHbwzbfYM2TMd1SvDyvi13dJDKsXwBe4fyj9q-eguXT3kosKg8G_tAx9tZ0w5p-aityEzAafthEJD-CK65WpSdgO_iwU2KITcEz9swSAA","sFTName":"flowToken","sFTCookieName":"ESTSWCTXFLOWTOKEN","sSessionIdentifierName":"code","sCtx":"rQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2","iProductIcon":-1,"fEnableOneDSClientTelemetry":true,"staticTenantBranding":[{"Locale":0,"BannerLogo":"https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/bannerlogo?ts=637781129097381293","Illustration":"https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/illustration?ts=639008057139559671","BoilerPlateText":"<p>If you are experiencing difficulty signing in:</p>\n<p>Arup members, please log a ticket via the <a href=\"https://arup.service-now.com/sp\" rel=\"noopener noreferrer\" target=\"_blank\">Service Portal</a>, or alternatively, you can call the Global Service Desk directly on +44 207 7554555</p>\n<p>External users, please raise this with your Arup sponsor/contact who can have this raised on your behalf.</p>\n","UserIdLabel":"first.last@arup.com","KeepMeSignedInDisabled":true,"UseTransparentLightBox":false,"LayoutTemplateConfig":{"showHeader":false,"headerLogo":"","layoutType":1,"hideCantAccessYourAccount":false,"hideForgotMyPassword":false,"hideResetItNow":false,"hideAccountResetCredentials":false,"showFooter":true,"hideTOU":false,"hidePrivacy":false},"CustomizationFiles":{"strings":{"adminConsent":"","attributeCollection":"","authenticatorNudgeScreen":"","conditionalAccess":""},"customCssUrl":"https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/customcss?ts=638133690649052827"},"Favicon":"https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/favicon?ts=638112938312684505","FooterPrivacyLink":"https://www.arup.com/","FooterPrivacyText":"ARUP","FooterTOULink":"https://www.arup.com/en-us/projects/50-fenchurch-street/","FooterTOUText":"Learn more about this image"}],"oAppCobranding":{},"iBackgroundImage":4,"arrSessions":[],"fApplicationInsightsEnabled":false,"iApplicationInsightsEnabledPercentage":0,"urlSetDebugMode":"https://login.microsoftonline.com/common/debugmode","fEnableCssAnimation":true,"fAllowGrayOutLightBox":true,"fUseMsaSessionState":true,"fIsRemoteNGCSupported":true,"desktopSsoConfig":{"isEdgeAnaheimAllowed":true,"iwaEndpointUrlFormat":"https://autologon.microsoftazuread-sso.com/{0}/winauth/sso?client-request-id=bd2528a2-8052-7000-2b89-6b7b4f431902","iwaSsoProbeUrlFormat":"https://autologon.microsoftazuread-sso.com/{0}/winauth/ssoprobe?client-request-id=bd2528a2-8052-7000-2b89-6b7b4f431902","iwaIFrameUrlFormat":"https://autologon.microsoftazuread-sso.com/{0}/winauth/iframe?client-request-id=bd2528a2-8052-7000-2b89-6b7b4f431902\u0026isAdalRequest=False","iwaRequestTimeoutInMs":10000,"startDesktopSsoOnPageLoad":false,"progressAnimationTimeout":10000,"isEdgeAllowed":false,"minDssoEdgeVersion":"17","isSafariAllowed":true,"redirectUri":"https://arupapc-my.sharepoint.com/_forms/default.aspx","redirectDssoErrorPostParams":{"error":"interaction_required","error_description":"Seamless single sign on failed for the user. This can happen if the user is unable to access on premises AD or intranet zone is not configured correctly Trace ID: 6d45807b-67bc-4c71-bda3-10533e665100 Correlation ID: bd2528a2-8052-7000-2b89-6b7b4f431902 Timestamp: 2026-07-17 13:05:55Z","state":"OD0wJjMyPUFBTUN6Z0FBQUJRNzI4MlFkU1lLamZBU0pYSiUyRmI4aVo4VzV2aHN6eUFiYiUyRmFQeEhvNXJZJTJCZmRxV3ZEeU5SSk82dkxsbEF2Mm5VTGlGYlhtclpjTUNLRnNMMlFDM0N0ek9MNDNYZERIYm5TdiUyQmZXVE5OTDUzeUJIOXFQTDdRMmZMWUhkODRJVkxEZFZVSngyZSUyQlNuQlVVc0ZSanM5bFFuaGFoR1BOU3Z5dEVHaTFhT2olMkZ4TjQ4NTFzaHczalR5ZSUyRng5JTJGdHc1MVZlRWZhWWlhMDNaJTJGNklndllqVFRTdFN3V2Y0czAxVmtwcWpFYmd3TFN1d1NIZDM2cnZlUEF0NG9EZ0ZGVnIzdjlUN2xXVEtDTjc1T2FSVyUyQm04OGIlMkZ6R2FkdmI0QnJpdWYwWG5PS0dvVFNWSWIwS3I2b292MyUyRmR2JTJCRWwyWGFJQkZPWFIlMkZ5UjhUaEttQVFRT205ZGZiWDBWOHE3WGtCazZWU0l4bjBob3JSRmRJcCUyQjNKMVNUZVBER0RnJTNEJTNE","canary":"yZcSCmYkd3lCGtEV6GG2LfqM9os5rSvwxqVeGYMURiU=6:1:CANARY:9Z9xSsyR5MFyrR8LjFVqsIEHjzXcfEsUw7WIJmHbcxE="},"isIEAllowedForSsoProbe":true,"edgeRedirectUri":"https://autologon.microsoftazuread-sso.com/4ae48b41-0137-4599-8661-fc641fe77bea/winauth/sso/edgeredirect?client-request-id=bd2528a2-8052-7000-2b89-6b7b4f431902\u0026origin=login.microsoftonline.com\u0026is_redirected=1","isFlowTokenPassedInEdge":true},"urlLogin":"https://login.microsoftonline.com/4ae48b41-0137-4599-8661-fc641fe77bea/reprocess?ctx=rQQIARAAnVNdqCN3Fc_cbLO76W3v3YioD8p63ULtNff-5yszubjiTOb_n8xsZpL5TkbkMpmZ3HzMJHMz-Zosaxdf3KLgfVmsFUFbfXDxQYRCu25BfNBSoS4oiCtCBQu1UBVRXPVFsr74WDxwDueD8-N3zuE8k8cP8KMr4L9Clje2DHo9vOyHG-9_ZFoq7r749FOv6Tdzyf5zo-vN2ke27mB0fzZL0qPDQ286T7zEL8fZQdr3pmEyGYxnB_4kPjzuTaZxehiEPW8ezQ68NFm9gmH3MewdDLuzdVrhEFNFDI9DvIoYBEkGkJDgKgKCvIAQVyV4HFGQJ0hQqRF4rUziFA8BzwIEAUI0S7KIFhhYgbDGsEAgeYaHFAEpguVxnmNxnOEZWBUQIhm6BmrEg62dJjef9YmNmUwH6_CvWxc3HI-TSTp7IX_vXFMAS3moZC0L8aalVlyAeM2SdXUtUUqERhYeNbzY5S2QdIyBlemxRHn2hLLXNuHV1UpooUHnUR5pIewv1LbsyqZcc2N9ZZMuDC3aMEYsEYxWaRciQolp2xQjsRP1Z36UDE1LbehjVVEiJChABeGoqqiC2nGhLnVi2gwGVqbFbtuGdNMUrHVoyVKzjTRTCHQldhXH6o-agi7boxV0kWsb45PMNaxMi9S5Ftm2D1zDGyt0F6G5J6KJjvNNi3TpANp1z0R9k5hEysilzKFGqSZae3V_7UU6vcHQxye0bMpiUPdxxXYj3XH7jhP1FUH1Nnl1FI2DKDq1kW4GSCVtogP8Nbey49nSdxLUiQPSRCoe4KrkCgrhj93IggioYhW6wBXtsbQOhpGlEqu2DWeCOfRxk0CGnW1mBlRTlDbcKjqBRkEsAW0sJ4HTWToi3TJAsLCR6hiOtDRIiegSVULJNnfQic3-dWeZOSKStZHbctAjHNoa9i0PzmbahjABaFd0B47AO806JB1xVvPWrmOBiOoO-UmXlA091mW_ZmXaUL2m2Krl2jzUgT6WTRVu9E7-fX3TD_NXKC-k2C6FlwFOMmWKrlbLbKWCl3t-hcJ7IcN0Q--NfGGShONBcP8c9u65bZA_unChuJv7cO5y7uE57MXHSsXd6zdhfO_ktPHaS7vGZ3pa7o3HDjPXN2pxZxSQUU2cQbsiikSjd6pUJyk9NRbL1akdih3F0gfW1coRflbAzgqFs4J8VvjA3cLFC_nd3F6-1sL_UsBunc_dvfj__fjzRez-49iDbbx40Z90p944GASlKzjeDVjAkmWWCUGZwrt0udtl2DLo-hTpsx4bst6DbapY8CNvEKelZ67vDYLj2WQUjveOru-t4vTY9zfewovmYbp39Lm9Wgvf-_yNGze--MT7Qv_xE7mHT_7o7W994yc3X_1z_d2dT1Xd6spIM51WUDbV2cYQ2aepBOvDddvvwdRaMo4kx_Wuv4JXf7Cbe2s3d-fS21vFpEjlcjnwd-lDX3pv8bXex3_zq49-9z3zd-WfN149Zr_z7Dtfv3b7XnFH-uT33mzzUrZzmX7qj_94qbFXetT1zWefK27_c3LwwbzxibujX59M_vbL3r8Xj0ef_uz3x8S_nv_yz26f33n9Zf6rP_3Dm7-dfvtPq8vY01jpyWLei05K52FNqJehsYnDsV86zxF0RawppftYMe8li9LrGMdxXM2y-_5ITT3HngfiCcdxPNJAulY2xZYtI6o3C5IgloKxVffaM1sFswxkdHs9GPX2B65BO2ztpCpf88ZNB8pyqLEnqtFOqhVVkRL8cKBNlH2HnSNNNSUmmeJEsKiqarxPdhpdYcVNRSrbTwaNFW3VBXaAa5NDkVaYrn9an4cbDnxfApkwjK3FgOVa8dSyPE7jRPHaMkipVtZKl1fvXioVdxe3fn9h6X2h_srLv7i9_bHOV966lHt46Sx_q5T7Dw2","urlDssoStatus":"https://login.microsoftonline.com/common/instrumentation/dssostatus","iSessionPullType":2,"fUseSameSite":true,"iAllowedIdentities":2,"uiflavor":1001,"urlFidoHelp":"https://go.microsoft.com/fwlink/?linkid=2013738","urlFidoLogin":"https://login.microsoft.com/4ae48b41-0137-4599-8661-fc641fe77bea/fido/get?uiflavor=Web","fIsFidoSupported":true,"fHidePrivateBrowsingDisclaimer":true,"fLoadStringCustomizationPromises":true,"fUseAlternateTextForSwitchToCredPickerLink":true,"fOfflineAccountVisible":false,"fEnableUserStateFix":true,"fAccessPassSupported":true,"fShowAccessPassPeek":true,"fUpdateSessionPollingLogic":true,"fEnableShowPickerCredObservable":true,"fFetchSessionsSkipDsso":true,"fIsCiamUserFlowUxNewLogicEnabled":true,"fUseNonMicrosoftDefaultBrandingForCiam":true,"sCompanyDisplayName":"Arup","fRemoveCustomCss":true,"fFixUICrashForApiRequestHandler":true,"fShowUpdatedKoreanPrivacyFooter":true,"fUsePostCssHotfix":true,"fFixUserFlowBranding":true,"fIsQrCodePinSupported":true,"fEnablePasskeyNullFix":true,"fAppendQueryParamsFromRawQueryStringToPostUrl":true,"fUseNativeBridgeEdgeApi":true,"fEnableWebNativeBridgeInterstitialUx":true,"fEnableThisAppOnlyUxSupport":true,"fEnableWindowParentingFix":true,"fEnableNativeBridgeErrors":true,"fEnableNativeBridgeErrorUpn":true,"fEnableDomApiSuccessUpnFix":true,"urlAcmaServerPath":"https://login.microsoftonline.com","sTenantId":"4ae48b41-0137-4599-8661-fc641fe77bea","sMkt":"en-US","fIsDesktop":true,"fUpdateConfigInit":true,"fLogDisallowedCssProperties":true,"fDisallowExternalFonts":true,"sFidoChallenge":"O.eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImFGa21LVkZjLTRXVjZzWENCdk5aa1hJNTA1WSJ9.eyJhdWQiOiJ1cm46bWljcm9zb2Z0OmZpZG86Y2hhbGxlbmdlIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5taWNyb3NvZnQuY29tIiwiaWF0IjoxNzg0MjkzNTU1LCJuYmYiOjE3ODQyOTM1NTUsImV4cCI6MTc4NDI5Mzg1NX0.Ca4rZlmRtgfJeoUEf7Ys9rSeaX0majURhrwHGEq5AdOuP-i4IfCYuZa6Ep4WJFvMb_7dY6tuhRrjZrn7U6CK-UY1TUvvl6OhhbiiRBsbUhnq8x6i1md8ybDWPRZGrAo3_vkc_pXUoJgX1dHhSWUgnqNbyF8jqsjbKynpmckC7PcZ86tJtnyLzWM6-HQQ8T_guYZxJvdlt02AYw_FtISYuJuYt8emYigDpPnk4yq3pvGRGbWPYof6A44fS3qYHUjwy3NQZDeQSfklUF4nfHh4G-oxFtfnW5gdumWqgQiSVPMtoZFRJvY0lAFa8sScKI0f43JEoMIDcPcYZtbSCrWEcQ","fShowDebugDetailsAriaExpanded":true,"fPreventOtcFormDoubleSubmit":true,"fEnableWebNativeBridgeLoadFix":true,"fEnableWebNativeBridgeClientTelemetry":true,"fEnableWebAuthNTelemetry":true,"scid":1013,"hpgact":1800,"hpgid":1104,"pgid":"ConvergedSignIn","apiCanary":"PAQABDgEAAAAdDD7nC9b5Q7JPd_okEQRFRXZvU3RzQXJ0aWZhY3RzCAAAAAAAWiXE6JUldeoe-FUT5wrkTWG8NNpXM1C6P5IbS68PAtCH4bfgbJ4oya-tY06U0IWS3W8esqMifKcVLJm5rsE_OSAhcZBGy3UUHDgfZYixDdzawUtZNIQC2-MT-zKfgL6hB4rNrGZMVyQdctl-1BDapCKDH3QMlnF4ijnSu4DCneUcJB2vpkweNAEAXma62QBqhGJ_Yb-nrMS5DvaJ1UCBHyAA","canary":"yZcSCmYkd3lCGtEV6GG2LfqM9os5rSvwxqVeGYMURiU=6:1:CANARY:9Z9xSsyR5MFyrR8LjFVqsIEHjzXcfEsUw7WIJmHbcxE=","sCanaryTokenName":"canary","fSkipRenderingNewCanaryToken":false,"fEnableNewCsrfProtection":true,"correlationId":"bd2528a2-8052-7000-2b89-6b7b4f431902","sessionId":"6d45807b-67bc-4c71-bda3-10533e665100","sRingId":"R6","locale":{"mkt":"en-US","lcid":1033},"slMaxRetry":2,"slReportFailure":true,"strings":{"desktopsso":{"authenticatingmessage":"Trying to sign you in"}},"enums":{"ClientMetricsModes":{"None":0,"SubmitOnPost":1,"SubmitOnRedirect":2,"InstrumentPlt":4}},"urls":{"instr":{"pageload":"https://login.microsoftonline.com/common/instrumentation/reportpageload","dssostatus":"https://login.microsoftonline.com/common/instrumentation/dssostatus"}},"browser":{"ltr":1,"Edge":1,"_Win":1,"_M150":1,"_D0":1,"Full":1,"Win81":1,"RE_WebKit":1,"b":{"name":"Edge","major":150,"minor":0},"os":{"name":"Windows","version":"10.0"},"V":"150.0"},"watson":{"url":"/common/handlers/watson","bundle":"https://aadcdn.msauth.net/ests/2.1/content/cdnbundles/watson.min_82o5oyf7tvyeotpacdeksw2.js","sbundle":"https://aadcdn.msauth.net/ests/2.1/content/cdnbundles/watsonsupportwithjquery.3.5.min_dc940oomzau4rsu8qesnvg2.js","fbundle":"https://aadcdn.msauth.net/ests/2.1/content/cdnbundles/frameworksupport.min_oadrnc13magb009k4d20lg2.js","resetErrorPeriod":5,"maxCorsErrors":-1,"maxInjectErrors":5,"maxErrors":10,"maxTotalErrors":3,"expSrcs":["https://login.microsoftonline.com","https://aadcdn.msauth.net/","https://aadcdn.msftauth.net/",".login.microsoftonline.com"],"envErrorRedirect":true,"envErrorUrl":"/common/handlers/enverror"},"loader":{"cdnRoots":["https://aadcdn.msauth.net/","https://aadcdn.msftauth.net/"],"logByThrowing":true,"tenantBrandingCdnRoots":["aadcdn.msauthimages.net","aadcdn.msftauthimages.net"]},"serverDetails":{"slc":"ProdSlices","dc":"SEC","ri":"GV3XXXX","ver":{"v":[2,1,24800,5]},"rt":"2026-07-17T13:05:55","et":61},"clientEvents":{"enabled":true,"telemetryEnabled":true,"useOneDSEventApi":true,"flush":60000,"autoPost":true,"autoPostDelay":1000,"minEvents":1,"maxEvents":1,"pltDelay":500,"appInsightsConfig":{"instrumentationKey":"b0c252808e614e949086e019ae1cb300-e0c02060-e3b3-4965-bd7c-415e1a7a9fde-6951","webAnalyticsConfiguration":{"autoCapture":{"jsError":true}}},"defaultEventName":"IDUX_ESTSClientTelemetryEvent_WebWatson","serviceID":3,"endpointUrl":"https://eu-mobile.events.data.microsoft.com/OneCollector/1.0/"},"fApplyAsciiRegexOnInput":true,"country":"ID","fBreakBrandingSigninString":true,"bsso":{"initiatePullTimeoutMs":100,"initiatePullTimeoutAction":"continue","rid":"6d45807b-67bc-4c71-bda3-10533e665100","states":{"START":"start","INPROGRESS":"in-progress","END":"end","END_SSO":"end-sso","END_USERS":"end-users"},"forceTiles":true,"nonce":"AwABEgEAAAADAOz_BQD0_0V2b1N0c0FydGlmYWN0cwUAAAAAAAdoHmm1zMsbNDLLxToz1vBmA1igUAPEO4ccVZAphS0kc6KKMdRLz4C0SZs4oxnlk6pGaqbbleG2ckIE9y3K4mAgAA","overallTimeoutMs":4000,"telemetry":{"type":"TBAuthTelemetry","nonce":"AwABDwEAAAADAOz_BQD0_0V2b1N0c0FydGlmYWN0cwUAAAAAAFroaY3iK8LqLJUK5Y6gzk-4wd55GUCkMRsp9vf2uXlzQIW2Hwb33QrPLvZ9PtHGMsCmUOHAik-IjrG92o-grfycmrkft1_HJzkY6odOxUL8IAA","reportStates":["end","end-sso","end-users"]},"redirectEndStates":["end","end-users"],"cookieNames":{"aadSso":"AADSSO","winSso":"ESTSSSO","ssoTiles":"ESTSSSOTILES","ssoPulled":"SSOCOOKIEPULLED","userList":"ESTSUSERLIST"},"enabled":true,"type":"windows","reason":"Pull is needed; Forcing tiles experience as silent SSO not allowed"},"urlNoCookies":"https://login.microsoftonline.com/cookiesdisabled","fTrimChromeBssoUrl":true,"inlineMode":5,"fShowCopyDebugDetailsLink":true,"fTenantBrandingCdnAddEventHandlers":true};
-//]]></script> 
-<script type="text/javascript" nonce='txVbcl24ZdEKPm9H-2VyPg'>//<![CDATA[
-!function(){var e=window,r=e.$Debug=e.$Debug||{},t=e.$Config||{};if(!r.appendLog){var n=[],o=0;r.appendLog=function(e){var r=t.maxDebugLog||25,i=(new Date).toUTCString()+":"+e;n.push(o+":"+i),n.length>r&&n.shift(),o++},r.getLogs=function(){return n}}}(),function(){function e(e,r){function t(i){var a=e[i];if(i<n-1){return void(o.r[a]?t(i+1):o.when(a,function(){t(i+1)}))}r(a)}var n=e.length;t(0)}function r(e,r,i){function a(){var e=!!u.method,o=e?u.method:i[0],a=u.extraArgs||[],s=n.$WebWatson;try{
-var d=t(i,!e);if(a&&a.length>0){for(var c=a.length,l=0;l<c;l++){d.push(a[l])}}o.apply(r,d)}catch(e){return void(s&&s.submitFromException&&s.submitFromException(e))}}var u=o.r&&o.r[e];return r=r||this,u&&(u.skipTimeout?a():n.setTimeout(a,0)),u}function t(e,r){return Array.prototype.slice.call(e,r?1:0)}var n=window;n.$Do||(n.$Do={"q":[],"r":[],"removeItems":[],"lock":0,"o":[]});var o=n.$Do;o.when=function(t,n){function i(e){r(e,a,u)||o.q.push({"id":e,"c":a,"a":u})}var a=0,u=[],s=1;"function"==typeof n||(a=n,
-s=2);for(var d=s;d<arguments.length;d++){u.push(arguments[d])}t instanceof Array?e(t,i):i(t)},o.register=function(e,t,n){if(!o.r[e]){o.o.push(e);var i={};if(t&&(i.method=t),n&&(i.skipTimeout=n),arguments&&arguments.length>3){i.extraArgs=[];for(var a=3;a<arguments.length;a++){i.extraArgs.push(arguments[a])}}o.r[e]=i,o.lock++;try{for(var u=0;u<o.q.length;u++){var s=o.q[u];s.id==e&&r(e,s.c,s.a)&&o.removeItems.push(s)}}catch(e){throw e}finally{if(0===--o.lock){for(var d=0;d<o.removeItems.length;d++){
-for(var c=o.removeItems[d],l=0;l<o.q.length;l++){if(o.q[l]===c){o.q.splice(l,1);break}}}o.removeItems=[]}}}},o.unregister=function(e){o.r[e]&&delete o.r[e]}}(),function(e,r){function t(){if(!a){if(!r.body){return void setTimeout(t)}a=!0,e.$Do.register("doc.ready",0,!0)}}function n(){if(!u){if(!r.body){return void setTimeout(n)}t(),u=!0,e.$Do.register("doc.load",0,!0),i()}}function o(e){(r.addEventListener||"load"===e.type||"complete"===r.readyState)&&t()}function i(){
-r.addEventListener?(r.removeEventListener("DOMContentLoaded",o,!1),e.removeEventListener("load",n,!1)):r.attachEvent&&(r.detachEvent("onreadystatechange",o),e.detachEvent("onload",n))}var a=!1,u=!1;if("complete"===r.readyState){return void setTimeout(n)}!function(){r.addEventListener?(r.addEventListener("DOMContentLoaded",o,!1),e.addEventListener("load",n,!1)):r.attachEvent&&(r.attachEvent("onreadystatechange",o),e.attachEvent("onload",n))}()}(window,document),function(){function e(){
-return(t().loader||{}).tenantBrandingCdnRoots||[]}function r(r){var t=e();if(t&&t.length>0&&r){for(var n=0;n<t.length;n++){if(t[n]&&-1!==r.indexOf(t[n])){return!0}}}return!1}function t(){return h.$Config||h.ServerData||{}}function n(e,r,t){var n=h.$Debug;n&&n.appendLog&&(r&&(e+=" '"+(r.src||r.href||"")+"'",e+=", id:"+(r.id||""),e+=", async:"+(r.async||""),e+=", defer:"+(r.defer||"")),t&&(e+=", loadDuration:"+t+"ms"),n.appendLog(e))}function o(){var e=h.$B;if(void 0===g){if(e){g=e.IE}else{
-var r=h.navigator.userAgent;g=-1!==r.indexOf("MSIE ")||-1!==r.indexOf("Trident/")}}return g}function i(){var e=h.$B;if(void 0===v){if(e){v=e.RE_Edge}else{var r=h.navigator.userAgent;v=-1!==r.indexOf("Edge")}}return v}function a(e){var r=e.indexOf("?"),t=r>-1?r:e.length,n=e.lastIndexOf(".",t);return e.substring(n,n+m.length).toLowerCase()===m}function u(){var e=t();return(e.loader||{}).slReportFailure||e.slReportFailure||!1}function s(){return(t().loader||{}).redirectToErrorPageOnLoadFailure||!1}
-function d(){return(t().loader||{}).logByThrowing||!1}function c(e){if(!o()&&!i()){return!1}var r=e.src||e.href||"";if(!r){return!0}if(a(r)){var t,n,u;try{t=e.sheet,n=t&&t.cssRules,u=!1}catch(e){u=!0}if(t&&!n&&u){return!0}if(t&&n&&0===n.length){return!0}}return!1}function l(e,r,n){var o=t(),i=o.loader||{},a=i.resourceLoadTimeout;return a>0?setTimeout(function(){r.isCircuitBreakerTriggered=!0,e&&(e.onload=null,e.onerror=null,e.onreadystatechange=null),n(),e&&(e.src&&e.removeAttribute("src"),
-e.href&&e.removeAttribute("href"),e.parentElement&&e.parentElement.removeChild(e))},a):null}function f(){function e(e){p.getElementsByTagName("head")[0].appendChild(e)}function r(e,r,t,n){var s=null;return s=a(e)?o(e):"script"===n.toLowerCase()?i(e):u(e,n),r&&(s.id=r),"function"==typeof s.setAttribute&&(s.setAttribute("crossorigin","anonymous"),t&&"string"==typeof t&&s.setAttribute("integrity",t)),s}function o(e){var r=p.createElement("link");return r.rel="stylesheet",r.type="text/css",r.href=e,r}
-function i(e){var r=p.createElement("script"),t=p.querySelector("script[nonce]");if(r.type="text/javascript",r.src=e,r.defer=!1,r.async=!1,t){var n=t.nonce||t.getAttribute("nonce");r.setAttribute("nonce",n)}return r}function u(e,r){var t=p.createElement(r);return t.src=e,t}function s(e,r){if(e&&e.length>0&&r){for(var t=0;t<e.length;t++){if(-1!==r.indexOf(e[t])){return!0}}}return!1}function d(e){if(t().fTenantBrandingCdnAddEventHandlers){var r=s(w,e)?w:E;if(!(r&&r.length>1)){return e}
-for(var n=0;n<r.length;n++){if(-1!==e.indexOf(r[n])){var o=r[n+1<r.length?n+1:0],i=e.substring(r[n].length);return"https://"!==r[n].substring(0,"https://".length)&&(o="https://"+o,i=i.substring("https://".length)),o+i}}return e}if(!(E&&E.length>1)){return e}for(var a=0;a<E.length;a++){if(0===e.indexOf(E[a])){return E[a+1<E.length?a+1:0]+e.substring(E[a].length)}}return e}function g(e,r,t,o,i){var a=0,u=$.failMessage||"Failed";if(i&&(a=Date.now()-i.startTime,
-i.id&&!i.isCircuitBreakerTriggered&&clearTimeout(i.id),i.isCircuitBreakerTriggered&&(u=$.timeoutMessage||"TimedOut")),n("[$Loader]: "+u,o,a),S[e].retry<y){return S[e].retry++,h(e,r,t),void f._ReportFailure(S[e].retry,S[e].srcPath,i)}t&&t()}function v(e,r,t,o,i){var a=0;if(c(o)){return g(e,r,t,o,i)}i&&i.id&&(clearTimeout(i.id),a=Date.now()-i.startTime),n("[$Loader]: "+($.successMessage||"Loaded"),o,a),h(e+1,r,t);var u=S[e].onSuccess;"function"==typeof u&&u(S[e].srcPath)}function h(t,o,i){if(t<S.length){
-var a=S[t];if(!a||!a.srcPath){return void h(t+1,o,i)}a.retry>0&&(a.srcPath=d(a.srcPath),a.origId||(a.origId=a.id),a.id=a.origId+"_Retry_"+a.retry);var u=r(a.srcPath,a.id,a.integrity,a.tagName),s={"id":null,"isCircuitBreakerTriggered":!1},c=function(){g(t,o,i,u,s)};u.onload=function(){v(t,o,i,u,s)},u.onerror=c,u.onreadystatechange=function(){"loaded"===u.readyState?setTimeout(function(){v(t,o,i,u,s)},500):"complete"===u.readyState&&v(t,o,i,u,s)},L&&a.retry<y&&(s.id=l(u,s,c),s.startTime=Date.now()),e(u),
-n("[$Loader]: Loading '"+(a.srcPath||"")+"', id:"+(a.id||""))}else{o&&o()}}var m=t(),y=m.slMaxRetry||2,b=m.loader||{},E=b.cdnRoots||[],L=b.enableCircuitBreaking||!1,w=b.tenantBrandingCdnRoots||[],$=this,S=[];$.retryOnError=!0,$.successMessage="Loaded",$.failMessage="Error",$.Add=function(e,r,t,n,o,i){e&&S.push({"srcPath":e,"id":r,"retry":n||0,"integrity":t,"tagName":o||"script","onSuccess":i})},$.AddForReload=function(e,r){var t=e.src||e.href||"";$.Add(t,"AddForReload",e.integrity,1,e.tagName,r)},
-$.AddIf=function(e,r,t){e&&$.Add(r,t)},$.Load=function(e,r){h(0,e,r)}}var g,v,h=window,p=h.document,m=".css";f.On=function(e,r,t){if(!e){throw"The target element must be provided and cannot be null."}r?f.OnError(e,t):f.OnSuccess(e,t)},f.OnSuccess=function(e,t){if(!e){throw"The target element must be provided and cannot be null."}if(c(e)){return f.OnError(e,t)}var o=e.src||e.href||"",i=u(),a=s();n("[$Loader]: Loaded",e);var d=new f;d.failMessage="Reload Failed",d.successMessage="Reload Success",
-d.Load(null,function(){var e=r(o);if(i&&!e){throw"Unexpected state. ResourceLoader.Load() failed despite initial load success. ['"+o+"']"}a&&!e&&(document.location.href="/error.aspx?err=504"),e&&n("[$Loader]: Silently handled tenant branding CDN failure ['"+o+"']")})},f.OnError=function(e,t,o){var i=e.src||e.href||"",a=u(),d=s();if(!e){throw"The target element must be provided and cannot be null."}n("[$Loader]: Failed",e);var c=new f;c.failMessage="Reload Failed",c.successMessage="Reload Success",
-c.AddForReload(e,t),c.Load(null,function(){var e=r(i);if(a&&!e){throw"Failed to load external resource ['"+i+"']"}d&&!e&&(document.location.href="/error.aspx?err=504"),e&&n("[$Loader]: Silently handled tenant branding CDN failure ['"+i+"']")}),f._ReportFailure(0,i,o)},f._ReportFailure=function(e,t,n){if(d()&&!o()&&!r(t)){var i="Failed to load";throw n&&n.isCircuitBreakerTriggered&&(i="Timed out while loading"),"[Retry "+e+"] "+i+" external resource ['"+t+"'], reloading from fallback CDN endpoint"}},
-h.$Loader=f}(),function(){function e(){if(!E){var e=new h.$Loader;e.AddIf(!h.jQuery,m.sbundle,"WebWatson_DemandSupport"),m.sbundle=null,delete m.sbundle,e.AddIf(!h.$Api,m.fbundle,"WebWatson_DemandFramework"),m.fbundle=null,delete m.fbundle,e.Add(m.bundle,"WebWatson_DemandLoaded"),e.Load(r,t),E=!0}}function r(){if(h.$WebWatson){if(h.$WebWatson.isProxy){return void t()}y.when("$WebWatson.full",function(){for(;b.length>0;){var e=b.shift();e&&h.$WebWatson[e.cmdName].apply(h.$WebWatson,e.args)}})}}function t(){
-if(!h.$WebWatson||h.$WebWatson.isProxy){if(!L&&JSON){try{var e=new XMLHttpRequest;e.open("POST",m.url),e.setRequestHeader("Accept","application/json"),e.setRequestHeader("Content-Type","application/json; charset=UTF-8"),e.setRequestHeader("canary",p.apiCanary),e.setRequestHeader("client-request-id",p.correlationId),e.setRequestHeader("hpgid",p.hpgid||0),e.setRequestHeader("hpgact",p.hpgact||0);for(var r=-1,t=0;t<b.length;t++){if("submit"===b[t].cmdName){r=t;break}}var o=b[r]?b[r].args||[]:[],i={"sr":m.sr,
-"ec":"Failed to load external resource [Core Watson files]","wec":55,"idx":1,"pn":p.pgid||"","sc":p.scid||0,"hpg":p.hpgid||0,"msg":"Failed to load external resource [Core Watson files]","url":o[1]||"","ln":0,"ad":0,"an":!1,"cs":"","sd":p.serverDetails,"ls":null,"diag":v(m)};e.send(JSON.stringify(i))}catch(e){}L=!0}m.loadErrorUrl&&window.location.assign(m.loadErrorUrl)}n()}function n(){b=[],h.$WebWatson=null}function o(r){return function(){var t=arguments;b.push({"cmdName":r,"args":t}),e()}}function i(){
-var e=["foundException","resetException","submit"],r=this;r.isProxy=!0;for(var t=e.length,n=0;n<t;n++){var i=e[n];i&&(r[i]=o(i))}}function a(e,r,t,n,o,i,a){var u=h.event;return i||(i=l(o||u,a?a+2:2)),h.$Debug&&h.$Debug.appendLog&&h.$Debug.appendLog("[WebWatson]:"+(e||"")+" in "+(r||"")+" @ "+(t||"??")),$.submit(e,r,t,n,o||u,i,a)}function u(e,r){return{"signature":e,"args":r,"toString":function(){return this.signature}}}function s(e){for(var r=[],t=e.split("\n"),n=0;n<t.length;n++){r.push(u(t[n],[]))}
-return r}function d(e){for(var r=[],t=e.split("\n"),n=0;n<t.length;n++){var o=u(t[n],[]);t[n+1]&&(o.signature+="@"+t[n+1],n++),r.push(o)}return r}function c(e){if(!e){return null}try{if(e.stack){return s(e.stack)}if(e.error){if(e.error.stack){return s(e.error.stack)}}else if(window.opera&&e.message){return d(e.message)}}catch(e){}return null}function l(e,r){var t=[];try{for(var n=arguments.callee;r>0;){n=n?n.caller:n,r--}for(var o=0;n&&o<w;){var i="InvalidMethod()";try{i=n.toString()}catch(e){}
-var a=[],s=n.args||n.arguments;if(s){for(var d=0;d<s.length;d++){a[d]=s[d]}}t.push(u(i,a)),n=n.caller,o++}}catch(e){t.push(u(e.toString(),[]))}var l=c(e);return l&&(t.push(u("--- Error Event Stack -----------------",[])),t=t.concat(l)),t}function f(e){if(e){try{var r=/function (.{1,})\(/,t=r.exec(e.constructor.toString());return t&&t.length>1?t[1]:""}catch(e){}}return""}function g(e){if(e){try{if("string"!=typeof e&&JSON&&JSON.stringify){var r=f(e),t=JSON.stringify(e)
-;return t&&"{}"!==t||(e.error&&(e=e.error,r=f(e)),(t=JSON.stringify(e))&&"{}"!==t||(t=e.toString())),r+":"+t}}catch(e){}}return""+(e||"")}function v(e){var r=[];try{if(jQuery?(r.push("jQuery v:"+jQuery().jquery),jQuery.easing?r.push("jQuery.easing:"+JSON.stringify(jQuery.easing)):r.push("jQuery.easing is not defined")):r.push("jQuery is not defined"),e&&e.expectedVersion&&r.push("Expected jQuery v:"+e.expectedVersion),y){var t,n="";for(t=0;t<y.o.length;t++){n+=y.o[t]+";"}for(r.push("$Do.o["+n+"]"),n="",
-t=0;t<y.q.length;t++){n+=y.q[t].id+";"}r.push("$Do.q["+n+"]")}if(h.$Debug&&h.$Debug.getLogs){var o=h.$Debug.getLogs();o&&o.length>0&&(r=r.concat(o))}if(b){for(var i=0;i<b.length;i++){var a=b[i];if(a&&"submit"===a.cmdName){try{if(JSON&&JSON.stringify){var u=JSON.stringify(a);u&&r.push(u)}}catch(e){r.push(g(e))}}}}}catch(e){r.push(g(e))}return r}var h=window,p=h.$Config||{},m=p.watson,y=h.$Do;if(!h.$WebWatson&&m){var b=[],E=!1,L=!1,w=10,$=h.$WebWatson=new i;$.CB={},$._orgErrorHandler=h.onerror,h.onerror=a,
-$.errorHooked=!0,y.when("jQuery.version",function(e){m.expectedVersion=e}),y.register("$WebWatson")}}(),function(){function e(e,r){for(var t=r.split("."),n=t.length,o=0;o<n&&null!==e&&void 0!==e;){e=e[t[o++]]}return e}function r(r){var t=null;return null===s&&(s=e(i,"Constants")),null!==s&&r&&(t=e(s,r)),null===t||void 0===t?"":t.toString()}function t(t){var n=null;return null===a&&(a=e(i,"$Config.strings")),null!==a&&t&&(n=e(a,t.toLowerCase())),null!==n&&void 0!==n||(n=r(t)),
-null===n||void 0===n?"":n.toString()}function n(e,r){var n=null;return e&&r&&r[e]&&(n=t("errors."+r[e])),n||(n=t("errors."+e)),n||(n=t("errors."+d)),n||(n=t(d)),n}function o(t){var n=null;return null===u&&(u=e(i,"$Config.urls")),null!==u&&t&&(n=e(u,t.toLowerCase())),null!==n&&void 0!==n||(n=r(t)),null===n||void 0===n?"":n.toString()}var i=window,a=null,u=null,s=null,d="GENERIC_ERROR";i.GetString=t,i.GetErrorString=n,i.GetUrl=o}(),function(){var e=window,r=e.$Config||{};e.$B=r.browser||{}}(),function(){
-function e(e,r,t){e&&e.addEventListener?e.addEventListener(r,t):e&&e.attachEvent&&e.attachEvent("on"+r,t)}function r(r,t){e(document.getElementById(r),"click",t)}function t(r,t){var n=document.getElementsByName(r);n&&n.length>0&&e(n[0],"click",t)}var n=window;n.AddListener=e,n.ClickEventListenerById=r,n.ClickEventListenerByName=t}();
-//]]></script> 
-<script type="text/javascript" nonce='txVbcl24ZdEKPm9H-2VyPg'>//<![CDATA[
-!function(e,t){function r(t){return function(){t.parentNode&&(t.onload=null,t.onerror=null,t.parentNode.removeChild(t)),e.$Loader.OnError(t,void 0,{"isCircuitBreakerTriggered":!0}),t.src&&t.removeAttribute("src"),t.href&&t.removeAttribute("href")}}function n(e,t){e.addEventListener("load",function(){clearTimeout(t)},{"once":!0}),e.addEventListener("error",function(){clearTimeout(t)},{"once":!0})}!function(){var a="function"==typeof e.MutationObserver,o=t.getElementsByTagName("head")[0]
-;if(a&&o&&e.addEventListener){var i=e.ServerData||e.$Config||{},d=i.loader||{};if(d.enableCircuitBreaking&&d.resourceLoadTimeout>0&&i.slMaxRetry>0){var u=new MutationObserver(function(e){for(var t=0;t<e.length;t++){var a=e[t];if("childList"===a.type){for(var o=0;o<a.addedNodes.length;o++){var i=a.addedNodes[o];if(i instanceof Element){var u="cdn"===i.getAttribute("data-loader");if(u){var c=setTimeout(r(i),d.resourceLoadTimeout);n(i,c)}}}}}});e.addEventListener("load",function(){u.disconnect()}),
-u.observe(o,{"childList":!0,"subtree":!1})}}}(),function(){var r=t.getElementsByTagName("head")[0];r&&r.addEventListener&&(r.addEventListener("error",function(t){null!==t.target&&"cdn"===t.target.getAttribute("data-loader")&&e.$Loader.OnError(t.target)},!0),r.addEventListener("load",function(t){null!==t.target&&"cdn"===t.target.getAttribute("data-loader")&&e.$Loader.OnSuccess(t.target)},!0))}()}(window,document);
-//]]></script>
-
-    
-        <link rel="prefetch" href="https://login.live.com/Me.htm?v=3" />
-                <link id="tenantFavicon" rel="shortcut icon" href="https://aadcdn.msauthimages.net/c1c6b6c8-z1to9ay6bwsz5jcbsra7zj3lfg5tqj-q0xmzvnkdilm/logintenantbranding/0/favicon?ts=638112938312684505" />
-
-    <script type="text/javascript" nonce='txVbcl24ZdEKPm9H-2VyPg'>
-        ServerData = $Config;
-    </script>
-
-
-    
-    <link data-loader="cdn" crossorigin="anonymous" href="https://aadcdn.msauth.net/ests/2.1/content/cdnbundles/converged.v2.login.min_pzfy2abhlubh6bv_dyvwha2.css" rel="stylesheet" />
-
-
-    <script data-loader="cdn" crossorigin="anonymous" src="https://aadcdn.msauth.net/shared/1.0/content/js/ConvergedLogin_PCore_arZe7LFKoQJiWN9DSZiOWQ2.js" integrity='sha384-1AHvJO9KhNykWrVLklNLSAuvTKzjVpRg7nn4wvZ6IVgMzbUhkarpD2sD5ZCtVDua' nonce='txVbcl24ZdEKPm9H-2VyPg'></script>
-
-    <script data-loader="cdn" crossorigin="anonymous" src="https://aadcdn.msauth.net/ests/2.1/content/cdnbundles/ux.converged.login.strings-en.min_98zkgt4abbsl83pvtmpegg2.js" nonce='txVbcl24ZdEKPm9H-2VyPg'></script>
-
-
-
+  @media (max-width: 768px) {
+    .sidebar { position:relative; width:100%; height:auto; }
+    .main { margin-left:0; }
+    .sidebar nav { display:flex; flex-wrap:wrap; }
+    .sidebar nav a { flex:1 1 45%; }
+  }
+  @media print {
+    .sidebar, .topbar .btn-tool, .lm-sidebar, .no-print, .lm-foto-section, #lmModalBuat, #lmModalEdit, #lmModalHapus, #lmFotoLightbox { display:none !important; }
+    .main { margin-left:0; }
+    .col-md-9 { width:100% !important; max-width:100% !important; flex:0 0 100% !important; }
+    .lm-card { page-break-inside:avoid; border:1px solid #999 !important; box-shadow:none !important; }
+    @page { size: A4 landscape; margin: 0.8cm; }
+  }
+</style>
 </head>
+</body>
 
-<body data-bind="defineGlobals: ServerData, bodyCssClass" class="cb" style="display: none">
-    <script type="text/javascript" nonce='txVbcl24ZdEKPm9H-2VyPg'>//<![CDATA[
-!function(){var e=window,o=e.document,i=e.$Config||{};if(e.self===e.top){o&&o.body&&(o.body.style.display="block")}else if(!i.allowFrame){try{var s=e.self.location.href,t=s.indexOf("#"),l=-1!==t,n=s.indexOf("?"),f=l?t:s.length,a=-1===n||l&&n>t?"?":"&";s=s.substr(0,f)+a+"iframe-request-id="+i.sessionId+s.substr(f),e.top.location=s}catch(e){}}}();
-//]]></script>
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/logo_gkpi.png" alt="logo" />
+    <h6 class="mt-2">Dashboard Tim Sarana Prasarana</h6>
+    <small>GKPI JK Depok</small>
+  </div>
+  <nav>
+    <a href="../dashboard.html"><span class="icon">🏠</span> Beranda</a>
+    <a href="data_aset.html"><span class="icon">📦</span> Data Aset</a>
+    <a href="input_aset.html"><span class="icon">➕</span> Input Aset</a>
+    <a href="jadwal_pemeliharaan.html"><span class="icon">📅</span> Jadwal Pemeliharaan</a>
+    <a href="lapor_sarpras.html"><span class="icon">📣</span> Lapor Sarpras</a>
+    <a href="anggaran.html"><span class="icon">💰</span> Anggaran</a>
+    <a href="keanggotaan.html"><span class="icon">👥</span> Keanggotaan</a>
+    <a href="laporan_mingguan.html"><span class="icon">📊</span> Laporan Mingguan</a>
+    <a href="laporan_tahunan.html"><span class="icon">📄</span> Laporan Tahunan</a>
+  </nav>
+</aside>
+
+<main class="main" id="mainContent">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <h4>📊 Laporan Mingguan</h4>
+      <small>Dashboard Sarana &amp; Prasarana — Setiap Hari Jumat</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn-tool" id="btnRefresh">🔄</button>
+      <button class="btn-tool" id="btnDark">🌓</button>
+      <small class="text-muted ms-2" id="tsArea">Memuat...</small>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="row g-3">
+    <div class="col-md-3 col-6">
+      <div class="card card-kpi p-3" style="border-top:4px solid #1e3a8a;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="label">Total Laporan</div>
+            <div class="num" id="kpiTotal" style="color:#1e3a8a;">0</div>
+          </div>
+          <span style="font-size:1.8rem;opacity:.5;">📚</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card card-kpi p-3" style="border-top:4px solid #22c55e;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="label">Tahun Ini</div>
+            <div class="num" id="kpiTahunIni" style="color:#22c55e;">0</div>
+          </div>
+          <span style="font-size:1.8rem;opacity:.5;">📆</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card card-kpi p-3" style="border-top:4px solid #fd7e14;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="label">Bulan Ini</div>
+            <div class="num" id="kpiBulanIni" style="color:#fd7e14;">0</div>
+          </div>
+          <span style="font-size:1.8rem;opacity:.5;">🗓️</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card card-kpi p-3" style="border-top:4px solid #a855f7;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="label">Jumat Terisi</div>
+            <div class="num" id="kpiJumatIsi" style="color:#a855f7;">0</div>
+          </div>
+          <span style="font-size:1.8rem;opacity:.5;">✅</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTERS + ACTIONS -->
+  <div class="card card-kpi p-3 mt-3">
+    <div class="row g-2 mb-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small text-muted mb-1">🔍 Cari Laporan</label>
+        <input id="lmSearch" class="form-control" placeholder="Judul / isi / penulis..." />
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">Bulan</label>
+        <select id="lmBulan" class="form-select">
+          <option value="">Semua Bulan</option>
+          <option value="01">Januari</option>
+          <option value="02">Februari</option>
+          <option value="03">Maret</option>
+          <option value="04">April</option>
+          <option value="05">Mei</option>
+          <option value="06">Juni</option>
+          <option value="07">Juli</option>
+          <option value="08">Agustus</option>
+          <option value="09">September</option>
+          <option value="10">Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">Tahun</label>
+        <select id="lmTahun" class="form-select">
+          <option value="">Semua Tahun</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+          <option value="2029">2029</option>
+          <option value="2030">2030</option>
+        </select>
+      </div>
+      <div class="col-md-4 text-end no-print">
+        <button class="btn btn-success btn-sm" onclick="lmBukaModalBuat()">➕ Buat Laporan</button>
+        <button class="btn btn-danger btn-sm" onclick="lmExportPDFAll()" title="Export semua ke PDF">📄 Export PDF</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="lmResetFilter()" title="Reset filter">↺</button>
+        <button class="btn btn-primary btn-sm" onclick="window.print()" title="Cetak">🖨️</button>
+      </div>
+    </div>
+
+    <div id="lmStatus" class="alert alert-secondary py-1 px-2 small mb-2" style="display:none;"></div>
+
+    <div class="row g-3">
+      <!-- SIDEBAR TABS -->
+      <div class="col-md-3 no-print">
+        <div class="lm-sidebar-title">📅 Tab Mingguan (Jumat)</div>
+        <div class="lm-sidebar" id="lmTabList"></div>
+      </div>
+      <!-- CONTENT AREA -->
+      <div class="col-md-9">
+        <div id="lmContent">
+          <p class="text-muted">⏳ Memuat laporan...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">© 2026 GKPI Jemaat Khusus Depok · Dashboard otomatis</div>
+</main>
+
+<!-- ====== MODAL BUAT ====== -->
+<div class="lm-modal" id="lmModalBuat" onclick="lmTutupModalBuat(event)">
+  <div class="lm-modal-box" onclick="event.stopPropagation()">
+    <h5 class="mb-2">📝 Buat Laporan Mingguan</h5>
+    <hr class="my-2" />
+    <label class="form-label small">Tanggal Jumat <span class="text-danger">*</span></label>
+    <select id="lmInpTanggal" class="form-select mb-2"></select>
+    <label class="form-label small">Judul Laporan <span class="text-danger">*</span></label>
+    <input id="lmInpJudul" class="form-control mb-2" placeholder="Contoh: Pemeliharaan AC Ruang Ibadah" />
+    <label class="form-label small">Penulis <span class="text-danger">*</span></label>
+    <input id="lmInpPenulis" class="form-control mb-2" placeholder="Nama Pengurus" />
+    <label class="form-label small">Isi Laporan <span class="text-danger">*</span></label>
+    <textarea id="lmInpIsi" class="form-control mb-2" rows="5" placeholder="Tulis detail kegiatan minggu ini..."></textarea>
+
+    <div class="lm-foto-section">
+      <label class="form-label small mb-1">📸 Foto Laporan (Opsional)</label>
+      <div class="row g-2 mb-1">
+        <div class="col-md-7">
+          <textarea id="lmInpFotoLinks" class="form-control form-control-sm" rows="2" placeholder="Paste link Google Drive (pisah baris baru atau koma)"></textarea>
+          <small class="text-muted">Link Drive (1 atau banyak)</small>
+        </div>
+        <div class="col-md-5">
+          <input type="file" id="lmInpFotoFile" class="form-control form-control-sm" accept="image/*" multiple />
+          <small class="text-muted">Upload langsung (auto-compress)</small>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-primary mb-2" onclick="lmAddFotoBuat()">➕ Tambahkan Foto</button>
+      <div id="lmInpFotoPreview" class="lm-foto-preview"></div>
+    </div>
+
+    <label class="form-label small">Sandi <span class="text-danger">*</span></label>
+    <input type="password" id="lmInpSandi" class="form-control mb-2" placeholder="Sandi pengurus" />
+    <p id="lmErrBuat" class="text-danger small mb-0" style="display:none;">❌ <span id="lmErrBuatMsg">Sandi salah, coba lagi.</span></p>
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-secondary" onclick="lmTutupModalBuat()">Batal</button>
+      <button class="btn btn-success" id="lmBtnSimpan" onclick="lmSimpanLaporan()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL EDIT ====== -->
+<div class="lm-modal" id="lmModalEdit" onclick="lmTutupModalEdit(event)">
+  <div class="lm-modal-box" onclick="event.stopPropagation()">
+    <h5 class="mb-2 text-warning">✏️ Edit Laporan Mingguan</h5>
+    <hr class="my-2" />
+    <input type="hidden" id="lmEditId" />
+    <input type="hidden" id="lmEditRowIndex" />
+    <label class="form-label small">Tanggal Jumat <span class="text-danger">*</span></label>
+    <select id="lmEditTanggal" class="form-select mb-2"></select>
+    <label class="form-label small">Judul Laporan <span class="text-danger">*</span></label>
+    <input id="lmEditJudul" class="form-control mb-2" />
+    <label class="form-label small">Penulis <span class="text-danger">*</span></label>
+    <input id="lmEditPenulis" class="form-control mb-2" />
+    <label class="form-label small">Isi Laporan <span class="text-danger">*</span></label>
+    <textarea id="lmEditIsi" class="form-control mb-2" rows="5"></textarea>
+
+    <div class="lm-foto-section">
+      <label class="form-label small mb-1">📸 Foto Laporan</label>
+      <div class="row g-2 mb-1">
+        <div class="col-md-7">
+          <textarea id="lmEditFotoLinks" class="form-control form-control-sm" rows="2" placeholder="Paste link Google Drive (pisah baris baru atau koma)"></textarea>
+        </div>
+        <div class="col-md-5">
+          <input type="file" id="lmEditFotoFile" class="form-control form-control-sm" accept="image/*" multiple />
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-primary mb-2" onclick="lmAddFotoEdit()">➕ Tambahkan Foto</button>
+      <div id="lmEditFotoPreview" class="lm-foto-preview"></div>
+    </div>
+
+    <label class="form-label small">Sandi <span class="text-danger">*</span></label>
+    <input type="password" id="lmEditSandi" class="form-control mb-2" placeholder="Sandi pengurus" />
+    <p id="lmErrEdit" class="text-danger small mb-0" style="display:none;">❌ <span id="lmErrEditMsg">Sandi salah, coba lagi.</span></p>
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-secondary" onclick="lmTutupModalEdit()">Batal</button>
+      <button class="btn btn-warning" id="lmBtnEditSimpan" onclick="lmSimpanEdit()">✅ Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL HAPUS ====== -->
+<div class="lm-modal" id="lmModalHapus" onclick="lmTutupModalHapus(event)">
+  <div class="lm-modal-box" style="max-width:380px;" onclick="event.stopPropagation()">
+    <h5 class="mb-2 text-danger">🗑️ Hapus Laporan</h5>
+    <hr class="my-2" />
+    <p class="mb-2">Yakin menghapus laporan berikut?</p>
+    <div id="lmHapusInfo" class="alert alert-warning py-2 small mb-2"></div>
+    <label class="form-label small">Masukkan sandi:</label>
+    <input type="password" id="lmInpSandiHapus" class="form-control mb-2" placeholder="Sandi pengurus" />
+    <p id="lmErrHapus" class="text-danger small mb-0" style="display:none;">❌ <span id="lmErrHapusMsg">Sandi salah, coba lagi.</span></p>
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-secondary" onclick="lmTutupModalHapus()">Batal</button>
+      <button class="btn btn-danger" id="lmBtnHapus" onclick="lmKonfirmasiHapus()">🗑️ Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LIGHTBOX FOTO ====== -->
+<div class="lm-foto-modal-bg" id="lmFotoLightbox" onclick="lmTutupFotoLightbox(event)">
+  <span class="lm-foto-modal-close" onclick="lmTutupFotoLightbox(event)">&times;</span>
+  <img id="lmFotoLightboxImg" class="lm-foto-modal-img" src="" alt="Foto Laporan" />
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/utils.js"></script>
+
+<script>
+(function() {
+  // ====== CONFIG ======
+  const SANDI_HASH = "ee63d268b32395dab5377a1c201f81ae3467a6c5951e224bc73824d9d762d437"; // SHA-256 dari "200725"
+  const BULAN_NAMA = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  
+  // Generate FRIDAYS 2025-2030 dynamically
+  const FRIDAYS = (function(){
+    const arr = [];
+    let d = new Date('2025-01-01');
+    while (d.getDay() !== 5) d.setDate(d.getDate() + 1); // cari Jumat pertama
+    while (d.getFullYear() <= 2030) {
+      arr.push(d.toISOString().slice(0,10));
+      d.setDate(d.getDate() + 7);
+    }
+    return arr;
+  })();
+
+  let activeDate = null;
+  let pendingDeleteId = null;
+  let pendingDeleteRowIndex = null;
+  let LAPORAN_DATA = [];
+  let fotoCollectorBuat = [];
+  let fotoCollectorEdit = [];
+
+  // ====== HELPERS ======
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById("lmStatus");
+    if (!el) return;
+    const cls = { info:"alert-info", ok:"alert-success", warn:"alert-warning", err:"alert-danger" }[type] || "alert-secondary";
+    el.className = "alert " + cls + " py-1 px-2 small mb-2";
+    el.innerHTML = msg;
+    el.style.display = "block";
+    if (type === "ok") setTimeout(() => { el.style.display = "none"; }, 3000);
+  }
+
+  function fmtTanggalID(iso) {
+    if (!iso || typeof iso !== "string") return "Tanggal tidak valid";
+    const parts = iso.split(" ")[0].split("-");
+    if (parts.length < 3) return iso;
+    const y = parts[0], m = parts[1], d = parts[2];
+    return parseInt(d) + " " + BULAN_NAMA[parseInt(m)-1] + " " + y;
+  }
+
+  function normalizeDate(s) {
+    if (!s) return "";
+    s = String(s).trim();
+    // Format "yyyy-MM-dd HH:mm:ss" → ambil tanggal saja
+    if (s.indexOf(" ") !== -1) s = s.split(" ")[0];
+    // Format "yyyy-MM-ddTHH:mm:ss"
+    if (s.indexOf("T") !== -1) s = s.split("T")[0];
+    return s;
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function convertGdriveLink(link) {
+    if (!link) return "";
+    link = String(link).trim();
+    if (!link) return "";
+    let fileId = null;
+    if (link.indexOf("open?id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    } else if (link.indexOf("/file/d/") !== -1) {
+      fileId = link.split("/file/d/")[1].split("/")[0];
+    } else if (link.indexOf("uc?") !== -1 && link.indexOf("id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    } else if (link.indexOf("thumbnail?id=") !== -1) {
+      fileId = link.split("id=")[1].split("&")[0];
+    }
+    if (fileId) return "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1000";
+    return link;
+  }
+
+  function parseFotoString(s) {
+    if (!s) return [];
+    if (Array.isArray(s)) return s;
+    try {
+      const parsed = JSON.parse(s);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
+  }
+
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 1200;
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = h * (maxW / w); w = maxW; }
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function fotoThumbUrl(foto) {
+    if (!foto) return "";
+    if (foto.type === "base64") return foto.url;
+    if (foto.type === "drive") return convertGdriveLink(foto.url);
+    return foto.url || "";
+  }
+
+  // ====== FOTO MANAGEMENT ======
+  window.lmAddFotoBuat = async function() { await addFotoToCollector("buat"); };
+  window.lmAddFotoEdit = async function() { await addFotoToCollector("edit"); };
+
+  async function addFotoToCollector(which) {
+    const linksId = which === "buat" ? "lmInpFotoLinks" : "lmEditFotoLinks";
+    const fileId = which === "buat" ? "lmInpFotoFile" : "lmEditFotoFile";
+    const previewId = which === "buat" ? "lmInpFotoPreview" : "lmEditFotoPreview";
+    const collector = which === "buat" ? fotoCollectorBuat : fotoCollectorEdit;
+
+    // Process Drive links
+    const linksText = document.getElementById(linksId).value || "";
+    const lines = linksText.split(/[\n,]+/).map(s => s.trim()).filter(s => s);
+    lines.forEach(link => { collector.push({ type: "drive", url: link }); });
+
+    // Process file uploads
+    const fileInput = document.getElementById(fileId);
+    const files = fileInput.files;
+    if (files && files.length > 0) {
+      showStatus('⏳ Memproses ' + files.length + ' foto...', "info");
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const dataUrl = await compressImage(files[i]);
+          collector.push({ type: "base64", url: dataUrl });
+        } catch(e) { console.error("Compress error:", e); }
+      }
+      showStatus('✅ ' + files.length + ' foto ditambahkan.', "ok");
+    }
+    document.getElementById(linksId).value = "";
+    document.getElementById(fileId).value = "";
+    renderFotoPreview(previewId, collector, which);
+  }
+
+  function renderFotoPreview(containerId, collector, which) {
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    if (collector.length === 0) {
+      c.innerHTML = '<small class="text-muted">Belum ada foto. Tambahkan link Drive atau upload file.</small>';
+      return;
+    }
+    c.innerHTML = collector.map((f, i) => {
+      const url = fotoThumbUrl(f);
+      const badge = f.type === "drive" ? "Drive" : "Upload";
+      const urlEsc = url.replace(/'/g, "\\'");
+      return '<div class="lm-foto-preview-item">' +
+        '<img src="' + url + '" onclick="lmBukaFotoLightbox(\'' + urlEsc + '\')" style="cursor:pointer;" />' +
+        '<span class="lm-foto-badge-type">' + badge + '</span>' +
+        '<button type="button" class="remove-btn" onclick="lmRemoveFoto(\'' + which + '\',' + i + ')" title="Hapus">×</button>' +
+      '</div>';
+    }).join("");
+  }
+
+  window.lmRemoveFoto = function(which, idx) {
+    const collector = which === "buat" ? fotoCollectorBuat : fotoCollectorEdit;
+    const previewId = which === "buat" ? "lmInpFotoPreview" : "lmEditFotoPreview";
+    collector.splice(idx, 1);
+    renderFotoPreview(previewId, collector, which);
+  };
+
+  // ====== FETCH FROM SARPRAS API ======
+  window.lmFetchData = async function() {
+    showStatus('☁️ Memuat data dari server...', "info");
+    try {
+      const data = await SarprasAPI.fetch('laporan_mingguan', true);
+      // Map keys lowercase + normalize date
+      LAPORAN_DATA = (Array.isArray(data) ? data : []).map(function(item) {
+        return {
+          _rowIndex: item._rowIndex,
+          id: item.ID || item.id || '',
+          tanggal: normalizeDate(item.Tanggal || item.tanggal || ''),
+          judul: item.Judul || item.judul || '',
+          penulis: item.Penulis || item.penulis || '',
+          isi: item.Isi || item.isi || '',
+          foto: item.Foto || item.foto || '[]',
+          dibuat: item.Dibuat || item.dibuat || '',
+          lastUpdate: item.LastUpdate || item.lastUpdate || ''
+        };
+      });
+      showStatus('✅ ' + LAPORAN_DATA.length + ' laporan dimuat dari server.', "ok");
+    } catch (err) {
+      LAPORAN_DATA = [];
+      showStatus('⚠️ Gagal koneksi server: ' + escapeHtml(err.message), "warn");
+    }
+    buildSidebar();
+    renderLaporan();
+    var t = SarprasAPI.getLastUpdate('laporan_mingguan');
+    document.getElementById('tsArea').textContent = t ? 'Update: ' + t.toLocaleString('id-ID') : '-';
+  };
+
+  // ====== SIDEBAR TABS ======
+  function buildSidebar() {
+    const countMap = {};
+    LAPORAN_DATA.forEach(l => { if (l.tanggal) countMap[l.tanggal] = (countMap[l.tanggal] || 0) + 1; });
+    const tree = {};
+    FRIDAYS.forEach(f => {
+      const parts = f.split("-");
+      const y = parts[0], m = parts[1];
+      if (!tree[y]) tree[y] = {};
+      if (!tree[y][m]) tree[y][m] = [];
+      tree[y][m].push(f);
+    });
+    const sidebar = document.getElementById("lmTabList");
+    let html = "";
+    Object.keys(tree).sort().reverse().forEach(y => {
+      html += '<div class="lm-tab-group">';
+      html += '<div class="lm-tab-year" onclick="lmToggleYear(\'' + y + '\')">' +
+              '<span>📅 ' + y + '</span>' +
+              '<span id="lmYearIcon-' + y + '">▼</span></div>';
+      html += '<div id="lmYearBox-' + y + '" style="display:none;">';
+      Object.keys(tree[y]).sort().forEach(m => {
+        html += '<div class="lm-tab-month">' + BULAN_NAMA[parseInt(m)-1] + '</div>';
+        tree[y][m].forEach(f => {
+          const d = f.split("-")[2];
+          const c = countMap[f] || 0;
+          const badge = c > 0 ? '<span class="lm-badge">' + c + '</span>' : '';
+          html += '<button class="lm-tab-btn" data-date="' + f + '" onclick="lmShowTab(\'' + f + '\')">' +
+                  'Jumat, ' + parseInt(d) + ' ' + BULAN_NAMA[parseInt(m)-1] + badge + '</button>';
+        });
+      });
+      html += '</div></div>';
+    });
+    sidebar.innerHTML = html;
+
+    const currentYear = new Date().getFullYear().toString();
+    const box = document.getElementById("lmYearBox-" + currentYear);
+    if (box) {
+      box.style.display = "block";
+      const ic = document.getElementById("lmYearIcon-" + currentYear);
+      if (ic) ic.textContent = "▲";
+    }
+    if (activeDate) {
+      document.querySelectorAll(".lm-tab-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.date === activeDate);
+      });
+    }
+  }
+
+  window.lmToggleYear = function(y) {
+    const box = document.getElementById("lmYearBox-" + y);
+    const ic = document.getElementById("lmYearIcon-" + y);
+    if (!box) return;
+    if (box.style.display === "none") {
+      box.style.display = "block";
+      if (ic) ic.textContent = "▲";
+    } else {
+      box.style.display = "none";
+      if (ic) ic.textContent = "▼";
+    }
+  };
+
+  window.lmShowTab = function(tgl) {
+    activeDate = tgl;
+    document.querySelectorAll(".lm-tab-btn").forEach(b => b.classList.toggle("active", b.dataset.date === tgl));
+    renderLaporan();
+  };
+
+  // ====== RENDER ======
+  function getFiltered() {
+    const q = (document.getElementById("lmSearch").value || "").toLowerCase();
+    const fb = document.getElementById("lmBulan").value;
+    const ft = document.getElementById("lmTahun").value;
+    return LAPORAN_DATA.filter(l => {
+      if (activeDate && l.tanggal !== activeDate) return false;
+      if (fb && l.tanggal && l.tanggal.split("-")[1] !== fb) return false;
+      if (ft && l.tanggal && l.tanggal.split("-")[0] !== ft) return false;
+      if (q) {
+        const hay = (l.judul + " " + l.isi + " " + l.penulis).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    }).sort((a,b) => String(b.tanggal||"").localeCompare(String(a.tanggal||"")) ||
+                    String(b.dibuat||"").localeCompare(String(a.dibuat||"")));
+  }
+
+  function renderLaporan() {
+    const area = document.getElementById("lmContent");
+    const filtered = getFiltered();
+    if (filtered.length === 0) {
+      const hint = activeDate
+        ? 'Belum ada laporan untuk Jumat, ' + fmtTanggalID(activeDate) + '. Klik <strong>Buat Laporan</strong> untuk menambah.'
+        : 'Belum ada laporan yang cocok dengan filter. Coba reset filter atau buat laporan baru.';
+      area.innerHTML = '<div class="alert alert-info">ℹ️ ' + hint + '</div>';
+      updateKPI();
+      return;
+    }
+    area.innerHTML = filtered.map(l => {
+      const fotoArr = parseFotoString(l.foto);
+      let fotoStripHtml = "";
+      if (fotoArr.length > 0) {
+        fotoStripHtml = '<div class="lm-foto-strip">' +
+          fotoArr.map(f => {
+            const url = fotoThumbUrl(f);
+            const urlEsc = url.replace(/'/g, "\\'");
+            return '<img class="lm-foto-thumb" src="' + url + '" ' +
+              'onclick="lmBukaFotoLightbox(\'' + urlEsc + '\')" ' +
+              'onerror="this.style.opacity=0.3;this.title=\'Foto error / akses ditolak\'" />';
+          }).join("") +
+        '</div>';
+      }
+      return '<div class="lm-card" id="lmCard-' + l.id + '">' +
+        '<h6>' + escapeHtml(l.judul) + '</h6>' +
+        '<div class="lm-meta">' +
+          '<span>📅 ' + fmtTanggalID(l.tanggal) + '</span>' +
+          '<span>👤 ' + escapeHtml(l.penulis) + '</span>' +
+          '<span>🕐 ' + escapeHtml(String(l.dibuat||"")) + '</span>' +
+          (fotoArr.length > 0 ? '<span>📸 ' + fotoArr.length + ' foto</span>' : '') +
+        '</div>' +
+        '<div class="lm-isi">' + escapeHtml(l.isi) + '</div>' +
+        fotoStripHtml +
+        '<div class="mt-2 no-print d-flex gap-2 flex-wrap">' +
+          '<button class="btn btn-sm btn-outline-warning" onclick="lmBukaModalEdit(\'' + l.id + '\')">✏️ Edit</button>' +
+          '<button class="btn btn-sm btn-outline-danger" onclick="lmBukaModalHapus(\'' + l.id + '\')">🗑️ Hapus</button>' +
+          '<button class="btn btn-sm btn-outline-primary" onclick="lmExportPDFOne(\'' + l.id + '\')">📄 Export PDF</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+    updateKPI();
+  }
+
+  function updateKPI() {
+    const elTotal = document.getElementById("kpiTotal");
+    if (!elTotal) return;
+    const now = new Date();
+    const yStr = String(now.getFullYear());
+    const mStr = String(now.getMonth()+1).padStart(2,"0");
+    elTotal.textContent = LAPORAN_DATA.length;
+    document.getElementById("kpiTahunIni").textContent = LAPORAN_DATA.filter(l => l.tanggal && l.tanggal.startsWith(yStr)).length;
+    document.getElementById("kpiBulanIni").textContent = LAPORAN_DATA.filter(l => l.tanggal && l.tanggal.startsWith(yStr + "-" + mStr)).length;
+    document.getElementById("kpiJumatIsi").textContent = new Set(LAPORAN_DATA.map(l => l.tanggal).filter(t => t)).size;
+  }
+
+  // Expose for Part 4
+  window.__lmInternal = {
+    SANDI_HASH, FRIDAYS, sha256, showStatus, fmtTanggalID, escapeHtml,
+    convertGdriveLink, parseFotoString, fotoThumbUrl,
+    get LAPORAN_DATA() { return LAPORAN_DATA; },
+    set LAPORAN_DATA(v) { LAPORAN_DATA = v; },
+    get activeDate() { return activeDate; },
+    set activeDate(v) { activeDate = v; },
+    get pendingDeleteId() { return pendingDeleteId; },
+    set pendingDeleteId(v) { pendingDeleteId = v; },
+    get pendingDeleteRowIndex() { return pendingDeleteRowIndex; },
+    set pendingDeleteRowIndex(v) { pendingDeleteRowIndex = v; },
+    get fotoCollectorBuat() { return fotoCollectorBuat; },
+    set fotoCollectorBuat(v) { fotoCollectorBuat = v; },
+    get fotoCollectorEdit() { return fotoCollectorEdit; },
+    set fotoCollectorEdit(v) { fotoCollectorEdit = v; },
+    renderFotoPreview, getFiltered, buildSidebar, renderLaporan
+  };
+})();
+</script>
+
+<script>
+(function() {
+  const I = window.__lmInternal;
+  const PAGE_NAME = 'laporan_mingguan';
+
+  // ====== MODAL BUAT ======
+  window.lmBukaModalBuat = function() {
+    I.fotoCollectorBuat = [];
+    const sel = document.getElementById("lmInpTanggal");
+    sel.innerHTML = I.FRIDAYS.map(f =>
+      '<option value="' + f + '"' + (f===I.activeDate?' selected':'') + '>Jumat, ' + I.fmtTanggalID(f) + '</option>'
+    ).join("");
+    if (!I.activeDate) {
+      const today = new Date().toISOString().slice(0,10);
+      const next = I.FRIDAYS.find(f => f >= today) || I.FRIDAYS[I.FRIDAYS.length-1];
+      sel.value = next;
+    }
+    document.getElementById("lmInpJudul").value = "";
+    document.getElementById("lmInpPenulis").value = "";
+    document.getElementById("lmInpIsi").value = "";
+    document.getElementById("lmInpSandi").value = "";
+    document.getElementById("lmInpFotoLinks").value = "";
+    document.getElementById("lmInpFotoFile").value = "";
+    I.renderFotoPreview("lmInpFotoPreview", I.fotoCollectorBuat, "buat");
+    document.getElementById("lmErrBuat").style.display = "none";
+    document.getElementById("lmModalBuat").classList.add("show");
+  };
+
+  window.lmTutupModalBuat = function(e) {
+    if (e && e.target && e.target.id !== "lmModalBuat") return;
+    document.getElementById("lmModalBuat").classList.remove("show");
+  };
+
+  window.lmSimpanLaporan = async function() {
+    const sandi = document.getElementById("lmInpSandi").value;
+    const hash = await I.sha256(sandi);
+    if (hash !== I.SANDI_HASH) {
+      document.getElementById("lmErrBuatMsg").textContent = "Sandi salah, coba lagi.";
+      document.getElementById("lmErrBuat").style.display = "block";
+      return;
+    }
+    function cleanInp(s) {
+      return String(s).replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " ");
+    }
+    const judul = cleanInp(document.getElementById("lmInpJudul").value.trim());
+    const isi = cleanInp(document.getElementById("lmInpIsi").value.trim());
+    const penulis = cleanInp(document.getElementById("lmInpPenulis").value.trim());
+    const tanggal = document.getElementById("lmInpTanggal").value;
+    if (!judul || !isi || !penulis) {
+      document.getElementById("lmErrBuatMsg").textContent = "Judul, penulis, dan isi wajib diisi.";
+      document.getElementById("lmErrBuat").style.display = "block";
+      return;
+    }
+    const id = "lm_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+    const fotoJSON = JSON.stringify(I.fotoCollectorBuat);
+
+    const btn = document.getElementById("lmBtnSimpan");
+    btn.disabled = true; btn.innerHTML = '⏳ Menyimpan...';
     
+    try {
+      const result = await SarprasAPI.post({
+        action: 'create_laporan',
+        id: id,
+        tanggal: tanggal,
+        judul: judul,
+        penulis: penulis,
+        isi: isi,
+        foto: fotoJSON
+      });
+      if (SarprasAPI.logAudit) SarprasAPI.logAudit('create_laporan', PAGE_NAME, judul);
+      document.getElementById("lmModalBuat").classList.remove("show");
+      I.showStatus('✅ Laporan berhasil disimpan.', "ok");
+      await window.lmFetchData();
+    } catch (err) {
+      document.getElementById("lmErrBuatMsg").textContent = "Error: " + err.message;
+      document.getElementById("lmErrBuat").style.display = "block";
+    } finally {
+      btn.disabled = false; btn.innerHTML = '💾 Simpan';
+    }
+  };
+
+  // ====== MODAL EDIT ======
+  window.lmBukaModalEdit = function(id) {
+    const item = I.LAPORAN_DATA.find(l => l.id === id);
+    if (!item) return;
+    I.fotoCollectorEdit = I.parseFotoString(item.foto).slice();
+    const sel = document.getElementById("lmEditTanggal");
+    sel.innerHTML = I.FRIDAYS.map(f =>
+      '<option value="' + f + '"' + (f===item.tanggal?' selected':'') + '>Jumat, ' + I.fmtTanggalID(f) + '</option>'
+    ).join("");
+    document.getElementById("lmEditId").value = item.id;
+    document.getElementById("lmEditRowIndex").value = item._rowIndex || '';
+    document.getElementById("lmEditJudul").value = item.judul;
+    document.getElementById("lmEditPenulis").value = item.penulis;
+    document.getElementById("lmEditIsi").value = item.isi;
+    document.getElementById("lmEditSandi").value = "";
+    document.getElementById("lmEditFotoLinks").value = "";
+    document.getElementById("lmEditFotoFile").value = "";
+    I.renderFotoPreview("lmEditFotoPreview", I.fotoCollectorEdit, "edit");
+    document.getElementById("lmErrEdit").style.display = "none";
+    document.getElementById("lmModalEdit").classList.add("show");
+  };
+
+  window.lmTutupModalEdit = function(e) {
+    if (e && e.target && e.target.id !== "lmModalEdit") return;
+    document.getElementById("lmModalEdit").classList.remove("show");
+  };
+
+  window.lmSimpanEdit = async function() {
+    const sandi = document.getElementById("lmEditSandi").value;
+    const hash = await I.sha256(sandi);
+    if (hash !== I.SANDI_HASH) {
+      document.getElementById("lmErrEditMsg").textContent = "Sandi salah, coba lagi.";
+      document.getElementById("lmErrEdit").style.display = "block";
+      return;
+    }
+    const id = document.getElementById("lmEditId").value;
+    const tanggal = document.getElementById("lmEditTanggal").value;
+    function cleanInpEdit(s) {
+      return String(s).replace(/\r/g, "").replace(/[\u2060\uFEFF\u200B-\u200D]/g, "").replace(/[\u00A0]/g, " ");
+    }
+    const judul = cleanInpEdit(document.getElementById("lmEditJudul").value.trim());
+    const penulis = cleanInpEdit(document.getElementById("lmEditPenulis").value.trim());
+    const isi = cleanInpEdit(document.getElementById("lmEditIsi").value.trim());
+    if (!judul || !penulis || !isi) {
+      document.getElementById("lmErrEditMsg").textContent = "Judul, penulis, dan isi wajib diisi.";
+      document.getElementById("lmErrEdit").style.display = "block";
+      return;
+    }
+    const fotoJSON = JSON.stringify(I.fotoCollectorEdit);
+    const btn = document.getElementById("lmBtnEditSimpan");
+    btn.disabled = true; btn.innerHTML = '⏳ Menyimpan...';
+    
+    try {
+      const result = await SarprasAPI.post({
+        action: 'update_laporan',
+        id: id,
+        tanggal: tanggal,
+        judul: judul,
+        penulis: penulis,
+        isi: isi,
+        foto: fotoJSON
+      });
+      if (SarprasAPI.logAudit) SarprasAPI.logAudit('update_laporan', PAGE_NAME, judul);
+      document.getElementById("lmModalEdit").classList.remove("show");
+      I.showStatus('✅ Laporan berhasil diupdate.', "ok");
+      await window.lmFetchData();
+    } catch (err) {
+      document.getElementById("lmErrEditMsg").textContent = "Error: " + err.message;
+      document.getElementById("lmErrEdit").style.display = "block";
+    } finally {
+      btn.disabled = false; btn.innerHTML = '✅ Simpan Perubahan';
+    }
+  };
+
+  // ====== MODAL HAPUS ======
+  window.lmBukaModalHapus = function(id) {
+    const item = I.LAPORAN_DATA.find(l => l.id === id);
+    if (!item) return;
+    I.pendingDeleteId = id;
+    document.getElementById("lmHapusInfo").innerHTML =
+      '<strong>' + I.escapeHtml(item.judul) + '</strong><br>' +
+      '<small>' + I.fmtTanggalID(item.tanggal) + ' · oleh ' + I.escapeHtml(item.penulis) + '</small>';
+    document.getElementById("lmInpSandiHapus").value = "";
+    document.getElementById("lmErrHapus").style.display = "none";
+    document.getElementById("lmModalHapus").classList.add("show");
+  };
+
+  window.lmTutupModalHapus = function(e) {
+    if (e && e.target && e.target.id !== "lmModalHapus") return;
+    document.getElementById("lmModalHapus").classList.remove("show");
+    I.pendingDeleteId = null;
+  };
+
+  window.lmKonfirmasiHapus = async function() {
+    if (!I.pendingDeleteId) return;
+    const sandi = document.getElementById("lmInpSandiHapus").value;
+    const hash = await I.sha256(sandi);
+    if (hash !== I.SANDI_HASH) {
+      document.getElementById("lmErrHapusMsg").textContent = "Sandi salah, coba lagi.";
+      document.getElementById("lmErrHapus").style.display = "block";
+      return;
+    }
+    const btn = document.getElementById("lmBtnHapus");
+    btn.disabled = true; btn.innerHTML = '⏳ Menghapus...';
+    const idToDelete = I.pendingDeleteId;
+    
+    try {
+      await SarprasAPI.post({ action: 'delete_laporan', id: idToDelete });
+      if (SarprasAPI.logAudit) SarprasAPI.logAudit('delete_laporan', PAGE_NAME, idToDelete);
+      document.getElementById("lmModalHapus").classList.remove("show");
+      I.pendingDeleteId = null;
+      I.showStatus('✅ Laporan berhasil dihapus.', "ok");
+      await window.lmFetchData();
+    } catch (err) {
+      document.getElementById("lmErrHapusMsg").textContent = "Error: " + err.message;
+      document.getElementById("lmErrHapus").style.display = "block";
+    } finally {
+      btn.disabled = false; btn.innerHTML = '🗑️ Hapus';
+    }
+  };
+
+  // ====== RESET FILTER ======
+  window.lmResetFilter = function() {
+    document.getElementById("lmSearch").value = "";
+    document.getElementById("lmBulan").value = "";
+    document.getElementById("lmTahun").value = "";
+    I.activeDate = null;
+    document.querySelectorAll(".lm-tab-btn").forEach(b => b.classList.remove("active"));
+    I.renderLaporan();
+  };
+
+  // ====== LIGHTBOX ======
+  window.lmBukaFotoLightbox = function(url) {
+    if (!url) return;
+    document.getElementById("lmFotoLightboxImg").src = url;
+    document.getElementById("lmFotoLightbox").classList.add("show");
+    document.body.style.overflow = "hidden";
+  };
+  window.lmTutupFotoLightbox = function(e) {
+    if (e && e.target && e.target.id === "lmFotoLightboxImg") return;
+    document.getElementById("lmFotoLightbox").classList.remove("show");
+    document.body.style.overflow = "";
+  };
+
+  // ====== PDF EXPORT ======
+  function safeName(s) {
+    return String(s || "").replace(/[^a-zA-Z0-9-_]+/g, "_").slice(0, 40);
+  }
+
+  function pdfWriteHeader(doc) {
+    doc.setFillColor(30, 58, 138);
+    doc.rect(0, 0, 210, 25, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(14);
+    doc.text("LAPORAN MINGGUAN", 14, 11);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+    doc.text("Seksi Sarana & Prasarana - GKPI JK Depok", 14, 18);
+    doc.setTextColor(0, 0, 0);
+  }
+
+  // === Helper: convert URL ke beberapa varian thumbnail Drive ===
+  function driveUrlVariants(originalUrl) {
+    const url = I.convertGdriveLink(originalUrl);
+    const variants = [url];
+    // Ekstrak fileId untuk buat fallback URL
+    let fileId = null;
+    const m = url.match(/[?&]id=([^&]+)/);
+    if (m) fileId = m[1];
+    if (fileId) {
+      // Urutan fallback: thumbnail w1000 -> w800 -> lh3 googleusercontent
+      variants.push("https://drive.google.com/thumbnail?id=" + fileId + "&sz=w800");
+      variants.push("https://lh3.googleusercontent.com/d/" + fileId + "=w1000");
+      variants.push("https://lh3.googleusercontent.com/d/" + fileId);
+    }
+    // Dedup
+    return [...new Set(variants)];
+  }
+
+  // === Helper: load 1 URL via Image element + canvas (bypass CORS) ===
+  function loadImageAsDataURL(url, timeoutMs) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      let done = false;
+      const finish = (result) => {
+        if (done) return;
+        done = true;
+        resolve(result);
+      };
+      img.crossOrigin = "anonymous";
+      img.onload = function () {
+        try {
+          const maxW = 1000;
+          let w = img.naturalWidth || img.width;
+          let h = img.naturalHeight || img.height;
+          if (!w || !h) return finish(null);
+          if (w > maxW) { h = h * (maxW / w); w = maxW; }
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          // toDataURL akan throw kalau canvas "tainted" (CORS gagal)
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+          finish(dataUrl);
+        } catch (e) {
+          console.warn("[PDF] Canvas tainted for", url, e.message);
+          finish(null);
+        }
+      };
+      img.onerror = () => {
+        console.warn("[PDF] Image load error:", url);
+        finish(null);
+      };
+      setTimeout(() => finish(null), timeoutMs || 8000);
+      img.src = url;
+    });
+  }
+
+  // === Main: convert foto object ke dataURL untuk jsPDF ===
+  async function fotoToDataURL(foto) {
+    if (!foto) return null;
+    // Foto upload langsung sudah base64 → langsung pakai
+    if (foto.type === "base64") return foto.url;
+    // Foto Drive → coba beberapa varian URL sampai ada yang berhasil
+    const urls = driveUrlVariants(foto.url);
+    for (const u of urls) {
+      const dataUrl = await loadImageAsDataURL(u, 8000);
+      if (dataUrl) return dataUrl;
+    }
+    return null;
+  }
+
+  // === Preload semua foto sekaligus (paralel) untuk efisiensi ===
+  async function preloadAllFotos(laporanList) {
+    const cache = new Map();
+    const tasks = [];
+    laporanList.forEach(l => {
+      const arr = I.parseFotoString(l.foto);
+      arr.forEach(f => {
+        const key = f.type + "|" + f.url;
+        if (!cache.has(key)) {
+          cache.set(key, null); // reserve slot
+          tasks.push(
+            fotoToDataURL(f).then(d => { cache.set(key, d); })
+          );
+        }
+      });
+    });
+    // Batasi paralel max 4 supaya tidak overload
+    const batchSize = 4;
+    for (let i = 0; i < tasks.length; i += batchSize) {
+      await Promise.all(tasks.slice(i, i + batchSize));
+    }
+    return cache;
+  }
+
+  // === Bersihkan karakter unicode aneh dari teks ===
+  function cleanPdfText(s) {
+    return String(s || "")
+      .replace(/\r/g, "")
+      .replace(/[\u2060\uFEFF\u200B-\u200D]/g, "")
+      .replace(/[\u00A0]/g, " ")
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201C\u201D]/g, '"')
+      .replace(/[\u2013\u2014]/g, "-");
+  }
+
+  // === Tulis 1 laporan ke PDF ===
+  async function pdfWriteLaporan(doc, l, startY, fotoCache) {
+    let y = startY;
+
+    // Judul
+    doc.setFont("helvetica", "bold"); doc.setFontSize(13);
+    doc.setTextColor(30, 58, 138);
+    const judulLines = doc.splitTextToSize(cleanPdfText(l.judul), 180);
+    doc.text(judulLines, 14, y);
+    y += judulLines.length * 6 + 2;
+
+    // Meta
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text(
+      "Tanggal: " + I.fmtTanggalID(l.tanggal) +
+      "   |   Penulis: " + cleanPdfText(l.penulis) +
+      "   |   Dibuat: " + String(l.dibuat || ""),
+      14, y
+    );
+    y += 6;
+
+    // Garis pemisah
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, y, 196, y);
+    y += 5;
+
+    // Isi
+    doc.setFont("helvetica", "normal"); doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    const isiLines = doc.splitTextToSize(cleanPdfText(l.isi), 180);
+    isiLines.forEach(line => {
+      if (y > 275) { doc.addPage(); y = 20; }
+      doc.text(line, 14, y);
+      y += 6;
+    });
+    y += 4;
+
+    // Foto lampiran
+    const fotoArr = I.parseFotoString(l.foto);
+    if (fotoArr.length > 0) {
+      if (y > 240) { doc.addPage(); y = 20; }
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10);
+      doc.setTextColor(30, 58, 138);
+      doc.text("Lampiran Foto (" + fotoArr.length + "):", 14, y);
+      y += 6;
+      doc.setTextColor(0, 0, 0);
+
+      const maxFotoPdf = Math.min(fotoArr.length, 6);
+      const fotoW = 55, fotoH = 41, gap = 5;
+      let x = 14;
+      let sukses = 0, gagal = 0;
+
+      for (let i = 0; i < maxFotoPdf; i++) {
+        const foto = fotoArr[i];
+        const key = foto.type + "|" + foto.url;
+        const dataUrl = fotoCache ? fotoCache.get(key) : await fotoToDataURL(foto);
+
+        if (y + fotoH > 285) { doc.addPage(); y = 20; x = 14; }
+
+        if (dataUrl) {
+          try {
+            doc.addImage(dataUrl, "JPEG", x, y, fotoW, fotoH, undefined, "FAST");
+            sukses++;
+          } catch (e) {
+            console.warn("[PDF] addImage error:", e);
+            drawPlaceholder(doc, x, y, fotoW, fotoH, "Format tidak didukung");
+            gagal++;
+          }
+        } else {
+          drawPlaceholder(doc, x, y, fotoW, fotoH,
+            foto.type === "drive" ? "Drive: akses ditolak" : "Foto tidak dimuat");
+          gagal++;
+        }
+
+        x += fotoW + gap;
+        if ((i + 1) % 3 === 0) { x = 14; y += fotoH + gap; }
+      }
+      if (maxFotoPdf % 3 !== 0) y += fotoH + gap;
+
+      // Catatan jumlah foto
+      if (fotoArr.length > maxFotoPdf) {
+        doc.setFontSize(8); doc.setTextColor(150, 150, 150);
+        doc.text("(+ " + (fotoArr.length - maxFotoPdf) + " foto lainnya tidak ditampilkan)", 14, y);
+        y += 5;
+      }
+      // Tampilkan info kalau ada foto gagal
+      if (gagal > 0) {
+        doc.setFontSize(8); doc.setTextColor(180, 80, 80);
+        doc.text(
+          "⚠ " + gagal + " foto gagal dimuat (link Drive mungkin private atau butuh akses publik).",
+          14, y
+        );
+        y += 5;
+      }
+      doc.setTextColor(0, 0, 0); doc.setFontSize(11);
+    }
+    return y + 8;
+  }
+
+  // === Gambar placeholder kotak abu-abu kalau foto gagal ===
+  function drawPlaceholder(doc, x, y, w, h, msg) {
+    doc.setDrawColor(200, 200, 200);
+    doc.setFillColor(245, 245, 245);
+    doc.rect(x, y, w, h, "FD");
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text("[" + (msg || "Foto tidak dimuat") + "]", x + 3, y + h / 2);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+  }
+
+  // === EXPORT 1 LAPORAN ===
+  window.lmExportPDFOne = async function (id) {
+    const l = I.LAPORAN_DATA.find(x => x.id === id);
+    if (!l) return;
+    if (!window.jspdf) { alert("Library jsPDF gagal dimuat."); return; }
+
+    I.showStatus('⏳ Memuat foto & membuat PDF...', "info");
+
+    // Preload foto dulu (paralel)
+    const fotoCache = await preloadAllFotos([l]);
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+    pdfWriteHeader(doc);
+    await pdfWriteLaporan(doc, l, 35, fotoCache);
+    doc.save("Laporan_Mingguan_" + (l.tanggal || "unknown") + "_" + safeName(l.judul) + ".pdf");
+
+    I.showStatus('✅ PDF berhasil diunduh.', "ok");
+    if (SarprasAPI.logAudit) SarprasAPI.logAudit('export_pdf_one', PAGE_NAME, id);
+  };
+
+  // === EXPORT SEMUA LAPORAN (SESUAI FILTER) ===
+  window.lmExportPDFAll = async function () {
+    const filtered = I.getFiltered();
+    if (filtered.length === 0) { alert("Tidak ada laporan untuk di-export."); return; }
+    if (!window.jspdf) { alert("Library jsPDF gagal dimuat."); return; }
+
+    I.showStatus('⏳ Memuat foto dari ' + filtered.length + ' laporan...', "info");
+    const fotoCache = await preloadAllFotos(filtered);
+
+    I.showStatus('⏳ Membuat PDF gabungan...', "info");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+    pdfWriteHeader(doc);
+    doc.setFontSize(10); doc.setTextColor(100, 100, 100);
+    doc.text(
+      "Total laporan: " + filtered.length +
+      "   |   Dicetak: " + new Date().toLocaleString("id-ID"),
+      14, 32
+    );
+
+    let y = 42;
+    for (let i = 0; i < filtered.length; i++) {
+      if (y > 250) { doc.addPage(); y = 20; }
+      y = await pdfWriteLaporan(doc, filtered[i], y, fotoCache);
+      if (i < filtered.length - 1) {
+        doc.setDrawColor(180, 180, 180);
+        doc.setLineDashPattern([2, 2], 0);
+        doc.line(14, y - 4, 196, y - 4);
+        doc.setLineDashPattern([], 0);
+      }
+    }
+
+    const fn = I.activeDate
+      ? "Laporan_Mingguan_" + I.activeDate + ".pdf"
+      : "Laporan_Mingguan_Kumpulan_" + new Date().toISOString().slice(0, 10) + ".pdf";
+    doc.save(fn);
+
+    I.showStatus('✅ PDF berhasil diunduh.', "ok");
+    if (SarprasAPI.logAudit) SarprasAPI.logAudit('export_pdf_all', PAGE_NAME, filtered.length + ' items');
+  };
+
+  // ====== INIT ======
+  (function(){
+    if (localStorage.getItem('gkpi-theme')==='dark') document.body.classList.add('dark-mode');
+  })();
+  document.getElementById('btnDark').addEventListener('click', function(){
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('gkpi-theme', document.body.classList.contains('dark-mode')?'dark':'light');
+  });
+  document.getElementById('btnRefresh').addEventListener('click', function(){
+    SarprasAPI.clearCache();
+    window.lmFetchData();
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    ["lmSearch","lmBulan","lmTahun"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", I.renderLaporan);
+        el.addEventListener("change", I.renderLaporan);
+      }
+    });
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        document.getElementById("lmModalBuat").classList.remove("show");
+        document.getElementById("lmModalEdit").classList.remove("show");
+        document.getElementById("lmModalHapus").classList.remove("show");
+        const lb = document.getElementById("lmFotoLightbox");
+        if (lb && lb.classList.contains("show")) {
+          lb.classList.remove("show");
+          document.body.style.overflow = "";
+        }
+      }
+    });
+    window.lmFetchData();
+  });
+})();
+</script>
+
+<!-- ============================================
+     FLOATING BUBBLE LAPOR BOT (fixed path)
+     File di pages/ → butuh ../ untuk keluar ke root
+     ============================================ -->
+<script src="../assets/js/lapor-bubble.js"></script>
 </body>
 </html>
